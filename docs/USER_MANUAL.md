@@ -1,4 +1,4 @@
-# Rasta Pyramid Factory v0.1.6 - User Manual
+# Rasta Pyramid Factory v0.2.0 - User Manual
 
 Printable copy: [Rasta_Pyramid_Factory_User_Manual.pdf](Rasta_Pyramid_Factory_User_Manual.pdf)
 
@@ -12,14 +12,16 @@ Printable copy: [Rasta_Pyramid_Factory_User_Manual.pdf](Rasta_Pyramid_Factory_Us
 
 - **Windows 10 or 11** (64-bit).
 - **[Python 3.14](https://www.python.org/downloads/windows/)** - free; tick "Add python.exe to PATH" if the installer shows it.
-- **[QGIS 3.44.9](https://qgis.org/download/)** - free; installed at the normal place, `C:\Program Files\QGIS 3.44.9`. Rasta uses QGIS behind the scenes - you never open it yourself.
+- **[QGIS 3.44.9](https://qgis.org/download/)** - free; **only for real map rasters** (GeoTIFFs with coordinates), installed at the normal place, `C:\Program Files\QGIS 3.44.9`. Rasta uses it behind the scenes. **Photos and other flat pictures do not need QGIS** (photo mode, v0.2.0).
+- **Pillow** - a free Python helper for photo mode; **Start Rasta Pyramid Factory.bat installs it by itself** the first time.
 - **[ArcGIS Earth](https://www.esri.com/en-us/arcgis/products/arcgis-earth/downloads)** - free, to look at and fly over the result.
-- **Free disk space on C:** - roughly 10 GB for a 1-billion-pixel picture while it builds (the working files go in the Windows temporary folder and are deleted afterwards).
+- **Memory for photo mode:** about 5 bytes per picture pixel - about 3 GB for a 600-million-pixel photo, about 6 GB for 1.2 billion.
+- **Free disk space on C:** - room for the finished file twice while it builds (the working files go in the Windows temporary folder and are deleted afterwards).
 
 ## Install
 
-1. Download [`Rasta_Pyramid_Factory_v0.1.6.zip`](../releases/Rasta_Pyramid_Factory_v0.1.6.zip), right-click it > **Extract All**.
-2. Open the `Rasta_Pyramid_Factory_v0.1.6` folder and double-click **Run Rasta Self Test.bat** once. It should end with **SELF TEST PASSED**.
+1. Download [`Rasta_Pyramid_Factory_v0.2.0.zip`](../releases/Rasta_Pyramid_Factory_v0.2.0.zip), right-click it > **Extract All**.
+2. Open the `Rasta_Pyramid_Factory_v0.2.0` folder and double-click **Run Rasta Self Test.bat** once. It should end with **SELF TEST PASSED**.
 
 ## What's in the zip
 
@@ -27,17 +29,17 @@ Printable copy: [Rasta_Pyramid_Factory_User_Manual.pdf](Rasta_Pyramid_Factory_Us
 
 ## Build a picture map
 
-1. **Close QGIS** if you have it open (Rasta refuses to build while QGIS Desktop is running).
+1. For a **real map raster** (QGIS route): **close QGIS** if you have it open. Photos do not care.
 2. Double-click **Start Rasta Pyramid Factory.bat**.
 3. **1. Choose giant raster** - press **CHOOSE IMAGE** and pick your picture (JPG, PNG, TIF, BMP or WEBP). Rasta checks it and shows its size, whether it is a flat picture or a real map, and how many tiles it will make.
-4. **2. Pyramid recipe** - leave **Min zoom 0** and **Max zoom 18** for a normal picture. Rasta suggests Max zoom 18 for flat pictures: that is where you reach the photo's own detail.
+4. **2. Pyramid recipe** - leave **Min zoom 0** and **Max zoom 18** for a normal picture. Rasta suggests Max zoom 18 for flat pictures: that is where you reach the photo's own detail. The green line shows how it will be built: **PHOTO MODE - no QGIS needed** for pictures, **QGIS 3.44.9** for real map rasters.
 5. **3. Finished product** - **TPKX** for ArcGIS Earth, **MBTiles** for other map programs, or **Both**. Type a **Name** and choose a **Folder**.
-6. Press **BUILD RASTER PYRAMID** and leave it running. The status line keeps moving - a heartbeat, the time, and the stage (optimizing the picture, QGIS building the pyramid, converting to TPKX, verifying).
+6. Press **BUILD RASTER PYRAMID** and leave it running. The status line keeps moving - a heartbeat, the time, and the stage (photo-mode pyramid or QGIS pyramid, converting to TPKX, verifying).
 7. When it says **RASTER PYRAMID COMPLETE**, your file is in the folder you chose.
 
-How long? About **9 minutes** for a 50,000 x 12,006 picture (35,216 tiles) and **23 minutes** for a 63,000 x 18,589 one (67,619 tiles) on Jim's PC.
+How long? In **photo mode** about **1 minute** for a 50,000 x 12,006 picture (35,216 tiles), and the TPKX is about a quarter of the size the QGIS route makes (442 MB instead of 1.77 GB for that picture). The QGIS route took 9 minutes for the same picture on Jim's PC.
 
-**Stopping:** press **CANCEL** - Rasta stops QGIS within a second or two, cleans up and says *Build cancelled*. Closing the window with the X does the same before it closes.
+**Stopping:** press **CANCEL** - Rasta stops within a second or two, cleans up and says *Build cancelled*. Closing the window with the X does the same before it closes.
 
 ## Look at it in ArcGIS Earth
 
@@ -60,12 +62,14 @@ The picture always lies flat - it is a map layer, so it cannot stand up like a b
 
 ## Messages and fixes
 
-- **"QGIS Desktop is running"** - close QGIS, then build again.
-- **"QGIS install folder not found" / "expects QGIS 3.44.9"** - install QGIS 3.44.9 at the normal place, or put your QGIS folder in `System Files\Rasta_Config.ini` (`qgis_install_dir`).
+- **"QGIS Desktop is running"** (real map rasters only) - close QGIS, then build again.
+- **"Not enough memory to open this picture in photo mode"** - close other programs, or set `engine = qgis` under `[PHOTO]` in `System Files\Rasta_Config.ini` to use the QGIS route.
+- **Want all-PNG tiles (no JPEG)?** - set `tiles = png` under `[PHOTO]`. Bigger files, no JPEG compression.
+- **"QGIS install folder not found" / "expects QGIS 3.44.9"** (real map rasters) - install QGIS 3.44.9 at the normal place, or put your QGIS folder in `System Files\Rasta_Config.ini` (`qgis_install_dir`).
 - **"TPKX supports zoom levels up to 23"** - TPKX (Esri's tile packages) stop at zoom 23. Lower Max zoom, or choose MBTiles only (up to 25).
 - **"Output already exists"** - pick another Name or move the old file.
 - **It runs for a long time** - giant pictures take minutes; the moving heartbeat shows it is working. The size warning before the build tells you how many tiles to expect.
-- **The disk fills up** - free space on C: (about 10 GB per billion pixels while building).
+- **The disk fills up** - free space on C: (room for the finished file twice while building).
 
 ## What Rasta does not do
 

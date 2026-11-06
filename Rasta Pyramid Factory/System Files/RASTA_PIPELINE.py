@@ -48,6 +48,9 @@ class Config:
     synthetic_anchor_lon: float
     synthetic_anchor_lat: float
     warning_tile_count: int
+    photo_engine: str = "photo"
+    photo_tiles: str = "mixed"
+    photo_jpeg_quality: int = 85
 
 @dataclass(frozen=True)
 class RasterInfo:
@@ -81,6 +84,7 @@ def load_config(base_dir: Path) -> Config:
     cp.read(path, encoding="utf-8")
     q = cp["QGIS"]
     p = cp["PYRAMID"]
+    ph = cp["PHOTO"] if cp.has_section("PHOTO") else {}
     return Config(
         base_dir=base_dir,
         qgis_install_dir=Path(os.path.expandvars(q.get("qgis_install_dir", r"C:\Program Files\QGIS 3.44.9"))),
@@ -96,6 +100,9 @@ def load_config(base_dir: Path) -> Config:
         synthetic_anchor_lon=p.getfloat("synthetic_anchor_lon", -80.0),
         synthetic_anchor_lat=p.getfloat("synthetic_anchor_lat", 30.0),
         warning_tile_count=p.getint("warning_tile_count", 100000),
+        photo_engine=str(ph.get("engine", "photo")).strip().lower(),
+        photo_tiles=str(ph.get("tiles", "mixed")).strip().lower(),
+        photo_jpeg_quality=int(ph.get("jpeg_quality", 85)),
     )
 
 
@@ -233,11 +240,45 @@ def verify_qgis(config: Config, tools: dict[str, Path]) -> str:
     return next((line.strip() for line in text.splitlines() if line.strip()), text.strip())
 
 
+GEOTIFF_TAGS = (33550, 33922, 34264, 34735)   # ModelPixelScale, ModelTiepoint, ModelTransformation, GeoKeyDirectory
+
+
+def photo_mode_available() -> bool:
+    """v0.2.0: photo mode needs Pillow (the launchers install it)."""
+    try:
+        import PIL  # noqa: F401
+        return True
+    except Exception:
+        return False
+
+
+def inspect_raster_pillow(path: Path) -> RasterInfo:
+    """v0.2.0: read a picture's size without QGIS/GDAL. A TIFF carrying GeoTIFF tags is reported as
+    georeferenced (it then needs the QGIS route); everything else is a flat picture."""
+    from PIL import Image
+    Image.MAX_IMAGE_PIXELS = None
+    try:
+        with Image.open(path) as im:
+            width, height = im.size
+            driver = im.format or "Raster"
+            tags = getattr(im, "tag_v2", None)
+            geo = bool(tags) and any(t in tags for t in GEOTIFF_TAGS)
+    except Exception as exc:
+        raise RastaError(f"Could not read this picture: {exc}") from exc
+    return RasterInfo(path, int(width), int(height), driver, geo, geo, "geo" if geo else "flat")
+
+
 def inspect_raster(config: Config, path: Path) -> RasterInfo:
     path = Path(path).expanduser().resolve()
     if not path.is_file():
         raise FileNotFoundError(path)
-    tools = find_tools(config)
+    try:
+        tools = find_tools(config)
+    except RastaError:
+        # v0.2.0: no QGIS installed - photo mode can still inspect and build flat pictures.
+        if photo_mode_available():
+            return inspect_raster_pillow(path)
+        raise
     rc, stdout, stderr = _run_capture_split([str(tools["gdalinfo"]), "-json", str(path)], timeout=120)
     if rc != 0:
         diagnostic = (stdout + "\n" + stderr).strip()
@@ -603,8 +644,6 @@ def build(
     output_dir = Path(output_dir).expanduser().resolve()
     if not input_file.is_file():
         raise FileNotFoundError(input_file)
-    if qgis_desktop_running():
-        raise RastaError("QGIS Desktop is running. Close QGIS Desktop before building.")
     check_zoom_range(zoom_min, zoom_max, output_mode)
     output_mode = output_mode.lower()
     if output_mode not in {"mbtiles", "tpkx", "both"}:
@@ -621,9 +660,6 @@ def build(
     def emit(stage, msg, frac=None):
         if progress: progress(stage, msg, frac)
 
-    tools = find_tools(config)
-    emit("preflight", "Verifying QGIS installation...", 0.01)
-    verify_qgis(config, tools)
     info = inspect_raster(config, input_file)
     mode = raster_mode.lower()
     if mode == "auto": mode = info.mode_suggested
@@ -631,6 +667,15 @@ def build(
         raise ValueError("Raster mode must be Auto, Flat, or Geo.")
     if mode == "geo" and not (info.has_crs and info.has_geotransform):
         raise RastaError("GEO RASTER mode requires a raster with a valid CRS and geotransform.")
+    # v0.2.0: flat pictures go through photo mode (Pillow, no QGIS) unless the config says engine = qgis.
+    photo = mode == "flat" and config.photo_engine == "photo" and photo_mode_available()
+    tools = None
+    if not photo:
+        if qgis_desktop_running():
+            raise RastaError("QGIS Desktop is running. Close QGIS Desktop before building.")
+        tools = find_tools(config)
+        emit("preflight", "Verifying QGIS installation...", 0.01)
+        verify_qgis(config, tools)
 
     work = Path(tempfile.mkdtemp(prefix="Rasta_Pyramid_"))
     started = time.monotonic()
@@ -639,30 +684,45 @@ def build(
     worker = config.base_dir / "RPF_QGIS_WORKER.py"
     converter = config.base_dir / "MBTiles_to_TPKX_v0_3_0.py"
     try:
-        source_for_qgis = input_file
-        if mode == "flat":
-            staged_tif = work / "rasta_working_raster.tif"
-            make_synthetic_staged_geotiff(
-                config, tools, input_file, staged_tif, meters_per_pixel, emit, cancel_event
-            )
-            source_for_qgis = staged_tif
-        job = {
-            "input": str(source_for_qgis),
-            "layer_name": input_file.stem,
-            "output_mbtiles": str(temp_mb),
-            "zoom_min": zoom_min,
-            "zoom_max": zoom_max,
-            "dpi": config.dpi,
-            "antialias": config.antialias,
-            "tile_format": config.tile_format,
-            "quality": config.quality,
-            "metatile_size": config.metatile_size,
-            "project_crs": "EPSG:3857",
-        }
-        emit("qgis", "Starting headless QGIS pyramid engine against optimized working raster...", 0.16)
-        _run_qgis_worker(config, tools, worker, job, work / "job.json", emit, cancel_event)
+        if photo:
+            from RPF_PHOTO_TILER import build_photo_mbtiles, Cancelled as PhotoCancelled, PhotoTilerError
+            bounds = synthetic_bounds_for_config(config, info.width, info.height, meters_per_pixel)
+            try:
+                build_photo_mbtiles(input_file, temp_mb, bounds, zoom_min, zoom_max, name=output_stem,
+                                    jpeg=config.photo_tiles != "png", quality=config.photo_jpeg_quality,
+                                    emit=emit, cancel_event=cancel_event)
+            except PhotoCancelled as exc:
+                raise BuildCancelled(str(exc)) from exc
+            except PhotoTilerError as exc:
+                raise RastaError(str(exc)) from exc
+            except MemoryError as exc:
+                raise RastaError("Not enough memory to open this picture in photo mode. Close other programs, "
+                                 "or set engine = qgis under [PHOTO] in System Files\\Rasta_Config.ini.") from exc
+        else:
+            source_for_qgis = input_file
+            if mode == "flat":
+                staged_tif = work / "rasta_working_raster.tif"
+                make_synthetic_staged_geotiff(
+                    config, tools, input_file, staged_tif, meters_per_pixel, emit, cancel_event
+                )
+                source_for_qgis = staged_tif
+            job = {
+                "input": str(source_for_qgis),
+                "layer_name": input_file.stem,
+                "output_mbtiles": str(temp_mb),
+                "zoom_min": zoom_min,
+                "zoom_max": zoom_max,
+                "dpi": config.dpi,
+                "antialias": config.antialias,
+                "tile_format": config.tile_format,
+                "quality": config.quality,
+                "metatile_size": config.metatile_size,
+                "project_crs": "EPSG:3857",
+            }
+            emit("qgis", "Starting headless QGIS pyramid engine against optimized working raster...", 0.16)
+            _run_qgis_worker(config, tools, worker, job, work / "job.json", emit, cancel_event)
         if not temp_mb.is_file():
-            raise RastaError("QGIS did not create the MBTiles output.")
+            raise RastaError("The pyramid stage did not create the MBTiles output.")
         emit("verify_mb", "Verifying MBTiles pyramid...", 0.90)
         mb_info = inspect_mbtiles(temp_mb)
 

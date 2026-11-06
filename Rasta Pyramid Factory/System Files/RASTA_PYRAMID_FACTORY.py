@@ -10,11 +10,11 @@ from tkinter import filedialog, messagebox, ttk
 
 from RASTA_PIPELINE import (
     BuildCancelled, RastaError, build, check_zoom_range, estimate_synthetic_tiles, explorer_size,
-    inspect_raster, load_config, recommended_max_zoom, synthetic_bounds_for_config,
+    inspect_raster, load_config, photo_mode_available, recommended_max_zoom, synthetic_bounds_for_config,
 )
 
 APP = "RASTA PYRAMID FACTORY"
-VERSION = "v0.1.6 TEST"
+VERSION = "v0.2.0 TEST"
 HERE = Path(__file__).resolve().parent
 BG = "#f3f5f7"
 TEXT = "#17233a"
@@ -57,7 +57,7 @@ class App(tk.Tk):
         self.zoom_min_var = tk.IntVar(value=self.cfg.default_min_zoom)
         self.zoom_max_var = tk.IntVar(value=self.cfg.default_max_zoom)
         self.scale_var = tk.DoubleVar(value=self.cfg.synthetic_meters_per_pixel)
-        self.info_var = tk.StringVar(value="Choose a raster image. QGIS/GDAL will inspect it automatically.")
+        self.info_var = tk.StringVar(value="Choose a raster image. Rasta will inspect it automatically.")
         self.status_var = tk.StringVar(value="Ready.")
         self.progress_var = tk.DoubleVar(value=0)
         self.cancel_event = threading.Event()
@@ -95,7 +95,8 @@ class App(tk.Tk):
         ttk.Spinbox(recipe, from_=0, to=25, textvariable=self.zoom_min_var, width=6).pack(side="left", padx=(7,28))
         tk.Label(recipe, text="Max zoom", bg=BG, fg=TEXT).pack(side="left")
         ttk.Spinbox(recipe, from_=0, to=25, textvariable=self.zoom_max_var, width=6).pack(side="left", padx=(7,28))
-        tk.Label(recipe, text="QGIS 3.44.9 • PNG • 96 DPI • antialias ON • metatile 4", bg=BG, fg=GOOD, font=("Segoe UI", 10, "bold")).pack(side="left")
+        self.recipe_var = tk.StringVar(value=self._recipe_text("flat"))
+        tk.Label(recipe, textvariable=self.recipe_var, bg=BG, fg=GOOD, font=("Segoe UI", 10, "bold")).pack(side="left")
 
         f4 = ttk.LabelFrame(body, text="3. Finished product")
         f4.pack(fill="x", pady=7)
@@ -119,7 +120,7 @@ class App(tk.Tk):
                                    font=("Segoe UI", 13, "bold"), padx=22, pady=12, relief="flat")
         self.build_btn.pack(side="left")
         self.cancel_btn = ttk.Button(buttons, text="CANCEL", command=self.cancel, state="disabled"); self.cancel_btn.pack(side="left", padx=14)
-        tk.Label(buttons, text="Automatic raster prep → headless QGIS → MBTiles → optional native TPKX", bg=BG, fg=MUTED).pack(side="right")
+        tk.Label(buttons, text="Photos: photo mode (no QGIS) • Maps: headless QGIS • → MBTiles → optional native TPKX", bg=BG, fg=MUTED).pack(side="right")
 
     def choose_input(self):
         p = filedialog.askopenfilename(title="Choose giant raster image", filetypes=[
@@ -129,8 +130,8 @@ class App(tk.Tk):
         self._inspect(p)
 
     def _inspect(self, p):
-        """Inspect the raster with QGIS/GDAL; True when accepted."""
-        self.status_var.set("Inspecting raster with QGIS/GDAL...")
+        """Inspect the raster (QGIS/GDAL, or Pillow when QGIS is not installed); True when accepted."""
+        self.status_var.set("Inspecting raster...")
         self.update_idletasks()
         try:
             self.raster_info = inspect_raster(self.cfg, Path(p))
@@ -148,11 +149,19 @@ class App(tk.Tk):
             messagebox.showerror(APP, str(exc))
             return False
 
+    def _recipe_text(self, mode):
+        """v0.2.0: show which engine will build this picture."""
+        if mode == "flat" and self.cfg.photo_engine == "photo" and photo_mode_available():
+            tiles = "PNG tiles" if self.cfg.photo_tiles == "png" else f"JPEG tiles (quality {self.cfg.photo_jpeg_quality}) + PNG edges"
+            return f"PHOTO MODE • no QGIS needed • {tiles}"
+        return "QGIS 3.44.9 • PNG • 96 DPI • antialias ON • metatile 4"
+
     def refresh_info(self):
         if not self.raster_info or not hasattr(self, "info_var"): return
         i = self.raster_info
         selected = self.mode_var.get()
         mode = i.mode_suggested if selected == "auto" else selected
+        if hasattr(self, "recipe_var"): self.recipe_var.set(self._recipe_text(mode))
         text = f"{i.width:,} × {i.height:,} pixels • {i.driver} • Auto detects: {'georeferenced raster' if i.mode_suggested=='geo' else 'flat image'}"
         if mode == "flat":
             try:
@@ -220,6 +229,7 @@ class App(tk.Tk):
             "stage": "OPTIMIZING SOURCE RASTER",
             "overview": "BUILDING WORKING OVERVIEWS",
             "qgis": "QGIS PYRAMID ENGINE",
+            "render": "PHOTO MODE PYRAMID",
             "verify_mb": "VERIFYING MBTILES",
             "publish_mb": "PUBLISHING MBTILES",
             "convert": "TPKX CONVERTER",

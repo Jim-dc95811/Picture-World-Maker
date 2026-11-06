@@ -8,14 +8,14 @@
 
 **2. ⬇️ [Python 3.14](https://www.python.org/downloads/windows/)** - free; install with the default options.
 
-**3. ⬇️ [QGIS 3.44.9](https://qgis.org/download/)** - free; Rasta runs it behind the scenes (install it at the normal place, `C:\Program Files\QGIS 3.44.9`).
+**3. ⬇️ [QGIS 3.44.9](https://qgis.org/download/)** - free; **only needed for real map rasters** (GeoTIFFs with coordinates). Photos and pictures need no QGIS since v0.2.0 (photo mode).
 
 > **First time? Three quick tips**
 > 1. **Extract the zip first:** right-click the downloaded zip > **Extract All**, then open the new folder. Double-clicking files while they are still inside the zip does not work.
 > 2. **Windows security warning:** Windows may warn about any program downloaded from the internet. Click **More info > Run anyway** (blue "Windows protected your PC" screen) or **Run**. To avoid the warning, right-click the zip > **Properties** > tick **Unblock** > **OK** before extracting.
 > 3. **Installing Python:** if the installer shows **"Add python.exe to PATH"**, tick it.
 
-### **⬇️ [4. DOWNLOAD RASTA PYRAMID FACTORY v0.1.6](releases/Rasta_Pyramid_Factory_v0.1.6.zip)**
+### **⬇️ [4. DOWNLOAD RASTA PYRAMID FACTORY v0.2.0](releases/Rasta_Pyramid_Factory_v0.2.0.zip)**
 **📖 [User manual](docs/USER_MANUAL.md)**
 **🗂️ [What's in the zip - every file explained](docs/images/rasta_whats_in_the_zip_full.png)**
 
@@ -38,6 +38,10 @@ Choose a giant picture - a city panorama, a drone map, a scanned map, artwork - 
 ---
 
 # Engineering record
+
+### v0.2.0 TEST — PHOTO MODE (2026-11-06) — BUILT / SELF-TESTED
+
+Flat pictures are tiled directly with Pillow - no QGIS. Kings Reach panorama 1: same 35,216 tiles and placement as v0.1.6, about 48 s instead of 8 min 46 s, TPKX 442 MB instead of 1.77 GB. Real map rasters keep the QGIS route. See [v0.2.0 release notes](releases/v0.2.0_TEST_RELEASE_NOTES.md).
 
 ## Current version truth
 

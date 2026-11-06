@@ -1,5 +1,13 @@
 # Rasta Pyramid Factory Changelog
 
+## v0.2.0 TEST — 2026-11-06 — PHOTO MODE, BUILT / SELF-TESTED
+
+- Flat pictures are tiled directly with Pillow (`RPF_PHOTO_TILER.py`) - no QGIS needed for photos. Same tile set and placement as the QGIS route.
+- JPEG tiles inside the picture, PNG with transparency on its edges (TPKX MIXED). Kings Reach panorama 1: TPKX 442 MB (v0.1.6: 1,771 MB), about 48 s (v0.1.6: 8:46).
+- Real map rasters keep the QGIS route; without QGIS, pictures are inspected with Pillow and GeoTIFF coordinate tags are recognised.
+- `[PHOTO]` settings in `Rasta_Config.ini` (engine, tiles, jpeg_quality); launchers install Pillow automatically.
+- Details: [releases/v0.2.0_TEST_RELEASE_NOTES.md](releases/v0.2.0_TEST_RELEASE_NOTES.md).
+
 ## v0.1.6 — 2026-11-05 — LIVE-PROVEN, released
 
 Jim's live build: Kings Reach panorama 1 (50,000 x 12,006 px, 35,216 tiles, 8:46) -> TPKX -> ArcGIS Earth: PASS. Download: `releases/Rasta_Pyramid_Factory_v0.1.6.zip`. New user manual (`docs/USER_MANUAL.md` + PDF) and 'What's in the zip' sheet.

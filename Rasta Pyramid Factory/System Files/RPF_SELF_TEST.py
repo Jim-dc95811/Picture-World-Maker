@@ -85,6 +85,35 @@ with tempfile.TemporaryDirectory() as td:
             idx = struct.unpack_from('<16384Q', bun, 64)
             if sum(1 for v in idx if v != 4) != 2 or idx[2] != 4: errors.append('missing-tile index value must be 4 (Esri)')
             if bun[(idx[0] & ((1 << 40) - 1)):][:8] != t[:8]: errors.append('tile bytes not copied unchanged')
+# v0.2.0: photo mode - a small picture tiled without QGIS must give exactly Rasta's tile set, the
+# picture's edge must land where the synthetic placement says, and the TPKX converter must accept it.
+try:
+    from PIL import Image
+    from RASTA_PIPELINE import inspect_raster_pillow, synthetic_bounds
+    from RPF_PHOTO_TILER import build_photo_mbtiles, count_tiles
+    import io as _io
+    with tempfile.TemporaryDirectory() as td:
+        pic = Path(td) / 'photo_probe.jpg'
+        Image.new('RGB', (3000, 1200), (40, 90, 160)).save(pic, quality=90)
+        info = inspect_raster_pillow(pic)
+        if (info.width, info.height, info.mode_suggested) != (3000, 1200, 'flat'): errors.append(f'Pillow inspection: {info}')
+        geo_tif = Path(td) / 'geo_probe.tif'
+        im = Image.new('RGB', (64, 64)); from PIL import TiffImagePlugin
+        ifd = TiffImagePlugin.ImageFileDirectory_v2(); ifd[33922] = (0.0, 0.0, 0.0, 500000.0, 3300000.0, 0.0); ifd.tagtype[33922] = 12
+        im.save(geo_tif, tiffinfo=ifd)
+        if inspect_raster_pillow(geo_tif).mode_suggested != 'geo': errors.append('GeoTIFF tags not detected as georeferenced')
+        bb = synthetic_bounds(3000, 1200, 1.0, *__import__('RASTA_PIPELINE').web_mercator_from_lonlat(-80.0, 30.0))
+        mbt = Path(td) / 'photo_probe.mbtiles'
+        n = build_photo_mbtiles(pic, mbt, bb, 0, 18)
+        if n != estimate_synthetic_tiles(bb, 0, 18) or n != count_tiles(bb, 0, 18): errors.append(f'photo tile count {n} != estimate')
+        con = sqlite3.connect(mbt); kinds = {r[0][:3] == b'\xff\xd8\xff' for r in con.execute('SELECT tile_data FROM tiles')}; con.close()
+        if kinds != {True, False}: errors.append('photo mode should mix JPEG (inside) and PNG (edges)')
+        out2 = Path(td) / 'photo_probe.tpkx'
+        r2 = subprocess.run([sys.executable, str(conv), str(mbt), str(out2)], capture_output=True, text=True)
+        if r2.returncode != 0: errors.append('converter rejected photo-mode MBTiles: ' + (r2.stdout + r2.stderr)[-200:])
+except ImportError:
+    print('NOTE: Pillow not installed - photo mode checks skipped (the launchers install it).')
+
 if errors:
     print('RASTA SELF TEST: FAIL')
     for e in errors: print(' -',e)

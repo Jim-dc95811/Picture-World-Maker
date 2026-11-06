@@ -1,4 +1,4 @@
-RASTA PYRAMID FACTORY v0.1.6 TEST
+RASTA PYRAMID FACTORY v0.2.0 TEST
 SLICE - DICE - PRESENT
 
 PURPOSE
@@ -13,7 +13,7 @@ CURRENT STATUS
 REQUIREMENTS
 - Windows 10/11 64-bit
 - Python 3.14.5 64-bit
-- QGIS 3.44.9 at the normal configured path
+- QGIS 3.44.9 at the normal configured path - only for real map rasters (GeoTIFFs with coordinates) since v0.2.0
 
 NORMAL OPERATOR WORKFLOW
 1. Run "Run Rasta Self Test.bat" once after extraction.
@@ -30,7 +30,7 @@ AUTOMATIC BEHAVIOR
 - Real CRS/geotransform present: preserves real georeferencing.
 - Ordinary flat image: creates synthetic projected display placement automatically.
 - Flat images are parked near 30N, 80W in the Atlantic east of Florida.
-- Giant flat images are decoded once into a temporary tiled working GeoTIFF with overviews before QGIS rendering.
+- Since v0.2.0 flat pictures use photo mode (Pillow, no QGIS). On the QGIS route, giant flat images are decoded once into a temporary tiled working GeoTIFF with overviews before QGIS rendering.
 - Original source raster is never modified.
 
 LONG JOBS
@@ -48,6 +48,9 @@ The included MBTiles_to_TPKX_v0_3_0.py (v0.1.5) writes the same TPKX structure a
 
 THIS IS A TEST BUILD
 v0.1.3 is LIVE-PROVEN. v0.1.5 made the TPKX step write the same structure as mb2tpkx 1.1 (ArcGIS Earth / Pro proven). v0.1.6 fixes: the Cancelled message, Cancel stopping QGIS at once, closing the window mid-build (now stops QGIS and cleans up first), TPKX max zoom 23 checked before building, and a typed-in image path being inspected. Still open for live proof: real-georaster AUTO mode and broader giant-raster coverage.
+
+PHOTO MODE (v0.2.0)
+Photos and other flat pictures are now tiled directly - no QGIS needed, much faster, and TPKX files about a quarter of the size (JPEG tiles). QGIS is only needed for real map rasters (GeoTIFFs with coordinates). The first start installs the Pillow helper automatically. Settings: [PHOTO] in System Files\Rasta_Config.ini.
 
 ZOOM LIMIT FOR TPKX
 TPKX (Esri tile packages) go up to zoom 23. For MBTiles only, up to 25 is allowed.
