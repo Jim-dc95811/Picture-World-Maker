@@ -3,8 +3,8 @@
 ## Normal workflow
 
 1. Install the frozen supported QGIS and Python versions.
-2. Extract the entire Rasta Pyramid Factory package.
-3. Launch `Start Rasta Pyramid Factory.bat`.
+2. Extract the entire Picture World Maker package.
+3. Launch `Start Picture World Maker.bat`.
 4. Click **CHOOSE IMAGE** and select the source raster.
 5. Review the automatically detected raster dimensions and the proposed zoom range.
 6. Choose the finished product: **MBTiles**, **TPKX**, or **Both**.
@@ -25,13 +25,13 @@ A long raster operation must never look dead merely because the underlying engin
 
 ## Long-build rule
 
-Do not start a second Rasta instance or edit/delete the source/output while a build is active. Use **CANCEL** if the job must be stopped; Rasta terminates the active subprocess tree and cleans temporary manufacturing state.
+Do not start a second Picture World Maker instance or edit/delete the source/output while a build is active. Use **CANCEL** if the job must be stopped; Picture World Maker terminates the active subprocess tree and cleans temporary manufacturing state.
 
 ## Flat image versus real georaster
 
-There is no normal-user choice. Rasta inspects the input automatically:
+There is no normal-user choice. Picture World Maker inspects the input automatically:
 
 - valid CRS + valid geotransform → preserve real georeferencing;
-- otherwise → use Rasta's synthetic display placement.
+- otherwise → use Picture World Maker's synthetic display placement.
 
 The original source file is not modified in either case.

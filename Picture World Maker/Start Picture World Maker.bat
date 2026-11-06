@@ -16,7 +16,7 @@ if %errorlevel%==0 (
       echo Pillow could not be installed automatically.
       echo Open Command Prompt and run:  py -3.14 -m pip install Pillow
       echo If your network blocks downloads, ask IT to install Pillow for Python 3.14.
-      echo Rasta still works for real map rasters through QGIS.
+      echo Picture World Maker still works for real map rasters through QGIS.
       pause
     )
   )
@@ -24,13 +24,13 @@ if %errorlevel%==0 (
 
 where pyw >nul 2>nul
 if %errorlevel%==0 (
-  start "" pyw -3.14 "START RASTA PYRAMID FACTORY.pyw"
+  start "" pyw -3.14 "START PICTURE WORLD MAKER.pyw"
   exit /b 0
 )
 
 where pythonw >nul 2>nul
 if %errorlevel%==0 (
-  start "" pythonw "START RASTA PYRAMID FACTORY.pyw"
+  start "" pythonw "START PICTURE WORLD MAKER.pyw"
   exit /b 0
 )
 

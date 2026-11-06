@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""MBTiles -> ArcGIS TPKX converter v0.3.0 for Rasta Pyramid Factory (2026-11-05).
+"""MBTiles -> ArcGIS TPKX converter v0.3.0 for Picture World Maker (2026-11-05).
 
 Writes the SAME package structure as mb2tpkx 1.1 (Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX),
 whose output is proven in ArcGIS Earth and ArcGIS Pro: the root.json / iteminfo.json templates,
@@ -20,7 +20,7 @@ Tile images are never modified, resized or recompressed. MBTiles TMS rows are fl
 
 Usage: python MBTiles_to_TPKX_v0_3_0.py input.mbtiles [output.tpkx] [--keep-work]
        (no arguments = file pickers)
-Rasta's pipeline reads the 'Tiles ...' and 'Packaging ...' progress lines and the exit code.
+Picture World Maker's pipeline reads the 'Tiles ...' and 'Packaging ...' progress lines and the exit code.
 """
 from __future__ import annotations
 

@@ -2,7 +2,7 @@
 
 Repository:
 
-`Jim-dc95811/Rasta-Pyramid-Factory`
+`Jim-dc95811/Picture World Maker-Pyramid-Factory`
 
 About description:
 
@@ -29,7 +29,7 @@ The initial repository population used a temporary GitHub Actions workflow named
 
 ### Run #1 — FAILED
 
-The first payload staging attempt successfully verified/materialized `RASTA_PIPELINE.py` but encountered a corrupted compressed converter payload before the commit step.
+The first payload staging attempt successfully verified/materialized `PWM_PIPELINE.py` but encountered a corrupted compressed converter payload before the commit step.
 
 A delayed GitHub email can therefore still say:
 
@@ -49,7 +49,7 @@ The corrected run:
 
 Final GitHub file sizes:
 
-- `RASTA_PIPELINE.py` — **26,050 bytes**
+- `PWM_PIPELINE.py` — **26,050 bytes**
 - `MBTiles_to_TPKX_v0_3_0.py` — v0.1.5 TPKX stage (replaced `MBTiles_to_TPKX_v0_1_0.py`, 21,318 bytes)
 
 The repository does not depend on that workflow for normal operation.

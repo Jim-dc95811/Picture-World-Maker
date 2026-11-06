@@ -26,10 +26,10 @@ WEB_MERCATOR_RES_Z0 = 156543.03392804097
 TPKX_MAX_ZOOM = 23      # Esri's published Web Mercator tiling scheme (and the TPKX converter) stops at level 23
 ProgressCallback = Callable[[str, str, Optional[float]], None]
 
-class RastaError(RuntimeError):
+class PictureWorldError(RuntimeError):
     pass
 
-class BuildCancelled(RastaError):
+class BuildCancelled(PictureWorldError):
     pass
 
 @dataclass(frozen=True)
@@ -77,10 +77,10 @@ class BuildResult:
 
 
 def load_config(base_dir: Path) -> Config:
-    path = base_dir / "Rasta_Config.ini"
+    path = base_dir / "Picture_World_Maker_Config.ini"
     cp = configparser.ConfigParser()
     if not path.is_file():
-        raise RastaError(f"Configuration file is missing: {path}")
+        raise PictureWorldError(f"Configuration file is missing: {path}")
     cp.read(path, encoding="utf-8")
     q = cp["QGIS"]
     p = cp["PYRAMID"]
@@ -172,13 +172,13 @@ def _find_first(root: Path, names: tuple[str, ...]) -> Path:
         for p in root.rglob("*"):
             if p.is_file() and p.name.lower() in lowers:
                 return p
-    raise RastaError(f"Required QGIS tool not found under {root}: {', '.join(names)}")
+    raise PictureWorldError(f"Required QGIS tool not found under {root}: {', '.join(names)}")
 
 
 def find_tools(config: Config) -> dict[str, Path]:
     root = config.qgis_install_dir
     if not root.exists():
-        raise RastaError(f"QGIS install folder not found: {root}")
+        raise PictureWorldError(f"QGIS install folder not found: {root}")
     return {
         "qgis_process": _find_first(root, ("qgis_process-qgis-ltr.bat", "qgis_process-qgis.bat", "qgis_process.bat", "qgis_process-qgis-ltr.exe", "qgis_process-qgis.exe", "qgis_process.exe")),
         "python_qgis": _find_first(root, ("python-qgis.bat", "python-qgis-ltr.bat")),
@@ -232,10 +232,10 @@ def verify_qgis(config: Config, tools: dict[str, Path]) -> str:
     qp = tools["qgis_process"]
     rc, text = _run_capture(command_for(qp, ["--version"]))
     if rc != 0:
-        raise RastaError("QGIS version check failed.\n\n" + text[-2000:])
+        raise PictureWorldError("QGIS version check failed.\n\n" + text[-2000:])
     if config.expected_qgis_version and config.expected_qgis_version not in text:
-        raise RastaError(
-            f"Rasta Pyramid Factory expects QGIS {config.expected_qgis_version}, but QGIS reported:\n\n{text.strip()}"
+        raise PictureWorldError(
+            f"Picture World Maker expects QGIS {config.expected_qgis_version}, but QGIS reported:\n\n{text.strip()}"
         )
     return next((line.strip() for line in text.splitlines() if line.strip()), text.strip())
 
@@ -264,7 +264,7 @@ def inspect_raster_pillow(path: Path) -> RasterInfo:
             tags = getattr(im, "tag_v2", None)
             geo = bool(tags) and any(t in tags for t in GEOTIFF_TAGS)
     except Exception as exc:
-        raise RastaError(f"Could not read this picture: {exc}") from exc
+        raise PictureWorldError(f"Could not read this picture: {exc}") from exc
     return RasterInfo(path, int(width), int(height), driver, geo, geo, "geo" if geo else "flat")
 
 
@@ -274,7 +274,7 @@ def inspect_raster(config: Config, path: Path) -> RasterInfo:
         raise FileNotFoundError(path)
     try:
         tools = find_tools(config)
-    except RastaError:
+    except PictureWorldError:
         # v0.2.0: no QGIS installed - photo mode can still inspect and build flat pictures.
         if photo_mode_available():
             return inspect_raster_pillow(path)
@@ -282,7 +282,7 @@ def inspect_raster(config: Config, path: Path) -> RasterInfo:
     rc, stdout, stderr = _run_capture_split([str(tools["gdalinfo"]), "-json", str(path)], timeout=120)
     if rc != 0:
         diagnostic = (stdout + "\n" + stderr).strip()
-        raise RastaError("QGIS/GDAL could not inspect this raster.\n\n" + diagnostic[-3000:])
+        raise PictureWorldError("QGIS/GDAL could not inspect this raster.\n\n" + diagnostic[-3000:])
     try:
         # Parse stdout only. GDAL/codec warnings belong on stderr and must not be
         # appended to the machine-readable JSON stream. raw_decode also tolerates
@@ -293,7 +293,7 @@ def inspect_raster(config: Config, path: Path) -> RasterInfo:
     except Exception as exc:
         detail = stderr.strip()
         suffix = f"\n\nGDAL diagnostics:\n{detail[-1500:]}" if detail else ""
-        raise RastaError(f"Could not read raster dimensions from GDAL: {exc}{suffix}") from exc
+        raise PictureWorldError(f"Could not read raster dimensions from GDAL: {exc}{suffix}") from exc
     cs = data.get("coordinateSystem") or {}
     wkt = str(cs.get("wkt") or "").strip()
     gt = data.get("geoTransform")
@@ -421,13 +421,13 @@ def _run_long_command(cmd: list[str], cancel_event, timeout: int | None = None) 
                 raise BuildCancelled("Build cancelled by operator.")
             if timeout is not None and time.monotonic() - started > timeout:
                 terminate_tree(proc)
-                raise RastaError(f"Command timed out after {timeout} seconds: {cmd[0]}")
+                raise PictureWorldError(f"Command timed out after {timeout} seconds: {cmd[0]}")
             time.sleep(0.20)
         rc = proc.wait()
         log.seek(0)
         text = log.read()
     if rc != 0:
-        raise RastaError("External raster-preparation command failed.\n\n" + text[-4000:])
+        raise PictureWorldError("External raster-preparation command failed.\n\n" + text[-4000:])
     return text
 
 
@@ -455,7 +455,7 @@ def make_synthetic_staged_geotiff(
     """Decode a flat source once into a tiled, georeferenced working GeoTIFF.
 
     Giant PNG/JPEG images are stream-compressed and can be catastrophically slow
-    when QGIS asks for thousands of small random windows.  Rasta therefore pays
+    when QGIS asks for thousands of small random windows.  Picture World Maker therefore pays
     one sequential decode cost, writes a tiled BigTIFF working raster, and builds
     internal overview levels before QGIS starts the pyramid render.
 
@@ -480,7 +480,7 @@ def make_synthetic_staged_geotiff(
     ]
     _run_long_command(cmd, cancel_event=cancel_event)
     if not staged_tif.is_file() or staged_tif.stat().st_size <= 0:
-        raise RastaError("GDAL did not create the optimized working GeoTIFF.")
+        raise PictureWorldError("GDAL did not create the optimized working GeoTIFF.")
 
     factors = overview_factors(info.width, info.height)
     emit(
@@ -506,14 +506,14 @@ def inspect_mbtiles(path: Path) -> dict:
     try:
         cols = {row[1] for row in con.execute("PRAGMA table_info(tiles)")}
         if not {"zoom_level", "tile_column", "tile_row", "tile_data"}.issubset(cols):
-            raise RastaError("MBTiles does not expose the standard raster tiles table.")
+            raise PictureWorldError("MBTiles does not expose the standard raster tiles table.")
         row = con.execute("SELECT MIN(zoom_level), MAX(zoom_level), COUNT(*) FROM tiles").fetchone()
         if not row or row[0] is None or int(row[2]) <= 0:
-            raise RastaError("MBTiles contains no tiles.")
+            raise PictureWorldError("MBTiles contains no tiles.")
         md = dict(con.execute("SELECT name,value FROM metadata"))
         fmt = (md.get("format") or "").lower()
         if fmt not in {"png", "jpg", "jpeg"}:
-            raise RastaError(f"Unexpected raster tile format: {fmt!r}")
+            raise PictureWorldError(f"Unexpected raster tile format: {fmt!r}")
         return {"min_zoom": int(row[0]), "max_zoom": int(row[1]), "tile_count": int(row[2]), "metadata": md}
     finally:
         con.close()
@@ -521,21 +521,21 @@ def inspect_mbtiles(path: Path) -> dict:
 
 def inspect_tpkx(path: Path) -> dict:
     if not path.is_file() or path.stat().st_size <= 0:
-        raise RastaError("TPKX output is missing or empty.")
+        raise PictureWorldError("TPKX output is missing or empty.")
     with zipfile.ZipFile(path, "r") as zf:
         bad = zf.testzip()
         if bad:
-            raise RastaError(f"TPKX ZIP verification failed at {bad}")
+            raise PictureWorldError(f"TPKX ZIP verification failed at {bad}")
         names = set(zf.namelist())
         for required in {"root.json", "iteminfo.json", "thumbnail.png"}:
             if required not in names:
-                raise RastaError(f"TPKX is missing {required}")
+                raise PictureWorldError(f"TPKX is missing {required}")
         bundles = [n for n in names if n.lower().endswith(".bundle")]
         if not bundles:
-            raise RastaError("TPKX contains no Compact Cache V2 bundles.")
+            raise PictureWorldError("TPKX contains no Compact Cache V2 bundles.")
         root = json.loads(zf.read("root.json").decode("utf-8"))
     if (root.get("storageInfo") or {}).get("storageFormat") != "esriMapCacheStorageModeCompactV2":
-        raise RastaError("TPKX does not identify Compact Cache V2 storage.")
+        raise PictureWorldError("TPKX does not identify Compact Cache V2 storage.")
     return {"bundle_count": len(bundles), "min_zoom": int(root.get("minLOD", -1)), "max_zoom": int(root.get("maxLOD", -1))}
 
 
@@ -571,7 +571,7 @@ def _run_converter(converter: Path, mbtiles: Path, tpkx: Path, emit, cancel_even
         if proc.poll() is None:
             terminate_tree(proc)
     if rc != 0:
-        raise RastaError("TPKX converter failed.\n\n" + "\n".join(tail[-15:]))
+        raise PictureWorldError("TPKX converter failed.\n\n" + "\n".join(tail[-15:]))
 
 
 def _publish(src: Path, dst: Path) -> None:
@@ -605,25 +605,25 @@ def _run_qgis_worker(config: Config, tools: dict[str, Path], worker: Path, job: 
             if not line:
                 continue
             tail.append(line); tail = tail[-40:]
-            if line.startswith("RPF_PROGRESS "):
+            if line.startswith("PWM_PROGRESS "):
                 try:
                     pct = float(line.split()[1])
                     emit("qgis", f"QGIS is building the raster pyramid — {pct:.1f}%", 0.16 + max(0.0, min(0.72, pct/100*0.72)))
                 except Exception:
                     pass
-            elif line.startswith("RPF_INFO "):
+            elif line.startswith("PWM_INFO "):
                 emit("qgis", line[9:], None)
-            elif line.startswith("RPF_RESULT_JSON "):
-                try: result = json.loads(line[len("RPF_RESULT_JSON "):])
+            elif line.startswith("PWM_RESULT_JSON "):
+                try: result = json.loads(line[len("PWM_RESULT_JSON "):])
                 except Exception: pass
         rc = proc.wait()
     finally:
         if proc.poll() is None:
             terminate_tree(proc)
     if rc != 0:
-        raise RastaError("Headless QGIS worker failed.\n\n" + "\n".join(tail[-20:]))
+        raise PictureWorldError("Headless QGIS worker failed.\n\n" + "\n".join(tail[-20:]))
     if result is None:
-        raise RastaError("QGIS worker completed without returning a result record.")
+        raise PictureWorldError("QGIS worker completed without returning a result record.")
     return result
 
 
@@ -666,26 +666,26 @@ def build(
     if mode not in {"flat", "geo"}:
         raise ValueError("Raster mode must be Auto, Flat, or Geo.")
     if mode == "geo" and not (info.has_crs and info.has_geotransform):
-        raise RastaError("GEO RASTER mode requires a raster with a valid CRS and geotransform.")
+        raise PictureWorldError("GEO RASTER mode requires a raster with a valid CRS and geotransform.")
     # v0.2.0: flat pictures go through photo mode (Pillow, no QGIS) unless the config says engine = qgis.
     photo = mode == "flat" and config.photo_engine == "photo" and photo_mode_available()
     tools = None
     if not photo:
         if qgis_desktop_running():
-            raise RastaError("QGIS Desktop is running. Close QGIS Desktop before building.")
+            raise PictureWorldError("QGIS Desktop is running. Close QGIS Desktop before building.")
         tools = find_tools(config)
         emit("preflight", "Verifying QGIS installation...", 0.01)
         verify_qgis(config, tools)
 
-    work = Path(tempfile.mkdtemp(prefix="Rasta_Pyramid_"))
+    work = Path(tempfile.mkdtemp(prefix="Picture_World_"))
     started = time.monotonic()
     temp_mb = work / "raster_pyramid.mbtiles"
     temp_tpkx = work / "raster_pyramid.tpkx"
-    worker = config.base_dir / "RPF_QGIS_WORKER.py"
+    worker = config.base_dir / "PWM_QGIS_WORKER.py"
     converter = config.base_dir / "MBTiles_to_TPKX_v0_3_0.py"
     try:
         if photo:
-            from RPF_PHOTO_TILER import build_photo_mbtiles, Cancelled as PhotoCancelled, PhotoTilerError
+            from PWM_PHOTO_TILER import build_photo_mbtiles, Cancelled as PhotoCancelled, PhotoTilerError
             bounds = synthetic_bounds_for_config(config, info.width, info.height, meters_per_pixel)
             try:
                 build_photo_mbtiles(input_file, temp_mb, bounds, zoom_min, zoom_max, name=output_stem,
@@ -694,14 +694,14 @@ def build(
             except PhotoCancelled as exc:
                 raise BuildCancelled(str(exc)) from exc
             except PhotoTilerError as exc:
-                raise RastaError(str(exc)) from exc
+                raise PictureWorldError(str(exc)) from exc
             except MemoryError as exc:
-                raise RastaError("Not enough memory to open this picture in photo mode. Close other programs, "
-                                 "or set engine = qgis under [PHOTO] in System Files\\Rasta_Config.ini.") from exc
+                raise PictureWorldError("Not enough memory to open this picture in photo mode. Close other programs, "
+                                 "or set engine = qgis under [PHOTO] in System Files\\Picture_World_Maker_Config.ini.") from exc
         else:
             source_for_qgis = input_file
             if mode == "flat":
-                staged_tif = work / "rasta_working_raster.tif"
+                staged_tif = work / "picture_world_working_raster.tif"
                 make_synthetic_staged_geotiff(
                     config, tools, input_file, staged_tif, meters_per_pixel, emit, cancel_event
                 )
@@ -722,7 +722,7 @@ def build(
             emit("qgis", "Starting headless QGIS pyramid engine against optimized working raster...", 0.16)
             _run_qgis_worker(config, tools, worker, job, work / "job.json", emit, cancel_event)
         if not temp_mb.is_file():
-            raise RastaError("The pyramid stage did not create the MBTiles output.")
+            raise PictureWorldError("The pyramid stage did not create the MBTiles output.")
         emit("verify_mb", "Verifying MBTiles pyramid...", 0.90)
         mb_info = inspect_mbtiles(temp_mb)
 
@@ -737,7 +737,7 @@ def build(
 
         if output_mode in {"tpkx", "both"}:
             if not converter.is_file():
-                raise RastaError(f"Frozen TPKX converter is missing: {converter}")
+                raise PictureWorldError(f"Frozen TPKX converter is missing: {converter}")
             emit("convert", "Converting raster pyramid to native TPKX...", 0.94)
             _run_converter(converter, temp_mb, temp_tpkx, emit, cancel_event)
             emit("verify_tpkx", "Verifying Compact Cache V2 TPKX...", 0.98)

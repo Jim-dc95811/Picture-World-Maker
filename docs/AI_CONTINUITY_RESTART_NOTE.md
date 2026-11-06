@@ -1,14 +1,18 @@
-# Rasta Pyramid Factory — AI / Maintainer Restart Note
+# Picture World Maker — AI / Maintainer Restart Note
 
 If coming to this project cold, establish the following before changing code.
 
 ## Current truth
 
+**2026-11-06 (Claude): v0.2.1 RELEASED = NEW NAME.** Rasta Pyramid Factory -> **Picture World Maker** (Jim: 'I hate the name rasta'). Repo `Jim-dc95811/Picture-World-Maker` (Jim renames it in Settings). Files: `Picture World Maker/` folder; `PICTURE_WORLD_MAKER.py` (GUI, VERSION 'v0.2.1'), `PWM_PIPELINE.py`, `PWM_PHOTO_TILER.py`, `PWM_QGIS_WORKER.py` (PWM_PROGRESS / PWM_INFO / PWM_RESULT_JSON lines), `PWM_SELF_TEST.py`, `Picture_World_Maker_Config.ini`; `RastaError` -> `PictureWorldError`. v0.2.1 build = v0.2.0 build (0 structural differences). Release `releases/Picture_World_Maker_v0.2.1.zip` `bdab52c8658923819f6666eb4979d33ba5ef7365382440fa8ee7a7141486e7be`. Entries below keep the old names.
+
+**2026-11-06 (Claude): v0.2.0 PHOTO MODE - LIVE-PROVEN** (Jim 00:47: 55 s, 35,216 tiles, 30 bundles): flat pictures tiled with Pillow, no QGIS; JPEG q85 inside, PNG edges, TPKX MIXED; `[PHOTO]` config section.
+
 **2026-11-05 (Claude): v0.1.6 TEST** (branch `rasta-v0.1.6-test`) = v0.1.5 + code-review fixes: cancel message (NameError), close mid-build stops QGIS and cleans %TEMP% first, cancel via output-reader thread (`_line_pump` / `_lines_until_done`), `check_zoom_range` (TPKX <= 23), typed paths inspected. See `releases/v0.1.6_TEST_RELEASE_NOTES.md`.
 
 **2026-11-05 (Claude): v0.1.5 TEST** replaces the TPKX stage with `MBTiles_to_TPKX_v0_3_0.py`, which writes the mb2tpkx 1.1 structure (ArcGIS Earth / Pro proven). Measured differences of the old v0.1.0 converter and the evidence are in `releases/v0.1.5_TEST_RELEASE_NOTES.md`. Branch `rasta-v0.1.5-test` until Jim's live test. Compare any two TPKX with `tools/tpkx_compare.py` in Jim-dc95811/ArcGIS-Earth-Unlocked.
 
-Rasta is an independent **general raster-pyramid manufacturing** project.
+Picture World Maker is an independent **general raster-pyramid manufacturing** project.
 
 Its core job remains converting large flat images and real georasters into verified multiscale MBTiles and, when selected, TPKX products.
 
@@ -29,7 +33,7 @@ Still **LIVE-PROVEN** for:
 
 ## Critical compatibility update — 2026-08-20
 
-A downstream ArcGIS Field Maps test exposed a verified defect in the historical MBTiles -> TPKX converter lineage used by Rasta v0.1.3.
+A downstream ArcGIS Field Maps test exposed a verified defect in the historical MBTiles -> TPKX converter lineage used by Picture World Maker v0.1.3.
 
 Control:
 
@@ -40,7 +44,7 @@ Esri official Usa.tpkx -> Field Maps ACCEPTED
 
 This means:
 
-- do not claim existing Rasta TPKX is Field Maps-conformant;
+- do not claim existing Picture World Maker TPKX is Field Maps-conformant;
 - do not erase v0.1.3 ArcGIS Earth evidence;
 - do not rewrite v0.1.3 in place;
 - (2026-11-05: the converter step is done - v0.1.5 / v0.1.6 write the mb2tpkx 1.1 structure; Field Maps is still untested.)
@@ -63,20 +67,20 @@ small MBTiles
 -> Field Maps PASS
 ```
 
-Do not adopt the replacement into Rasta before that real target pass.
+Do not adopt the replacement into Picture World Maker before that real target pass.
 
 ---
 
 ## After upstream PASS
 
-Create a new Rasta test lineage that:
+Create a new Picture World Maker test lineage that:
 
 1. replaces only the TPKX packaging stage with the accepted canonical converter;
 2. preserves the live-proven raster inspection/staging/QGIS/MBTiles core;
 3. runs regression/self-tests;
 4. reruns at least one known city specimen;
 5. confirms ArcGIS Earth still works;
-6. tests Field Maps only if Rasta is going to claim that downstream compatibility.
+6. tests Field Maps only if Picture World Maker is going to claim that downstream compatibility.
 
 Do not mutate or relabel the accepted v0.1.3 evidence package.
 
@@ -90,7 +94,7 @@ REST is parked and is not the current priority.
 
 ---
 
-## Human-observed Rasta results that remain valid
+## Human-observed Picture World Maker results that remain valid
 
 - London Eye deep zoom resolved individual people inside observation pods.
 - Barcelona showed useful detail distributed across the city.
@@ -115,11 +119,11 @@ Prioritize:
 
 ## Deployment relationship
 
-Rasta does not own Android deployment.
+Picture World Maker does not own Android deployment.
 
 Current family roles:
 
-- Rasta — giant-raster pyramid manufacturing, part of the ArcGIS Earth Unlocked family (Jim-dc95811/ArcGIS-Earth-Unlocked).
+- Picture World Maker — giant-raster pyramid manufacturing, part of the ArcGIS Earth Unlocked family (Jim-dc95811/ArcGIS-Earth-Unlocked).
 
 ---
 
@@ -133,7 +137,7 @@ Current family roles:
 - Do not claim ArcGIS Earth acceptance proves Field Maps acceptance.
 - Do not adopt the new converter before Field Maps proves it.
 - Do not fake progress percentages.
-- Do not make Rasta dependent on any delivery system or on Field Maps.
+- Do not make Picture World Maker dependent on any delivery system or on Field Maps.
 
 ---
 
@@ -165,4 +169,4 @@ After the upstream converter gate resolves:
 
 ## Governing principle
 
-> **Rasta manufactures the pyramid. Preserve the proven core, and inherit compatibility claims only after the real target proves them.**
+> **Picture World Maker manufactures the pyramid. Preserve the proven core, and inherit compatibility claims only after the real target proves them.**

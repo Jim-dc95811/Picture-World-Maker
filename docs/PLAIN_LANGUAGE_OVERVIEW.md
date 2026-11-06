@@ -1,4 +1,4 @@
-# Rasta Pyramid Factory — Plain-Language Overview
+# Picture World Maker — Plain-Language Overview
 
 ## The problem
 
@@ -22,9 +22,9 @@ source-detail tiles
 
 The viewer therefore does not need the whole original image decoded at full resolution merely to show one small part of it.
 
-## What Rasta changes
+## What Picture World Maker changes
 
-Rasta turns the manufacturing process into an appliance:
+Picture World Maker turns the manufacturing process into an appliance:
 
 ```text
 choose image → BUILD → open finished tiled product
@@ -40,7 +40,7 @@ The operator does not need to:
 - understand SQLite/MBTiles;
 - understand Esri Compact Cache V2.
 
-QGIS still does the rendering. Rasta simply controls the production line.
+QGIS still does the rendering. Picture World Maker simply controls the production line.
 
 ## What can go into it?
 
@@ -55,7 +55,7 @@ The Factory does not need to understand what the pixels mean. Suitable inputs ca
 - genuinely georeferenced rasters;
 - ordinary non-geographic photographs.
 
-If the raster already has real coordinates, Rasta preserves them. If it is merely a flat image, Rasta gives it an explicitly synthetic display location so GIS tiling machinery can manufacture the pyramid.
+If the raster already has real coordinates, Picture World Maker preserves them. If it is merely a flat image, Picture World Maker gives it an explicitly synthetic display location so GIS tiling machinery can manufacture the pyramid.
 
 ## What comes out?
 
@@ -65,10 +65,10 @@ If the raster already has real coordinates, Rasta preserves them. If it is merel
 
 **Both** preserves both forms from the same QGIS-rendered pyramid.
 
-## What Rasta does not do
+## What Picture World Maker does not do
 
-Rasta cannot invent detail that is absent from the source. A blurry source remains blurry at deep zoom.
+Picture World Maker cannot invent detail that is absent from the source. A blurry source remains blurry at deep zoom.
 
-Rasta also does not turn a synthetic photograph into real geography. Synthetic placement is merely a deterministic display coordinate system.
+Picture World Maker also does not turn a synthetic photograph into real geography. Synthetic placement is merely a deterministic display coordinate system.
 
 The value is not magical enlargement. The value is **manufacturing the existing detail into a form that multiscale viewers can navigate efficiently.**

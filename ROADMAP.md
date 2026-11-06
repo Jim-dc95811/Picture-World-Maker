@@ -1,8 +1,8 @@
-# Rasta Pyramid Factory Roadmap
+# Picture World Maker Roadmap
 
 ## Current state
 
-**v0.1.3 TEST remains the current LIVE-PROVEN Rasta baseline for giant-raster manufacturing and ArcGIS Earth display.**
+**v0.1.3 TEST remains the current LIVE-PROVEN Picture World Maker baseline for giant-raster manufacturing and ArcGIS Earth display.**
 
 Gigapixel-class proofs remain valid, including London and Barcelona workloads and 20+ minute heartbeat behavior.
 
@@ -10,15 +10,15 @@ Gigapixel-class proofs remain valid, including London and Barcelona workloads an
 
 ## New dependency — TPKX converter conformance repair
 
-A 2026-08-20 ArcGIS Field Maps control test proved that the historical MBTiles -> TPKX converter lineage inherited by Rasta is not currently Field Maps-conformant.
+A 2026-08-20 ArcGIS Field Maps control test proved that the historical MBTiles -> TPKX converter lineage inherited by Picture World Maker is not currently Field Maps-conformant.
 
 Field Maps rejected a project-built TPKX but accepted Esri's official `Usa.tpkx` through the same physical-card/Designer workflow.
 
-### What changes for Rasta
+### What changes for Picture World Maker
 
-- Rasta's raster inspection, staging, QGIS rendering, MBTiles verification, synthetic placement, and deep-zoom proof remain valid.
-- Existing Rasta TPKX evidence remains valid for **ArcGIS Earth**.
-- Do **not** claim existing Rasta TPKX is Field Maps-compatible.
+- Picture World Maker's raster inspection, staging, QGIS rendering, MBTiles verification, synthetic placement, and deep-zoom proof remain valid.
+- Existing Picture World Maker TPKX evidence remains valid for **ArcGIS Earth**.
+- Do **not** claim existing Picture World Maker TPKX is Field Maps-compatible.
 - Do **not** rewrite v0.1.3 history.
 - Done in v0.1.5 / v0.1.6: the TPKX stage now writes the mb2tpkx 1.1 structure (ArcGIS Earth and ArcGIS Pro proven). Next: test a v0.1.6 TPKX in Field Maps before making any Field Maps claim.
 
@@ -40,11 +40,11 @@ small MBTiles
 
 Then:
 
-1. import the accepted canonical converter logic into a new Rasta test line;
-2. run Rasta regression/self-tests;
+1. import the accepted canonical converter logic into a new Picture World Maker test line;
+2. run Picture World Maker regression/self-tests;
 3. rerun at least one known city specimen;
 4. verify ArcGIS Earth still passes;
-5. test a representative Rasta TPKX in Field Maps only if Field Maps is a claimed target for that product.
+5. test a representative Picture World Maker TPKX in Field Maps only if Field Maps is a claimed target for that product.
 
 ---
 
@@ -85,7 +85,7 @@ After the canonical converter dependency is resolved, prioritize:
 
 ## Source-screening rule for demonstrations
 
-Before recommending a serious Rasta demo source, verify:
+Before recommending a serious Picture World Maker demo source, verify:
 
 - exact width x height;
 - total pixel count;
@@ -111,9 +111,9 @@ Before recommending a serious Rasta demo source, verify:
 
 ## Deployment relationship
 
-Rasta remains a manufacturing project.
+Picture World Maker remains a manufacturing project.
 
-- **Rasta** — giant-raster/deep-zoom manufacturing, part of the [ArcGIS Earth Unlocked](https://github.com/Jim-dc95811/ArcGIS-Earth-Unlocked) family. Delivering maps to phones and Field Maps happens outside Rasta.
+- **Picture World Maker** — giant-raster/deep-zoom manufacturing, part of the [ArcGIS Earth Unlocked](https://github.com/Jim-dc95811/ArcGIS-Earth-Unlocked) family. Delivering maps to phones and Field Maps happens outside Picture World Maker.
 
 ---
 
@@ -124,11 +124,11 @@ Rasta remains a manufacturing project.
 - rebuilding QGIS;
 - requiring QGIS Desktop operation;
 - owning router/mobile delivery architecture;
-- calling old Rasta TPKX Field Maps-compatible;
+- calling old Picture World Maker TPKX Field Maps-compatible;
 - rewriting v0.1.3 evidence in place;
 - reviving REST while parked;
 - fake progress percentages.
 
 ## Governing rule
 
-> **Rasta manufactures the pyramid. Converter compatibility must be proven on the target before Rasta inherits the claim.**
+> **Picture World Maker manufactures the pyramid. Converter compatibility must be proven on the target before Picture World Maker inherits the claim.**

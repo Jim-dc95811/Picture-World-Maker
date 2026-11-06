@@ -1,6 +1,6 @@
 from pathlib import Path
 import hashlib
-from RASTA_PIPELINE import check_zoom_range, synthetic_bounds, estimate_synthetic_tiles, recommended_max_zoom, _parse_json_payload, overview_factors, web_mercator_from_lonlat, load_config, synthetic_bounds_for_config
+from PWM_PIPELINE import check_zoom_range, synthetic_bounds, estimate_synthetic_tiles, recommended_max_zoom, _parse_json_payload, overview_factors, web_mercator_from_lonlat, load_config, synthetic_bounds_for_config
 
 HERE = Path(__file__).resolve().parent
 errors=[]
@@ -46,7 +46,7 @@ for zmin, zmax, mode, ok in ((0, 18, 'tpkx', True), (0, 23, 'both', True), (0, 2
 
 conv=HERE/'MBTiles_to_TPKX_v0_3_0.py'
 sha=hashlib.sha256(conv.read_bytes()).hexdigest()
-expected='117904a21cfdbe9e106871b477447ccddcf68f8eace226db0af6de0c6b1f9da4'
+expected='9fbdd81d4114cddcc99616f465d182b767cc00d26601bba142fad620d3df9dce'
 if sha != expected: errors.append(f"converter hash mismatch: {sha}")
 
 # v0.1.5: the converter must write the mb2tpkx 1.1 / ArcGIS-proven TPKX structure.
@@ -85,12 +85,12 @@ with tempfile.TemporaryDirectory() as td:
             idx = struct.unpack_from('<16384Q', bun, 64)
             if sum(1 for v in idx if v != 4) != 2 or idx[2] != 4: errors.append('missing-tile index value must be 4 (Esri)')
             if bun[(idx[0] & ((1 << 40) - 1)):][:8] != t[:8]: errors.append('tile bytes not copied unchanged')
-# v0.2.0: photo mode - a small picture tiled without QGIS must give exactly Rasta's tile set, the
+# v0.2.0: photo mode - a small picture tiled without QGIS must give exactly Picture World Maker's tile set, the
 # picture's edge must land where the synthetic placement says, and the TPKX converter must accept it.
 try:
     from PIL import Image
-    from RASTA_PIPELINE import inspect_raster_pillow, synthetic_bounds
-    from RPF_PHOTO_TILER import build_photo_mbtiles, count_tiles
+    from PWM_PIPELINE import inspect_raster_pillow, synthetic_bounds
+    from PWM_PHOTO_TILER import build_photo_mbtiles, count_tiles
     import io as _io
     with tempfile.TemporaryDirectory() as td:
         pic = Path(td) / 'photo_probe.jpg'
@@ -102,7 +102,7 @@ try:
         ifd = TiffImagePlugin.ImageFileDirectory_v2(); ifd[33922] = (0.0, 0.0, 0.0, 500000.0, 3300000.0, 0.0); ifd.tagtype[33922] = 12
         im.save(geo_tif, tiffinfo=ifd)
         if inspect_raster_pillow(geo_tif).mode_suggested != 'geo': errors.append('GeoTIFF tags not detected as georeferenced')
-        bb = synthetic_bounds(3000, 1200, 1.0, *__import__('RASTA_PIPELINE').web_mercator_from_lonlat(-80.0, 30.0))
+        bb = synthetic_bounds(3000, 1200, 1.0, *__import__('PWM_PIPELINE').web_mercator_from_lonlat(-80.0, 30.0))
         mbt = Path(td) / 'photo_probe.mbtiles'
         n = build_photo_mbtiles(pic, mbt, bb, 0, 18)
         if n != estimate_synthetic_tiles(bb, 0, 18) or n != count_tiles(bb, 0, 18): errors.append(f'photo tile count {n} != estimate')
@@ -115,10 +115,10 @@ except ImportError:
     print('NOTE: Pillow not installed - photo mode checks skipped (the launchers install it).')
 
 if errors:
-    print('RASTA SELF TEST: FAIL')
+    print('PICTURE WORLD MAKER SELF TEST: FAIL')
     for e in errors: print(' -',e)
     raise SystemExit(1)
-print('RASTA SELF TEST: PASS')
+print('PICTURE WORLD MAKER SELF TEST: PASS')
 print('Manual proof synthetic bounds:', b)
 print('Manual proof Z0-Z18 tile addresses:', f'{count:,}')
 print('1 m/pixel recommended max zoom:', recommended_max_zoom(1.0))

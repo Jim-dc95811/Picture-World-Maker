@@ -7,7 +7,7 @@ import os
 import sys
 
 if len(sys.argv) != 2:
-    print("RPF_INFO Worker expects one JSON job file.")
+    print("PWM_INFO Worker expects one JSON job file.")
     raise SystemExit(2)
 
 job = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
@@ -43,13 +43,13 @@ try:
             p = int(progress)
             if p != self.last:
                 self.last = p
-                print(f"RPF_PROGRESS {float(progress):.3f}", flush=True)
+                print(f"PWM_PROGRESS {float(progress):.3f}", flush=True)
         def pushInfo(self, info):
             super().pushInfo(info)
-            print("RPF_INFO " + str(info), flush=True)
+            print("PWM_INFO " + str(info), flush=True)
         def pushWarning(self, warning):
             super().pushWarning(warning)
-            print("RPF_INFO WARNING: " + str(warning), flush=True)
+            print("PWM_INFO WARNING: " + str(warning), flush=True)
 
     project = QgsProject.instance()
     project.clear()
@@ -58,7 +58,7 @@ try:
         raise RuntimeError("Invalid target CRS.")
     project.setCrs(target_crs)
 
-    layer = QgsRasterLayer(job["input"], job.get("layer_name", "Rasta Raster"))
+    layer = QgsRasterLayer(job["input"], job.get("layer_name", "Picture World Raster"))
     if not layer.isValid():
         raise RuntimeError("QGIS could not load the raster input.")
     if not layer.crs().isValid():
@@ -70,7 +70,7 @@ try:
         ct = QgsCoordinateTransform(layer.crs(), target_crs, project)
         ext = ct.transformBoundingBox(ext)
     extent_text = f"{ext.xMinimum():.12f},{ext.xMaximum():.12f},{ext.yMinimum():.12f},{ext.yMaximum():.12f} [EPSG:3857]"
-    print("RPF_INFO Raster extent: " + extent_text, flush=True)
+    print("PWM_INFO Raster extent: " + extent_text, flush=True)
 
     params = {
         "EXTENT": extent_text,
@@ -89,6 +89,6 @@ try:
     out = Path(result.get("OUTPUT_FILE") or job["output_mbtiles"])
     if not out.is_file():
         raise RuntimeError("QGIS processing completed without an MBTiles file.")
-    print("RPF_RESULT_JSON " + json.dumps({"output": str(out), "extent": extent_text}), flush=True)
+    print("PWM_RESULT_JSON " + json.dumps({"output": str(out), "extent": extent_text}), flush=True)
 finally:
     qgs.exitQgis()

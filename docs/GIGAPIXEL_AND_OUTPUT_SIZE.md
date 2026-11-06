@@ -2,7 +2,7 @@
 
 ## The human experience
 
-Rasta is useful because a true raster pyramid preserves visual continuity across scale.
+Picture World Maker is useful because a true raster pyramid preserves visual continuity across scale.
 
 A large photograph can be viewed as one continuous visual space:
 
@@ -19,7 +19,7 @@ A useful plain-language description from live testing is:
 
 > **See the whole scene like a hawk. Dive into any detail that catches your eye.**
 
-The detail is not created by Rasta. It was already present in the source pixels; the pyramid makes it practical to navigate.
+The detail is not created by Picture World Maker. It was already present in the source pixels; the pyramid makes it practical to navigate.
 
 ## First gigapixel-class automated proof — Kings Reach Panorama 2
 
@@ -32,7 +32,7 @@ Source:
 - approximately **1.17 billion source pixels**
 - ordinary non-geographic JPEG
 
-Rasta v0.1.3 result:
+Picture World Maker v0.1.3 result:
 
 - **67,619 final raster tiles**
 - **Z0–Z18**
@@ -54,7 +54,7 @@ Source:
 - approximately **908 million source pixels**
 - ordinary non-geographic JPEG
 
-Rasta v0.1.3 result:
+Picture World Maker v0.1.3 result:
 
 - **52,482 final raster tiles**
 - **Z0–Z18**
@@ -74,7 +74,7 @@ Source:
 - **15,287 × 7,643 pixels**
 - ordinary non-geographic JPEG
 
-Rasta v0.1.3 result:
+Picture World Maker v0.1.3 result:
 
 - **6,976 tiles**
 - **Z0–Z18**
@@ -87,7 +87,7 @@ The operator could move from the full Tower Bridge scene into small river/shore 
 
 ## Source file size is not the main predictor
 
-Do **not** estimate Rasta output size from the source file size alone.
+Do **not** estimate Picture World Maker output size from the source file size alone.
 
 The source file is a compressed container. The stronger predictors are:
 
@@ -107,7 +107,7 @@ Therefore:
 
 > **Do not judge a source image by how many megabytes the file weighs. Judge it by what pixels are actually inside.**
 
-## Better Rasta source screening
+## Better Picture World Maker source screening
 
 For an impressive deep-navigation demonstration, verify these before downloading or recommending a source:
 
@@ -124,7 +124,7 @@ For city-panorama demonstrations, high-value content includes buildings, roads, 
 
 ## Current output format note
 
-Rasta currently manufactures PNG raster tiles in the proven baseline. Photographic JPEG sources can therefore expand substantially when transformed from one highly compressed monolithic file into thousands of independently addressable lossless raster tiles across many pyramid levels.
+Picture World Maker currently manufactures PNG raster tiles in the proven baseline. Photographic JPEG sources can therefore expand substantially when transformed from one highly compressed monolithic file into thousands of independently addressable lossless raster tiles across many pyramid levels.
 
 That storage increase buys a different optimization target:
 

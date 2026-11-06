@@ -1,6 +1,16 @@
-# Rasta Pyramid Factory Changelog
+# Picture World Maker Changelog
 
-## v0.2.0 TEST — 2026-11-06 — PHOTO MODE, BUILT / SELF-TESTED
+*Formerly Rasta Pyramid Factory. Older entries keep the names used at the time.*
+
+## v0.2.1 — 2026-11-06 — NEW NAME, released
+
+- **Rasta Pyramid Factory is now Picture World Maker** (Jim: "I hate the name rasta"). Program folder, launchers, window title, system files (`PICTURE_WORLD_MAKER.py`, `PWM_PIPELINE.py`, `PWM_PHOTO_TILER.py`, `PWM_QGIS_WORKER.py`, `PWM_SELF_TEST.py`, `Picture_World_Maker_Config.ini`), manual and pages renamed. Repository: `Jim-dc95811/Picture-World-Maker`.
+- No behaviour change: a v0.2.1 build of Kings Reach panorama 1 has 0 structural differences from v0.2.0 (tools/tpkx_compare.py); self-test PASS.
+- Download: `releases/Picture_World_Maker_v0.2.1.zip`. Details: [releases/v0.2.1_RELEASE_NOTES.md](releases/v0.2.1_RELEASE_NOTES.md).
+
+## v0.2.0 TEST — 2026-11-06 — PHOTO MODE, LIVE-PROVEN
+
+- **Jim's live build (2026-11-06 00:47):** Kings Reach panorama 1 in **55 s**, 35,216 tiles, 30 bundles, flown in ArcGIS Earth at street level. Released as v0.2.1 (new name).
 
 - Flat pictures are tiled directly with Pillow (`RPF_PHOTO_TILER.py`) - no QGIS needed for photos. Same tile set and placement as the QGIS route.
 - JPEG tiles inside the picture, PNG with transparency on its edges (TPKX MIXED). Kings Reach panorama 1: TPKX 442 MB (v0.1.6: 1,771 MB), about 48 s (v0.1.6: 8:46).

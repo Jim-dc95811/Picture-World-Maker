@@ -1,4 +1,4 @@
-# Rasta Pyramid Factory — Acceptance Record
+# Picture World Maker — Acceptance Record
 
 ## Evidence labels
 
@@ -38,7 +38,7 @@ Observed finished TPKX:
 
 This proved the general architecture: a giant ordinary flat raster can be assigned deterministic synthetic display coordinates, manufactured into a true multiscale raster pyramid, converted to TPKX, and rendered by ArcGIS Earth.
 
-## Rasta v0.1.2 automated Montreal proof — 2026-08-16
+## Picture World Maker v0.1.2 automated Montreal proof — 2026-08-16
 
 **Status: LIVE-PROVEN**
 
@@ -47,7 +47,7 @@ Source:
 - **29,684 × 7,620 pixels**
 - ordinary non-geographic PNG
 
-Rasta automation:
+Picture World Maker automation:
 - source automatically detected as flat image;
 - synthetic projected display space generated automatically;
 - source decoded once into optimized tiled working GeoTIFF;
@@ -68,9 +68,9 @@ Observed result:
 Evidence image:
 - `docs/images/montreal_live_proof.jpg`
 
-This moved the automated Rasta pipeline from BUILT/SELF-TESTED to **LIVE-PROVEN**.
+This moved the automated Picture World Maker pipeline from BUILT/SELF-TESTED to **LIVE-PROVEN**.
 
-## Rasta v0.1.3 automated Frankfurt proof — 2026-08-16
+## Picture World Maker v0.1.3 automated Frankfurt proof — 2026-08-16
 
 **Status: LIVE-PROVEN**
 
@@ -88,7 +88,7 @@ Observed v0.1.3 behavior:
 - ArcGIS Earth status bar showed the synthetic product near **30°N, 80°W**, confirming the live parking-anchor change.
 
 Evidence image:
-- `docs/images/rasta_v0_1_3_live_proof.jpg`
+- `docs/images/picture_world_v0_1_3_live_proof.jpg`
 
 This moved **v0.1.3 TEST** from BUILT/SELF-TESTED to **LIVE-PROVEN** for automatic synthetic placement, manufacture, verification, publication, and ArcGIS Earth display.
 
@@ -135,7 +135,7 @@ Human-observed detail result:
 - the London Eye is a small feature in the overview;
 - after diving through the pyramid, individual people were visible inside observation pods.
 
-This is the first automated **gigapixel-class** Rasta acceptance specimen.
+This is the first automated **gigapixel-class** Picture World Maker acceptance specimen.
 
 ## Barcelona / Tibidabo distributed-detail proof — 2026-08-16
 
@@ -185,8 +185,8 @@ For source screening and rough planning, use pixel dimensions / total pixel coun
 The following remain separate from the live acceptance results above:
 
 - cancellation testing;
-- Rasta GUI MBTiles-only output testing;
-- Rasta GUI Both-output testing;
+- Picture World Maker GUI MBTiles-only output testing;
+- Picture World Maker GUI Both-output testing;
 - genuinely georeferenced AUTO-mode specimen;
 - very large TIFF/BigTIFF automatic specimen;
 - conservative disk-space preflight.

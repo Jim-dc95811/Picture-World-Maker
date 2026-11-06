@@ -1,4 +1,4 @@
-# Rasta Pyramid Factory
+# Picture World Maker
 
 **Turn giant pictures into maps you can fly into.** Slice. Dice. Present.
 
@@ -15,37 +15,49 @@
 > 2. **Windows security warning:** Windows may warn about any program downloaded from the internet. Click **More info > Run anyway** (blue "Windows protected your PC" screen) or **Run**. To avoid the warning, right-click the zip > **Properties** > tick **Unblock** > **OK** before extracting.
 > 3. **Installing Python:** if the installer shows **"Add python.exe to PATH"**, tick it.
 
-### **⬇️ [4. DOWNLOAD RASTA PYRAMID FACTORY v0.2.0](releases/Rasta_Pyramid_Factory_v0.2.0.zip)**
+### **⬇️ [4. DOWNLOAD PICTURE WORLD MAKER v0.2.1](releases/Picture_World_Maker_v0.2.1.zip)**
 **📖 [User manual](docs/USER_MANUAL.md)**
-**🗂️ [What's in the zip - every file explained](docs/images/rasta_whats_in_the_zip_full.png)**
+**🗂️ [What's in the zip - every file explained](docs/images/picture_world_maker_whats_in_the_zip_full.png)**
 
 Choose a giant picture - a city panorama, a drone map, a scanned map, artwork - press BUILD, and get a zoomable map (TPKX or MBTiles) you can open in ArcGIS Earth: see the whole scene like a hawk, then dive into any detail that catches your eye.
 
-![Flying over a London panorama photo made with Rasta in ArcGIS Earth: the photo lies flat on the Atlantic at 29.99 N, 80.05 W, elevation 0 ft, seen from 3,092 ft](docs/images/rasta_v0_1_6_kings_reach_arcgis_earth.jpg)
+![Flying over a London panorama photo made with Picture World Maker in ArcGIS Earth: the photo lies flat on the Atlantic at 29.99 N, 80.05 W, elevation 0 ft, seen from 3,092 ft](docs/images/picture_world_kings_reach_arcgis_earth.jpg)
 
-*A London panorama photo (50,000 x 12,006 pixels, 35,216 tiles, built in under 9 minutes) flown in ArcGIS Earth with EarthStick. A photo has no real location, so Rasta parks it on the ocean off Jacksonville and gives it ocean coordinates - the status bar reads 29.99 N, 80.05 W, elevation 0 ft. That simulated georeferencing gives every spot in the picture its own latitude and longitude, so it behaves like a real map: zoom to full detail, put gates, beacons and objects on it, fly through it.*
+*A London panorama photo (50,000 x 12,006 pixels, 35,216 tiles, built in under 9 minutes) flown in ArcGIS Earth with EarthStick. A photo has no real location, so Picture World Maker parks it on the ocean off Jacksonville and gives it ocean coordinates - the status bar reads 29.99 N, 80.05 W, elevation 0 ft. That simulated georeferencing gives every spot in the picture its own latitude and longitude, so it behaves like a real map: zoom to full detail, put gates, beacons and objects on it, fly through it.*
 
-![Sea, street, stone: the same London photo seen from 61,246 ft as a strip on the ocean, from 4,203 ft at street level with taxis and road markings, and from 786 ft beside the bell tower of St Paul's with people on its gallery](docs/images/rasta_sea_street_stone.jpg)
+![Sea, street, stone: the same London photo seen from 61,246 ft as a strip on the ocean, from 4,203 ft at street level with taxis and road markings, and from 786 ft beside the bell tower of St Paul's with people on its gallery](docs/images/picture_world_sea_street_stone.jpg)
 
 *Sea, street, stone - one photograph, three heights. From 61,246 ft the whole panorama floats on the ocean like a postcard; at 4,203 ft you read the road markings and the ad on a taxi; at 786 ft you hover beside the bell tower of St Paul's and count the people on its gallery.*
 
 **Fly into your pictures:** with [EarthStick](https://github.com/Jim-dc95811/EarthStick) you fly over the picture like a city; with [World Gate Maker](https://github.com/Jim-dc95811/EarthStick#make-your-own-gates) (ground elev 0) you can put gates that drop you onto any landmark in it.
 
-`Rasta_Pyramid_Factory_v0.1.6.zip` SHA-256: `bf76273ac7fbb462684c5f4a6eac1b1126f6a7ef21d5058ab4284ad642f676a4` - [what changed in v0.1.6](releases/v0.1.6_TEST_RELEASE_NOTES.md)
+![Photo mode, live-proven: the London panorama built in 55 seconds with no QGIS, then flown at street level in ArcGIS Earth](docs/images/picture_world_photo_mode_street.jpg)
 
-> **ArcGIS Earth Unlocked:** Rasta is the picture-to-map factory of the broader project family. See the [master system map](https://github.com/Jim-dc95811/ArcGIS-Earth-Unlocked).
+*Photo mode (v0.2.0, live-proven 2026-11-06): the same 50,000 x 12,006 photo built in **55 seconds** with no QGIS (35,216 tiles; the QGIS route took 8:46) and a TPKX a quarter of the size (442 MB instead of 1.77 GB) - still sharp enough to read the street.*
+
+`Picture_World_Maker_v0.2.1.zip` SHA-256: `bdab52c8658923819f6666eb4979d33ba5ef7365382440fa8ee7a7141486e7be` - [what changed in v0.2.1](releases/v0.2.1_RELEASE_NOTES.md)
+
+> **New name (2026-11-06):** Picture World Maker was called **Rasta Pyramid Factory** up to v0.2.0. Same program, same files it makes; old download links in this repo's history still work.
+
+> **ArcGIS Earth Unlocked:** Picture World Maker is the picture-to-map factory of the broader project family. See the [master system map](https://github.com/Jim-dc95811/ArcGIS-Earth-Unlocked).
 
 ---
 
 # Engineering record
 
-### v0.2.0 TEST — PHOTO MODE (2026-11-06) — BUILT / SELF-TESTED
-
-Flat pictures are tiled directly with Pillow - no QGIS. Kings Reach panorama 1: same 35,216 tiles and placement as v0.1.6, about 48 s instead of 8 min 46 s, TPKX 442 MB instead of 1.77 GB. Real map rasters keep the QGIS route. See [v0.2.0 release notes](releases/v0.2.0_TEST_RELEASE_NOTES.md).
+*Picture World Maker was named Rasta Pyramid Factory up to v0.2.0; history below keeps the names used at the time where it matters.*
 
 ## Current version truth
 
-### v0.1.6 — LIVE-PROVEN (2026-11-05) — current release
+### v0.2.1 — NEW NAME (2026-11-06) — current release
+
+v0.2.0 photo mode with the new name; builds identical to v0.2.0 (0 structural differences). See [v0.2.1 release notes](releases/v0.2.1_RELEASE_NOTES.md).
+
+### v0.2.0 — PHOTO MODE (2026-11-06) — LIVE-PROVEN
+
+Jim's build 2026-11-06 00:47: Kings Reach panorama 1 in 55 s, 35,216 tiles, 30 bundles, flown in ArcGIS Earth. Flat pictures are tiled directly with Pillow - no QGIS. Kings Reach panorama 1: same 35,216 tiles and placement as v0.1.6, about 48 s instead of 8 min 46 s, TPKX 442 MB instead of 1.77 GB. Real map rasters keep the QGIS route. See [v0.2.0 release notes](releases/v0.2.0_TEST_RELEASE_NOTES.md).
+
+### v0.1.6 — LIVE-PROVEN (2026-11-05)
 
 Jim built `Kings_reach_panorama_1.jpg` (50,000 x 12,006 px, Z0-Z18, 35,216 tiles, 30 bundles, 8:46) and flew it in ArcGIS Earth: PASS. v0.1.5's TPKX fix (mb2tpkx 1.1 structure) plus five fixes from a full code review: the Cancelled message, Cancel stopping QGIS at once, closing the window mid-build (stops QGIS and cleans up first), TPKX max zoom 23 checked before building, typed-in image paths inspected. See [v0.1.6 release notes](releases/v0.1.6_TEST_RELEASE_NOTES.md).
 
@@ -55,7 +67,7 @@ The TPKX stage now writes the same structure as **mb2tpkx 1.1** (proven in ArcGI
 
 ### v0.1.3 TEST — LIVE-PROVEN core
 
-Rasta v0.1.3 remains **LIVE-PROVEN** for:
+Picture World Maker v0.1.3 remains **LIVE-PROVEN** for:
 
 - automatic flat-image / georaster inspection;
 - tiled staging + overviews for giant flat images;
@@ -68,16 +80,16 @@ Rasta v0.1.3 remains **LIVE-PROVEN** for:
 
 ### Important TPKX compatibility boundary — 2026-08-20
 
-A downstream ArcGIS Field Maps control test found a verified defect in the historical MBTiles -> TPKX converter lineage that Rasta v0.1.3 inherited.
+A downstream ArcGIS Field Maps control test found a verified defect in the historical MBTiles -> TPKX converter lineage that Picture World Maker v0.1.3 inherited.
 
 Using the same physical-card/Designer workflow, Field Maps:
 
 - rejected a project converter-built TPKX;
 - accepted Esri's official `Usa.tpkx`.
 
-Therefore Rasta's TPKX output is **ArcGIS Earth-proven**, but **Field Maps compatibility is not approved**. Since v0.1.6 Rasta writes the same TPKX structure as mb2tpkx 1.1 (ArcGIS Earth and ArcGIS Pro proven); Field Maps has not been tested with it yet.
+Therefore Picture World Maker's TPKX output is **ArcGIS Earth-proven**, but **Field Maps compatibility is not approved**. Since v0.1.6 Picture World Maker writes the same TPKX structure as mb2tpkx 1.1 (ArcGIS Earth and ArcGIS Pro proven); Field Maps has not been tested with it yet.
 
-Rasta's MBTiles manufacturing and giant-raster core are not invalidated by this finding.
+Picture World Maker's MBTiles manufacturing and giant-raster core are not invalidated by this finding.
 ---
 
 ## Current status
@@ -89,8 +101,9 @@ Rasta's MBTiles manufacturing and giant-raster core are not invalidated by this 
 | Raster -> verified MBTiles | ✅ **LIVE-PROVEN** |
 | Historical MBTiles -> TPKX -> ArcGIS Earth | ✅ **LIVE-PROVEN** |
 | v0.1.6 TPKX stage (mb2tpkx 1.1 structure) -> ArcGIS Earth | ✅ **LIVE-PROVEN 2026-11-05** |
-| Historical Rasta TPKX -> Field Maps | ❌ **NOT APPROVED — converter lineage failed Field Maps** |
+| Historical Picture World Maker TPKX -> Field Maps | ❌ **NOT APPROVED — converter lineage failed Field Maps** |
 | v0.1.6 TPKX -> Field Maps | 🟡 **NOT YET TESTED** |
+| v0.2.0 photo mode (no QGIS) -> TPKX -> ArcGIS Earth | ✅ **LIVE-PROVEN 2026-11-06** (55 s) |
 | Gigapixel-class deep navigation | ✅ **LIVE-PROVEN** |
 | v0.1.3 synthetic placement + heartbeat | ✅ **LIVE-PROVEN** |
 | v0.1.4 TPKX / MBTiles / REST selector | 🟡 **BUILT / SELF-TESTED HISTORICAL TEST BRANCH** |
@@ -107,7 +120,7 @@ Rasta's MBTiles manufacturing and giant-raster core are not invalidated by this 
 4. BUILD RASTER PYRAMID
 ```
 
-Rasta distinguishes ordinary flat imagery from genuinely georeferenced raster input automatically. The normal operator does not need a CRS-mode selector or manual Georeferencer workflow.
+Picture World Maker distinguishes ordinary flat imagery from genuinely georeferenced raster input automatically. The normal operator does not need a CRS-mode selector or manual Georeferencer workflow.
 
 The original source raster is not modified.
 
@@ -134,7 +147,7 @@ synthetic display placement
 
 For ArcGIS Earth, the v0.1.3 historical TPKX output remains proven evidence.
 
-Since v0.1.6 Rasta's TPKX stage writes the mb2tpkx 1.1 structure (proven in ArcGIS Earth and ArcGIS Pro; byte-identical bundles against Jim's flown London TPKX). Field Maps has not been tested with it - make no Field Maps claim until a real Field Maps test passes.
+Since v0.1.6 Picture World Maker's TPKX stage writes the mb2tpkx 1.1 structure (proven in ArcGIS Earth and ArcGIS Pro; byte-identical bundles against Jim's flown London TPKX). Field Maps has not been tested with it - make no Field Maps claim until a real Field Maps test passes.
 
 Do not rewrite the accepted v0.1.3 evidence package and pretend it was always the new converter.
 
@@ -196,7 +209,7 @@ A source file's compressed disk size is a poor predictor of pyramid size. Pixel 
 
 ## Synthetic placement for ordinary images
 
-A normal photograph has no honest geographic location. Rasta labels its placement as **synthetic display space**.
+A normal photograph has no honest geographic location. Picture World Maker labels its placement as **synthetic display space**.
 
 Current reproducible rule:
 
@@ -218,21 +231,21 @@ fixed synthetic Atlantic anchor near 30°N, 80°W
 
 ## Deployment boundary
 
-Rasta manufactures raster pyramids. It does not own field-delivery hardware or Field Maps compatibility policy.
+Picture World Maker manufactures raster pyramids. It does not own field-delivery hardware or Field Maps compatibility policy.
 
-Delivering maps to phones and Field Maps happens outside Rasta.
+Delivering maps to phones and Field Maps happens outside Picture World Maker.
 
 ---
 
 ## Project family
 
-Rasta Pyramid Factory is part of **[ArcGIS Earth Unlocked](https://github.com/Jim-dc95811/ArcGIS-Earth-Unlocked)** - offline maps, joystick flight ([EarthStick](https://github.com/Jim-dc95811/EarthStick)), World Gates and objects for ArcGIS Earth. Rasta is its picture-to-map factory.
+Picture World Maker is part of **[ArcGIS Earth Unlocked](https://github.com/Jim-dc95811/ArcGIS-Earth-Unlocked)** - offline maps, joystick flight ([EarthStick](https://github.com/Jim-dc95811/EarthStick)), World Gates and objects for ArcGIS Earth. Picture World Maker is its picture-to-map factory.
 
 ---
 
 ## Documentation
 
-- [User manual](docs/USER_MANUAL.md) ([PDF](docs/Rasta_Pyramid_Factory_User_Manual.pdf))
+- [User manual](docs/USER_MANUAL.md) ([PDF](docs/Picture_World_Maker_User_Manual.pdf))
 - [Plain-language overview](docs/PLAIN_LANGUAGE_OVERVIEW.md)
 - [Operator workflow](docs/OPERATOR_WORKFLOW.md)
 - [Technical architecture](docs/TECHNICAL_ARCHITECTURE.md)
@@ -246,10 +259,10 @@ Rasta Pyramid Factory is part of **[ArcGIS Earth Unlocked](https://github.com/Ji
 
 ## Human-AI engineering collaboration
 
-Rasta Pyramid Factory was conceived, directed and live-tested by **Jim Gaddy**, working with **OpenAI's ChatGPT** and **Anthropic's Claude** as AI coding and documentation partners. Jim supplied the idea of turning giant pictures into navigable pyramids, the QGIS recipe and every live Windows / ArcGIS Earth test. ChatGPT helped build Rasta up to v0.1.4. Claude built v0.1.5-v0.1.6 (the mb2tpkx-structure TPKX stage, the code-review fixes, the structural self-test), the user manual and this page. See [CONTRIBUTORS.md](CONTRIBUTORS.md).
+Picture World Maker was conceived, directed and live-tested by **Jim Gaddy**, working with **OpenAI's ChatGPT** and **Anthropic's Claude** as AI coding and documentation partners. Jim supplied the idea of turning giant pictures into navigable pyramids, the QGIS recipe and every live Windows / ArcGIS Earth test. ChatGPT helped build Picture World Maker up to v0.1.4. Claude built v0.1.5-v0.1.6 (the mb2tpkx-structure TPKX stage, the code-review fixes, the structural self-test), the user manual and this page. See [CONTRIBUTORS.md](CONTRIBUTORS.md).
 
 This acknowledgment is not a claim of OpenAI or Anthropic sponsorship or endorsement.
 
 ## Governing rule
 
-> **Rasta manufactures the pyramid. The real target decides compatibility. Do not let downstream deployment claims outrun evidence.**
+> **Picture World Maker manufactures the pyramid. The real target decides compatibility. Do not let downstream deployment claims outrun evidence.**

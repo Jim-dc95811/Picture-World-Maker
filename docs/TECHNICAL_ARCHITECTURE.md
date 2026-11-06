@@ -2,7 +2,7 @@
 
 ## Design principle
 
-Rasta separates three concerns:
+Picture World Maker separates three concerns:
 
 1. **source raster** — the original pixels;
 2. **QGIS manufacturing** — multiscale rendering into raster MBTiles;
@@ -64,7 +64,7 @@ The default scale remains **1 source pixel = 1 projected meter**. This makes the
 
 The first automated Montreal bench run exposed a performance defect in the original approach. Leaving QGIS to make thousands of small random reads directly from a giant stream-compressed PNG kept the CPU saturated for too long.
 
-Rasta now pays the decoding cost once:
+Picture World Maker now pays the decoding cost once:
 
 ```text
 large PNG/JPEG/etc.
@@ -90,7 +90,7 @@ Power-of-two overviews are built until the longest raster dimension has a compac
 
 ## Headless QGIS worker
 
-The public Python 3.14.5 process does not attempt to import PyQGIS directly. Rasta launches QGIS's own `python-qgis.bat`, then runs `RPF_QGIS_WORKER.py` inside the tested QGIS environment.
+The public Python 3.14.5 process does not attempt to import PyQGIS directly. Picture World Maker launches QGIS's own `python-qgis.bat`, then runs `PWM_QGIS_WORKER.py` inside the tested QGIS environment.
 
 The worker:
 
@@ -112,7 +112,7 @@ Frozen rendering recipe:
 
 ## Heartbeat / long-operation visibility
 
-Some QGIS/GDAL stages do not emit trustworthy incremental percentages continuously. Rasta must not invent fake completion percentages.
+Some QGIS/GDAL stages do not emit trustworthy incremental percentages continuously. Picture World Maker must not invent fake completion percentages.
 
 v0.1.3 therefore adds an independent GUI heartbeat with:
 
@@ -124,7 +124,7 @@ v0.1.3 therefore adds an independent GUI heartbeat with:
 
 ## MBTiles verification
 
-Before publication, Rasta opens the MBTiles read-only and verifies:
+Before publication, Picture World Maker opens the MBTiles read-only and verifies:
 
 - standard `tiles` columns;
 - nonzero tile count;
@@ -139,7 +139,7 @@ SHA-256:
 
 `7e685b396bf2a6a5ca89fdb710b2ae2e25f8e66014e9162408f166b01d78fc97`
 
-The converter writes Esri Compact Cache V2 bundle files and packages them as ZIP64 TPKX. Rasta verifies the TPKX ZIP, required metadata members, Compact Cache V2 storage declaration, and presence of bundle files before publication.
+The converter writes Esri Compact Cache V2 bundle files and packages them as ZIP64 TPKX. Picture World Maker verifies the TPKX ZIP, required metadata members, Compact Cache V2 storage declaration, and presence of bundle files before publication.
 
 ## Cleanup and failure behavior
 

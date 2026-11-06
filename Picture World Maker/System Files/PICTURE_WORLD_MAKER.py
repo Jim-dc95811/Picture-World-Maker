@@ -8,13 +8,13 @@ import time
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 
-from RASTA_PIPELINE import (
-    BuildCancelled, RastaError, build, check_zoom_range, estimate_synthetic_tiles, explorer_size,
+from PWM_PIPELINE import (
+    BuildCancelled, PictureWorldError, build, check_zoom_range, estimate_synthetic_tiles, explorer_size,
     inspect_raster, load_config, photo_mode_available, recommended_max_zoom, synthetic_bounds_for_config,
 )
 
-APP = "RASTA PYRAMID FACTORY"
-VERSION = "v0.2.0 TEST"
+APP = "PICTURE WORLD MAKER"
+VERSION = "v0.2.1"
 HERE = Path(__file__).resolve().parent
 BG = "#f3f5f7"
 TEXT = "#17233a"
@@ -32,7 +32,7 @@ def acquire_single_instance() -> bool:
         import ctypes
         k = ctypes.windll.kernel32
         k.CreateMutexW.restype = ctypes.c_void_p
-        h = k.CreateMutexW(None, False, "Local\\RastaPyramidFactoryGUI")
+        h = k.CreateMutexW(None, False, "Local\\PictureWorldMakerGUI")
         if h and k.GetLastError() == 183:
             k.CloseHandle(h); return False
         _GUI_MUTEX_HANDLE = h
@@ -57,7 +57,7 @@ class App(tk.Tk):
         self.zoom_min_var = tk.IntVar(value=self.cfg.default_min_zoom)
         self.zoom_max_var = tk.IntVar(value=self.cfg.default_max_zoom)
         self.scale_var = tk.DoubleVar(value=self.cfg.synthetic_meters_per_pixel)
-        self.info_var = tk.StringVar(value="Choose a raster image. Rasta will inspect it automatically.")
+        self.info_var = tk.StringVar(value="Choose a raster image. Picture World Maker will inspect it automatically.")
         self.status_var = tk.StringVar(value="Ready.")
         self.progress_var = tk.DoubleVar(value=0)
         self.cancel_event = threading.Event()
@@ -76,7 +76,7 @@ class App(tk.Tk):
 
     def _build_ui(self):
         header = tk.Frame(self, bg=BG); header.pack(fill="x", padx=24, pady=(18,8))
-        tk.Label(header, text="RASTA PYRAMID FACTORY", font=("Segoe UI", 24, "bold"), fg=TEXT, bg=BG).pack(side="left")
+        tk.Label(header, text="PICTURE WORLD MAKER", font=("Segoe UI", 24, "bold"), fg=TEXT, bg=BG).pack(side="left")
         tk.Label(header, text="SLICE • DICE • PRESENT", font=("Segoe UI", 11, "bold"), fg=MUTED, bg=BG).pack(side="right", pady=8)
 
         body = tk.Frame(self, bg=BG); body.pack(fill="both", expand=True, padx=24, pady=4)
@@ -325,7 +325,7 @@ class App(tk.Tk):
 
 def main():
     if not acquire_single_instance():
-        messagebox.showwarning(APP, "Rasta Pyramid Factory is already running.")
+        messagebox.showwarning(APP, "Picture World Maker is already running.")
         return 2
     app = App(); app.mainloop(); return 0
 

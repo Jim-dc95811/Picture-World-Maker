@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Rasta photo tiler (v0.2.0) - flat pictures to MBTiles without QGIS.
+"""Picture World Maker photo tiler (v0.2.0) - flat pictures to MBTiles without QGIS.
 
-A flat picture (no coordinates) is parked by Rasta at an exact spot: centred on the configured anchor
+A flat picture (no coordinates) is parked by Picture World Maker at an exact spot: centred on the configured anchor
 (default 30 N, 80 W), 1 picture pixel = synthetic_meters_per_pixel Web Mercator metres, axis-aligned with
 the map grid. So making its tiles needs no reprojection: every 256 x 256 tile at every zoom is a patch of
 the picture, scaled. This module does exactly that with Pillow, producing the same tile set (same
@@ -11,7 +11,7 @@ Tiles fully inside the picture are JPEG (photos compress far better); tiles on t
 with transparency so the ocean shows through around it. Esri's TPKX allows mixed tiles (format MIXED).
 
 Command line (for testing):
-  python RPF_PHOTO_TILER.py picture.jpg out.mbtiles [zmin] [zmax] [--png] [--quality 85]
+  python PWM_PHOTO_TILER.py picture.jpg out.mbtiles [zmin] [zmax] [--png] [--quality 85]
 """
 from __future__ import annotations
 
@@ -36,7 +36,7 @@ class Cancelled(RuntimeError):
 
 
 def _tile_range(bounds, z):
-    """Same tile addressing as RASTA_PIPELINE.estimate_synthetic_tiles."""
+    """Same tile addressing as PWM_PIPELINE.estimate_synthetic_tiles."""
     xmin, xmax, ymin, ymax = bounds
     n = 1 << z
     world = WEB_MERCATOR_HALF * 2.0
@@ -92,7 +92,7 @@ def build_photo_mbtiles(source: Path, out_mbtiles: Path, bounds, zmin: int, zmax
     width, height = picture.size
     mpp = (xmax - xmin) / width                       # metres per picture pixel
     if abs((ymax - ymin) / height - mpp) > 1e-9 * max(1.0, mpp):
-        raise PhotoTilerError("Picture placement is not square-pixel; photo mode needs Rasta's synthetic placement.")
+        raise PhotoTilerError("Picture placement is not square-pixel; photo mode needs Picture World Maker's synthetic placement.")
 
     total = count_tiles(bounds, zmin, zmax)
     out_mbtiles.parent.mkdir(parents=True, exist_ok=True)
@@ -107,7 +107,7 @@ def build_photo_mbtiles(source: Path, out_mbtiles: Path, bounds, zmin: int, zmax
     lon1, lat1 = _lonlat(xmax, ymax)
     db.executemany("INSERT INTO metadata VALUES (?, ?)", [
         ("name", name or Path(source).stem), ("format", "jpg" if jpeg else "png"), ("type", "overlay"),
-        ("version", "1.1"), ("description", "Rasta Pyramid Factory photo mode"),
+        ("version", "1.1"), ("description", "Picture World Maker photo mode"),
         ("minzoom", str(zmin)), ("maxzoom", str(zmax)),
         ("bounds", f"{lon0:.8f},{lat0:.8f},{lon1:.8f},{lat1:.8f}"),
         ("center", f"{(lon0 + lon1) / 2:.8f},{(lat0 + lat1) / 2:.8f},{zmax}"),
@@ -199,7 +199,7 @@ if __name__ == "__main__":
     if len(args) < 2:
         sys.exit(__doc__)
     sys.path.insert(0, str(Path(__file__).resolve().parent))
-    import RASTA_PIPELINE as P
+    import PWM_PIPELINE as P
     from PIL import Image
     Image.MAX_IMAGE_PIXELS = None
     src, out = Path(args[0]), Path(args[1])
@@ -213,4 +213,4 @@ if __name__ == "__main__":
     t0 = time.monotonic()
     n = build_photo_mbtiles(src, out, b, zmin, zmax, jpeg="--png" not in sys.argv, quality=q,
                             emit=lambda s, m, f: print(m, flush=True) if f and int(f * 100) % 10 == 0 else None)
-    print(f"done: {n:,} tiles in {time.monotonic() - t0:.0f} s; Rasta estimate {P.estimate_synthetic_tiles(b, zmin, zmax):,}")
+    print(f"done: {n:,} tiles in {time.monotonic() - t0:.0f} s; Picture World Maker estimate {P.estimate_synthetic_tiles(b, zmin, zmax):,}")
