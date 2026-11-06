@@ -66,7 +66,7 @@ Observed result:
 - ArcGIS Earth deep zoom to streets/windows/vehicles: **PASS**
 
 Evidence image:
-- `docs/images/montreal_live_proof.jpg`
+- `montreal_live_proof.jpg` - image lost (the August 2026 upload was cut off and could not be opened; removed 2026-11-06). The result above is Jim's recorded live observation.
 
 This moved the automated Picture World Maker pipeline from BUILT/SELF-TESTED to **LIVE-PROVEN**.
 
@@ -88,7 +88,7 @@ Observed v0.1.3 behavior:
 - ArcGIS Earth status bar showed the synthetic product near **30°N, 80°W**, confirming the live parking-anchor change.
 
 Evidence image:
-- `docs/images/picture_world_v0_1_3_live_proof.jpg`
+- `picture_world_v0_1_3_live_proof.jpg` - image lost (the August 2026 upload was cut off and could not be opened; removed 2026-11-06). The result above is Jim's recorded live observation.
 
 This moved **v0.1.3 TEST** from BUILT/SELF-TESTED to **LIVE-PROVEN** for automatic synthetic placement, manufacture, verification, publication, and ArcGIS Earth display.
 
