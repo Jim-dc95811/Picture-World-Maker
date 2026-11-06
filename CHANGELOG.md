@@ -2,7 +2,9 @@
 
 *Formerly Rasta Pyramid Factory. Older entries keep the names used at the time.*
 
-## v0.2.4 — 2026-11-06 — WORLD SPOTS, released
+## v0.2.4 — 2026-11-06 — WORLD SPOTS, released, LIVE-PROVEN
+
+- Live (Jim, 17:33): London panorama on spot 2 - 53 s, 35,205 tiles, 25 bundles (same counts as the test here) - flown beside the Tower of Babel on spot 1: "Of all the crazy things to find floating in the Atlantic Ocean!!!"
 
 - Jim: "We need to add multiple places on the ocean that these virtual worlds could be on. Each could have its own grid box." (after flying Bruegel's Tower of Babel: "O M G!!!!")
 - New **World spot** chooser (1-20) in 2. Pyramid recipe. Each spot = the centre of its own 1-degree box of open Atlantic: spot 1 = the configured anchor (30 N 80 W, where every picture landed before), spots 2-10 step 1 degree east along 30 N, spots 11-20 along 31 N (to 71 W).

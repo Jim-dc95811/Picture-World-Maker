@@ -37,6 +37,10 @@ Choose a giant picture - a city panorama, a scanned map, a schematic, artwork - 
 
 > **New in v0.2.4: 20 World spots - a gallery on the ocean.** Choose a **World spot** (1-20) in the window and each picture gets its own one-degree box of open Atlantic east of Florida, so many picture worlds can sit side by side. Spot 1 is where every picture landed before, so older files stay put. The file name says where it lives (`Tower_of_Babel_spot02.tpkx`), and the [spot list](docs/USER_MANUAL.md#world-spots-a-gallery-on-the-ocean) gives each spot's coordinates for World Gate Maker - one gate per painting makes an art tour.
 
+![Two picture worlds on the ocean in ArcGIS Earth, seen from 339,729 ft: Bruegel's Tower of Babel on World spot 1 and the London panorama on World spot 2, one degree east](docs/images/picture_world_two_worlds_spot1_spot2.jpg)
+
+*Live-proven 2026-11-06: Bruegel's* Tower of Babel *(public domain, 30,000 x 21,952 px) on World spot 1 and the London panorama on World spot 2 (built in 53 s, 35,205 tiles), side by side on the Atlantic. Jim: "Of all the crazy things to find floating in the Atlantic Ocean!!!"*
+
 > **No QGIS needed (v0.2.3).** Picture World Maker now does one thing: pictures. Real map files with coordinates (GeoTIFFs) open directly in ArcGIS Earth - drag them on.
 
 > **New name (2026-11-06):** Picture World Maker was called **Rasta Pyramid Factory** up to v0.2.0. Same program, same files it makes; old download links in this repo's history still work.
@@ -51,7 +55,9 @@ Choose a giant picture - a city panorama, a scanned map, a schematic, artwork - 
 
 ## Current version truth
 
-### v0.2.4 — WORLD SPOTS (2026-11-06) — current release
+### v0.2.4 — WORLD SPOTS (2026-11-06) — current release, LIVE-PROVEN
+
+Jim built the London panorama on spot 2 (53 s, 35,205 tiles, 25 bundles - the same counts as the test here) and flew it beside Bruegel's *Tower of Babel* on spot 1.
 
 A **World spot** chooser (1-20): each picture can be parked in its own one-degree box of open ocean (30-31 N, 80-71 W), so a gallery of pictures can sit side by side. Spot 1 = the old parking spot; a spot-1 build is byte-identical to v0.2.3 (all 30 Kings Reach bundles). File names end in `_spotNN`. See [v0.2.4 release notes](releases/v0.2.4_RELEASE_NOTES.md).
 

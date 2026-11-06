@@ -60,6 +60,10 @@ Since v0.2.4 every picture can have its **own place on the ocean**. Choose a **W
 - All 20 spots are open ocean, well clear of the coast, the Bahamas and Bermuda.
 - Turn off a picture's layer in ArcGIS Earth when you build a different picture on the same spot - two pictures on one spot lie on top of each other.
 
+![Two picture worlds on the ocean in ArcGIS Earth, seen from 339,729 ft: Bruegel's Tower of Babel on World spot 1 and the London panorama on World spot 2, one degree east](images/picture_world_two_worlds_spot1_spot2.jpg)
+
+*Live-proven 2026-11-06: Bruegel's* Tower of Babel *(public domain, 30,000 x 21,952 px) on World spot 1 and the London panorama on World spot 2 (built in 53 s, 35,205 tiles), side by side on the Atlantic. Jim: "Of all the crazy things to find floating in the Atlantic Ocean!!!"*
+
 **Gates to your pictures:** in World Gate Maker, use a spot's coordinates below with **ground elev 0** to make a gate pair from home to any picture. One gate per picture, each leading to the next, makes a **gallery tour** - an artist's paintings one after another.
 
 | World spot | Latitude | Longitude |
