@@ -2,6 +2,14 @@
 
 *Formerly Rasta Pyramid Factory. Older entries keep the names used at the time.*
 
+## v0.2.4 — 2026-11-06 — WORLD SPOTS, released
+
+- Jim: "We need to add multiple places on the ocean that these virtual worlds could be on. Each could have its own grid box." (after flying Bruegel's Tower of Babel: "O M G!!!!")
+- New **World spot** chooser (1-20) in 2. Pyramid recipe. Each spot = the centre of its own 1-degree box of open Atlantic: spot 1 = the configured anchor (30 N 80 W, where every picture landed before), spots 2-10 step 1 degree east along 30 N, spots 11-20 along 31 N (to 71 W).
+- `PWM_PIPELINE`: `world_spots`, `world_spot_label`, `config_for_spot`, `world_spot_box_m` (box size in the same Web Mercator metres the picture is placed in: about 111,319 x 128,500).
+- The window shows the spot in the parking line, warns (and asks before building) when a picture is bigger than its spot's box, and adds `_spotNN` to the file name.
+- Regression: Kings Reach on spot 1 = v0.2.3 in all 30 bundles (only the package's random GUID differs, as on every build); spot 2 centred exactly on 30 N 79 W. Self-test adds world-spot checks: PASS.
+
 ## v0.2.3 — 2026-11-06 — QGIS REMOVED, released
 
 - Jim: "arcgis earth can open geotiff files directly ... lets take qgis completely out". Photo mode (Pillow) is the only engine.

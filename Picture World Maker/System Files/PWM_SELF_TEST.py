@@ -20,6 +20,24 @@ fb = synthetic_bounds_for_config(cfg, 29684, 7620, 1.0)
 if abs(((fb[0]+fb[1])/2)-cx) > 0.01 or abs(((fb[2]+fb[3])/2)-cy) > 0.01:
     errors.append(f"Florida parking center mismatch: {fb}")
 
+# v0.2.4: 20 World spots, spot 1 = the old anchor (earlier pictures keep their place),
+# 1 degree apart, all in the open-ocean box 30-31 N, 80-71 W, and each spot's picture centred on it.
+from PWM_PIPELINE import world_spots, config_for_spot
+spots = world_spots(cfg)
+if len(spots) != 20: errors.append(f"world spot count {len(spots)}")
+if spots[0][1:] != (cfg.synthetic_anchor_lat, cfg.synthetic_anchor_lon): errors.append("world spot 1 is not the anchor")
+if len({(la, lo) for _, la, lo in spots}) != 20: errors.append("world spots overlap")
+for n, la, lo in spots:
+    if not (30.0 <= la <= 31.0 and -80.0 <= lo <= -71.0): errors.append(f"world spot {n} off the ocean grid: {la}, {lo}")
+    sb = synthetic_bounds_for_config(config_for_spot(cfg, n), 30000, 21952, 1.0)
+    sx, sy = web_mercator_from_lonlat(lo, la)
+    if abs((sb[0]+sb[1])/2 - sx) > 0.01 or abs((sb[2]+sb[3])/2 - sy) > 0.01: errors.append(f"world spot {n} centre mismatch")
+if synthetic_bounds_for_config(config_for_spot(cfg, 1), 29684, 7620, 1.0) != fb: errors.append("world spot 1 moved the old parking")
+try:
+    config_for_spot(cfg, 21); errors.append("world spot 21 accepted")
+except ValueError:
+    pass
+
 # v0.1.6: TPKX stops at zoom 23 (Esri scheme) - refuse 24-25 before any long work starts.
 for zmin, zmax, mode, ok in ((0, 18, 'tpkx', True), (0, 23, 'both', True), (0, 24, 'tpkx', False),
                              (0, 25, 'both', False), (0, 25, 'mbtiles', True), (5, 4, 'mbtiles', False)):

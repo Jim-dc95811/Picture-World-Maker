@@ -1,4 +1,4 @@
-# Picture World Maker v0.2.3 - User Manual
+# Picture World Maker v0.2.4 - User Manual
 
 *Formerly Rasta Pyramid Factory.*
 
@@ -21,8 +21,8 @@ Printable copy: [Picture_World_Maker_User_Manual.pdf](Picture_World_Maker_User_M
 
 ## Install
 
-1. Download [`Picture_World_Maker_v0.2.3.zip`](../releases/Picture_World_Maker_v0.2.3.zip), right-click it > **Extract All**.
-2. Open the `Picture_World_Maker_v0.2.3` folder. It holds just two things: **Start Picture World Maker.bat** (the one to double-click) and the **System Files** folder (leave it alone).
+1. Download [`Picture_World_Maker_v0.2.4.zip`](../releases/Picture_World_Maker_v0.2.4.zip), right-click it > **Extract All**.
+2. Open the `Picture_World_Maker_v0.2.4` folder. It holds just two things: **Start Picture World Maker.bat** (the one to double-click) and the **System Files** folder (leave it alone).
 
 ## What's in the zip
 
@@ -33,7 +33,8 @@ Printable copy: [Picture_World_Maker_User_Manual.pdf](Picture_World_Maker_User_M
 1. Double-click **Start Picture World Maker.bat**.
 2. **1. Choose giant raster** - press **CHOOSE IMAGE** and pick your picture (JPG, PNG, TIF, BMP or WEBP). Picture World Maker checks it and shows its size and how many tiles it will make.
 3. **2. Pyramid recipe** - leave **Min zoom 0** and **Max zoom 18** for a normal picture. Picture World Maker suggests Max zoom 18: that is where you reach the photo's own detail.
-4. **3. Finished product** - **TPKX** for ArcGIS Earth, **MBTiles** for other map programs, or **Both**. Type a **Name** and choose a **Folder**.
+   **World spot** - which spot on the ocean the picture is parked at (1 to 20, see [World spots](#world-spots-a-gallery-on-the-ocean)). Leave it on **1** for a single picture; give each picture of a gallery its own spot.
+4. **3. Finished product** - **TPKX** for ArcGIS Earth, **MBTiles** for other map programs, or **Both**. Type a **Name** and choose a **Folder**. The file name gets its World spot added at the end, for example `Tower_of_Babel_spot02.tpkx`.
 5. Press **BUILD RASTER PYRAMID** and leave it running. The status line keeps moving - a heartbeat, the time, and the stage (building the pyramid, converting to TPKX, verifying).
 6. When it says **RASTER PYRAMID COMPLETE**, your file is in the folder you chose.
 
@@ -47,8 +48,42 @@ How long? About **1 minute** (55 s on Jim's PC) for a 50,000 x 12,006 picture (3
 
 1. Drag the `.tpkx` file onto the ArcGIS Earth map (or use the **+** Add data button).
 2. If the view does not jump there, right-click the layer in the list and zoom to it.
-3. **Where is it?** A real map (a GeoTIFF with coordinates) lands where it belongs. An ordinary **photo** has no location, so Picture World Maker places it on the **Atlantic Ocean at about 30 N, 80 W**, east of Jacksonville, at **1 picture pixel = 1 map metre**. The ocean is flat and empty, so the picture lies there like a giant carpet.
+3. **Where is it?** A picture has no location, so Picture World Maker places it on the **Atlantic Ocean east of Jacksonville**, centred on its **World spot** (spot 1 = 30 N, 80 W), at **1 picture pixel = 1 map metre**. The ocean is flat and empty, so the picture lies there like a giant carpet.
 4. Zoom in: the detail sharpens down to the photo's own pixels.
+
+## World spots: a gallery on the ocean
+
+Since v0.2.4 every picture can have its **own place on the ocean**. Choose a **World spot** in the window before you build. Each spot is the centre of its own one-degree box of open Atlantic east of Florida, about 111,000 x 128,000 picture pixels at 1 pixel per metre, so even very large pictures fit without touching their neighbours. If a picture is bigger than its box, the window says so and asks before building.
+
+- **Spot 1** is where every picture landed before v0.2.4, so your older files stay where they are.
+- Spots 2-10 step one degree east along 30 N; spots 11-20 are the row one degree north, at 31 N.
+- All 20 spots are open ocean, well clear of the coast, the Bahamas and Bermuda.
+- Turn off a picture's layer in ArcGIS Earth when you build a different picture on the same spot - two pictures on one spot lie on top of each other.
+
+**Gates to your pictures:** in World Gate Maker, use a spot's coordinates below with **ground elev 0** to make a gate pair from home to any picture. One gate per picture, each leading to the next, makes a **gallery tour** - an artist's paintings one after another.
+
+| World spot | Latitude | Longitude |
+|---|---|---|
+| 1 | 30.0 | -80.0 |
+| 2 | 30.0 | -79.0 |
+| 3 | 30.0 | -78.0 |
+| 4 | 30.0 | -77.0 |
+| 5 | 30.0 | -76.0 |
+| 6 | 30.0 | -75.0 |
+| 7 | 30.0 | -74.0 |
+| 8 | 30.0 | -73.0 |
+| 9 | 30.0 | -72.0 |
+| 10 | 30.0 | -71.0 |
+| 11 | 31.0 | -80.0 |
+| 12 | 31.0 | -79.0 |
+| 13 | 31.0 | -78.0 |
+| 14 | 31.0 | -77.0 |
+| 15 | 31.0 | -76.0 |
+| 16 | 31.0 | -75.0 |
+| 17 | 31.0 | -74.0 |
+| 18 | 31.0 | -73.0 |
+| 19 | 31.0 | -72.0 |
+| 20 | 31.0 | -71.0 |
 
 ## Fly into it with EarthStick
 

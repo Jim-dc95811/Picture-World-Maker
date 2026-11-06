@@ -13,7 +13,7 @@
 > 2. **Windows security warning:** Windows may warn about any program downloaded from the internet. Click **More info > Run anyway** (blue "Windows protected your PC" screen) or **Run**. To avoid the warning, right-click the zip > **Properties** > tick **Unblock** > **OK** before extracting.
 > 3. **Installing Python:** if the installer shows **"Add python.exe to PATH"**, tick it.
 
-### **⬇️ [3. DOWNLOAD PICTURE WORLD MAKER v0.2.3](releases/Picture_World_Maker_v0.2.3.zip)**
+### **⬇️ [3. DOWNLOAD PICTURE WORLD MAKER v0.2.4](releases/Picture_World_Maker_v0.2.4.zip)**
 **📖 [User manual](docs/USER_MANUAL.md)**
 **🗂️ [What's in the zip - every file explained](docs/images/picture_world_maker_whats_in_the_zip_full.png)**
 
@@ -33,7 +33,9 @@ Choose a giant picture - a city panorama, a scanned map, a schematic, artwork - 
 
 *Photo mode (v0.2.0, live-proven 2026-11-06): the same 50,000 x 12,006 photo built in **55 seconds** with no QGIS (35,216 tiles; the QGIS route took 8:46) and a TPKX a quarter of the size (442 MB instead of 1.77 GB) - still sharp enough to read the street.*
 
-`Picture_World_Maker_v0.2.3.zip` SHA-256: `8404866fb3c417663d42712b2e99081cbc12819404494f38f232c901d6b15509` - [what changed in v0.2.3](releases/v0.2.3_RELEASE_NOTES.md)
+`Picture_World_Maker_v0.2.4.zip` SHA-256: `b5b5ad4ac856ba992e413367039ab741d6e7b64e8c2b852ac1589f0358b7a3c6` - [what changed in v0.2.4](releases/v0.2.4_RELEASE_NOTES.md)
+
+> **New in v0.2.4: 20 World spots - a gallery on the ocean.** Choose a **World spot** (1-20) in the window and each picture gets its own one-degree box of open Atlantic east of Florida, so many picture worlds can sit side by side. Spot 1 is where every picture landed before, so older files stay put. The file name says where it lives (`Tower_of_Babel_spot02.tpkx`), and the [spot list](docs/USER_MANUAL.md#world-spots-a-gallery-on-the-ocean) gives each spot's coordinates for World Gate Maker - one gate per painting makes an art tour.
 
 > **No QGIS needed (v0.2.3).** Picture World Maker now does one thing: pictures. Real map files with coordinates (GeoTIFFs) open directly in ArcGIS Earth - drag them on.
 
@@ -49,7 +51,11 @@ Choose a giant picture - a city panorama, a scanned map, a schematic, artwork - 
 
 ## Current version truth
 
-### v0.2.3 — QGIS REMOVED (2026-11-06) — current release
+### v0.2.4 — WORLD SPOTS (2026-11-06) — current release
+
+A **World spot** chooser (1-20): each picture can be parked in its own one-degree box of open ocean (30-31 N, 80-71 W), so a gallery of pictures can sit side by side. Spot 1 = the old parking spot; a spot-1 build is byte-identical to v0.2.3 (all 30 Kings Reach bundles). File names end in `_spotNN`. See [v0.2.4 release notes](releases/v0.2.4_RELEASE_NOTES.md).
+
+### v0.2.3 — QGIS REMOVED (2026-11-06)
 
 Photo mode is the only engine; the QGIS route, its worker and settings are gone (Jim: ArcGIS Earth opens GeoTIFFs directly). A GeoTIFF is built as a picture like any other. Photo builds are byte-identical to v0.2.2 (all 35,216 Kings Reach tiles). The QGIS-era sections below are history. See [v0.2.3 release notes](releases/v0.2.3_RELEASE_NOTES.md).
 

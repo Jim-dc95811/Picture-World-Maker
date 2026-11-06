@@ -11,10 +11,11 @@ from tkinter import filedialog, messagebox, ttk
 from PWM_PIPELINE import (
     BuildCancelled, PictureWorldError, build, check_zoom_range, estimate_synthetic_tiles, explorer_size,
     inspect_raster, load_config, photo_mode_available, recommended_max_zoom, synthetic_bounds_for_config,
+    config_for_spot, world_spot_box_m, world_spot_label, world_spots,
 )
 
 APP = "PICTURE WORLD MAKER"
-VERSION = "v0.2.3"
+VERSION = "v0.2.4"
 HERE = Path(__file__).resolve().parent
 BG = "#f3f5f7"
 TEXT = "#17233a"
@@ -57,6 +58,9 @@ class App(tk.Tk):
         self.zoom_min_var = tk.IntVar(value=self.cfg.default_min_zoom)
         self.zoom_max_var = tk.IntVar(value=self.cfg.default_max_zoom)
         self.scale_var = tk.DoubleVar(value=self.cfg.synthetic_meters_per_pixel)
+        # v0.2.4: which World spot (1-20) on the ocean the picture is parked at
+        self.spot_choices = [f"{n} · {world_spot_label(lat, lon)}" for n, lat, lon in world_spots(self.cfg)]
+        self.spot_var = tk.StringVar(value=self.spot_choices[0])
         self.info_var = tk.StringVar(value="Choose a raster image. Picture World Maker will inspect it automatically.")
         self.status_var = tk.StringVar(value="Ready.")
         self.progress_var = tk.DoubleVar(value=0)
@@ -71,7 +75,7 @@ class App(tk.Tk):
         self._build_ui()
         self.protocol("WM_DELETE_WINDOW", self._close)
         # v0.1.6: keep the tile estimate current when the zooms change
-        for var in (self.zoom_min_var, self.zoom_max_var):
+        for var in (self.zoom_min_var, self.zoom_max_var, self.spot_var):
             var.trace_add("write", lambda *_: self.refresh_info())
 
     def _build_ui(self):
@@ -95,6 +99,8 @@ class App(tk.Tk):
         ttk.Spinbox(recipe, from_=0, to=25, textvariable=self.zoom_min_var, width=6).pack(side="left", padx=(7,28))
         tk.Label(recipe, text="Max zoom", bg=BG, fg=TEXT).pack(side="left")
         ttk.Spinbox(recipe, from_=0, to=25, textvariable=self.zoom_max_var, width=6).pack(side="left", padx=(7,28))
+        tk.Label(recipe, text="World spot", bg=BG, fg=TEXT).pack(side="left")
+        ttk.Combobox(recipe, textvariable=self.spot_var, values=self.spot_choices, state="readonly", width=16).pack(side="left", padx=(7,28))
         self.recipe_var = tk.StringVar(value=self._recipe_text("flat"))
         tk.Label(recipe, textvariable=self.recipe_var, bg=BG, fg=GOOD, font=("Segoe UI", 10, "bold")).pack(side="left")
 
@@ -149,6 +155,22 @@ class App(tk.Tk):
             messagebox.showerror(APP, str(exc))
             return False
 
+    def _spot(self):
+        """v0.2.4: the chosen World spot number (1-20)."""
+        try:
+            return int(self.spot_var.get().split("·")[0].strip())
+        except Exception:
+            return 1
+
+    def _spot_cfg(self):
+        return config_for_spot(self.cfg, self._spot())
+
+    def _spot_too_small(self, mpp):
+        """True when the picture is bigger than its spot's own 1-degree box (it would reach the next spot)."""
+        i = self.raster_info
+        bw, bh = world_spot_box_m(self.cfg, self._spot())
+        return i.width * mpp > bw or i.height * mpp > bh
+
     def _recipe_text(self, mode):
         """v0.2.0: show which engine will build this picture."""
         tiles = "PNG tiles" if self.cfg.photo_tiles == "png" else f"JPEG tiles (quality {self.cfg.photo_jpeg_quality}) + PNG edges"
@@ -166,10 +188,14 @@ class App(tk.Tk):
         if mode == "flat":
             try:
                 mpp = float(self.scale_var.get())
-                b = synthetic_bounds_for_config(self.cfg, i.width, i.height, mpp)
+                c = self._spot_cfg()
+                b = synthetic_bounds_for_config(c, i.width, i.height, mpp)
                 z0, z1 = int(self.zoom_min_var.get()), int(self.zoom_max_var.get())
                 tiles = estimate_synthetic_tiles(b, z0, z1)
-                text += f"\nSynthetic display parking: Atlantic east of Florida • estimated tile addresses Z{z0}–Z{z1}: {tiles:,}"
+                text += (f"\nParked at World spot {self._spot()} ({world_spot_label(c.synthetic_anchor_lat, c.synthetic_anchor_lon)}), "
+                         f"Atlantic east of Florida • estimated tile addresses Z{z0}–Z{z1}: {tiles:,}")
+                if self._spot_too_small(mpp):
+                    text += "\nThis picture is bigger than one World spot's box - it will reach into the next spot."
             except Exception:
                 pass
         self.info_var.set(text)
@@ -199,11 +225,20 @@ class App(tk.Tk):
         actual_mode = self.raster_info.mode_suggested if self.mode_var.get() == "auto" else self.mode_var.get()
         if actual_mode == "flat":
             try:
-                tiles = estimate_synthetic_tiles(synthetic_bounds_for_config(self.cfg, self.raster_info.width, self.raster_info.height, mpp), zmin, zmax)
+                tiles = estimate_synthetic_tiles(synthetic_bounds_for_config(self._spot_cfg(), self.raster_info.width, self.raster_info.height, mpp), zmin, zmax)
                 if tiles >= self.cfg.warning_tile_count:
                     if not messagebox.askyesno(APP, f"This pyramid is estimated at about {tiles:,} tile addresses.\n\nContinue?"):
                         return
             except Exception: pass
+            if self._spot_too_small(mpp):
+                if not messagebox.askyesno(APP, f"This picture is bigger than World spot {self._spot()}'s box, so it will reach into "
+                                                 "the next spot and may cover a picture parked there.\n\nBuild anyway?"):
+                    return
+        # v0.2.4: the file name carries its World spot, e.g. Tower_of_Babel_spot02.tpkx
+        spot = self._spot()
+        stem = self.output_name_var.get().strip() or self.raster_info.path.stem[:60]
+        if not stem.lower().endswith(f"_spot{spot:02d}"):
+            stem = f"{stem}_spot{spot:02d}"
         self.cancel_event.clear(); self.progress_var.set(0)
         self.build_btn.config(state="disabled"); self.cancel_btn.config(state="normal")
         self._build_started = time.monotonic()
@@ -212,9 +247,9 @@ class App(tk.Tk):
         self.status_var.set("WORKING 00:00:00 • STARTING")
         self.after(250, self._heartbeat)
         args = dict(
-            config=self.cfg, input_file=self.raster_info.path, raster_mode=self.mode_var.get(),
+            config=self._spot_cfg(), input_file=self.raster_info.path, raster_mode=self.mode_var.get(),
             output_mode=self.output_mode_var.get(), output_dir=Path(self.output_dir_var.get()),
-            output_stem=self.output_name_var.get(), zoom_min=zmin, zoom_max=zmax,
+            output_stem=stem, zoom_min=zmin, zoom_max=zmax,
             meters_per_pixel=mpp, progress=self._progress_from_worker, cancel_event=self.cancel_event,
         )
         self.thread = threading.Thread(target=self._run_build, kwargs=args, daemon=True); self.thread.start()

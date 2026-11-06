@@ -18,7 +18,7 @@ import queue
 import threading
 import time
 import zipfile
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import Callable, Optional
 
 WEB_MERCATOR_HALF = 20037508.342789244
@@ -195,6 +195,46 @@ def synthetic_bounds_for_config(
     mpp = config.synthetic_meters_per_pixel if meters_per_pixel is None else float(meters_per_pixel)
     cx, cy = web_mercator_from_lonlat(config.synthetic_anchor_lon, config.synthetic_anchor_lat)
     return synthetic_bounds(width, height, mpp, cx, cy)
+
+
+# v0.2.4 (Jim, 2026-11-06: 'multiple places on the ocean ... each could have its own grid box'):
+# 20 numbered World spots, each the centre of its own 1-degree box of open Atlantic east of Florida.
+# Spot 1 = the configured anchor (default 30 N 80 W, where every earlier picture landed, so old
+# files keep their place). Spots 2-10 step 1 degree east along the same latitude; spots 11-20 are
+# the row 1 degree north. Default grid: 30-31 N, 80-71 W - all open ocean, well clear of the coast,
+# the Bahamas (south of 27.3 N) and Bermuda (32.3 N 64.8 W).
+WORLD_SPOT_COUNT = 20
+WORLD_SPOTS_PER_ROW = 10
+
+
+def world_spots(config: Config) -> list[tuple[int, float, float]]:
+    """[(spot number, lat, lon)] - spot 1 is the configured anchor."""
+    spots = []
+    for n in range(1, WORLD_SPOT_COUNT + 1):
+        row, col = divmod(n - 1, WORLD_SPOTS_PER_ROW)
+        spots.append((n, config.synthetic_anchor_lat + row, config.synthetic_anchor_lon + col))
+    return spots
+
+
+def world_spot_label(lat: float, lon: float) -> str:
+    return f"{abs(lat):.1f}{'N' if lat >= 0 else 'S'} {abs(lon):.1f}{'W' if lon < 0 else 'E'}"
+
+
+def config_for_spot(config: Config, spot: int) -> Config:
+    """The same settings with the picture parked at World spot <spot> (1-20)."""
+    for n, lat, lon in world_spots(config):
+        if n == int(spot):
+            return replace(config, synthetic_anchor_lat=lat, synthetic_anchor_lon=lon)
+    raise ValueError(f"World spot must be 1 to {WORLD_SPOT_COUNT}.")
+
+
+def world_spot_box_m(config: Config, spot: int) -> tuple[float, float]:
+    """Size of a spot's own 1-degree box (centred on the spot) in the same Web Mercator metres the
+    picture is placed in (picture width x metres-per-pixel), east-west and north-south."""
+    lat, lon = {n: (la, lo) for n, la, lo in world_spots(config)}[int(spot)]
+    x0, y0 = web_mercator_from_lonlat(lon - 0.5, lat - 0.5)
+    x1, y1 = web_mercator_from_lonlat(lon + 0.5, lat + 0.5)
+    return x1 - x0, y1 - y0
 
 
 def recommended_max_zoom(meters_per_pixel: float) -> int:
