@@ -12,6 +12,28 @@ If coming to this project cold, establish the following before changing code.
 
 **2026-11-05 (Claude): v0.1.5 TEST** replaces the TPKX stage with `MBTiles_to_TPKX_v0_3_0.py`, which writes the mb2tpkx 1.1 structure (ArcGIS Earth / Pro proven). Measured differences of the old v0.1.0 converter and the evidence are in `releases/v0.1.5_TEST_RELEASE_NOTES.md`. Branch `rasta-v0.1.5-test` until Jim's live test. Compare any two TPKX with `tools/tpkx_compare.py` in Jim-dc95811/ArcGIS-Earth-Unlocked.
 
+## How to work on this repo (Claude, 2026-11-06)
+
+**Read first:** `docs/TECHNICAL_ARCHITECTURE.md` (pipeline, placement, photo mode, converter), then this note's dated entries. Family-wide rules (Jim's Minimal Build Rule, full-kit test zips, page standard, credits) are in `CLAUDE.md` of Jim-dc95811/ArcGIS-Earth-Unlocked.
+
+**Testing without Windows or QGIS** (the Claude sandbox has neither):
+- `python3 "Picture World Maker/System Files/PWM_SELF_TEST.py"` - must print `PICTURE WORLD MAKER SELF TEST: PASS`. It pins the converter's SHA-256: change the converter -> update the expected hash in the self-test.
+- **Pipeline rig:** `tools/test-rigs/picture_world_maker_rig.py` in ArcGIS-Earth-Unlocked. It builds a stand-in QGIS folder (shell scripts named `qgis_process.bat`, `python-qgis.bat`, `gdalinfo`, `gdal_translate`, `gdaladdo`; `command_for()` only wraps `.bat` in cmd.exe on Windows, so they run on Linux) whose "QGIS output" is any real MBTiles you pass, then runs `build()` for TPKX / Both / MBTiles / zoom-24 refusal / cancel while QGIS is silent, and photo mode with QGIS pointing nowhere. Every run must end with `temp left=0`.
+- **GUI:** no Tk in the sandbox - load `PICTURE_WORLD_MAKER.py` with a stub `tkinter` module to check the title, version and message boxes (pattern in ArcGIS-Earth-Unlocked `tools/test-rigs/README.md`).
+- **TPKX structure:** `tools/tpkx_compare.py` (ArcGIS-Earth-Unlocked) against a TPKX Jim has flown (`demo_lon_41.tpkx`, mb2tpkx-made) - 0 structural differences is the bar. A real-photo check: build Kings Reach panorama 1 (Jim's upload) and compare tile count (35,216 at Z0-18) and against the previous version's TPKX.
+- Pillow refuses pictures over ~179 Mpx unless `Image.MAX_IMAGE_PIXELS = None` - also in your own test scripts.
+- Python's `-I` flag hides the script's own folder from imports, so `python -I PWM_SELF_TEST.py` fails with "No module named PWM_PIPELINE" - not a defect; the launchers do not use `-I`.
+
+**Releasing** (what v0.2.1 did):
+1. Bump `VERSION` in `PICTURE_WORLD_MAKER.py` and the first line of `README - START HERE.txt`.
+2. Copy `Picture World Maker/` to a scratch folder named `Picture_World_Maker_v<ver>`, run the self-test there, delete every `__pycache__`, zip the folder (deflate, folder at the zip root) -> `releases/Picture_World_Maker_v<ver>.zip`. Check `unzip -l` for stray files and `file *.bat` for CRLF - Python `write_text` turns CRLF into LF, so write `.bat` files as bytes.
+3. SHA-256 into README; `releases/v<ver>_RELEASE_NOTES.md`; CHANGELOG; manual (`docs/USER_MANUAL.md`) + PDF via ArcGIS-Earth-Unlocked `tools/md2pdf.py` (`GH_BASE=https://github.com/Jim-dc95811/Picture-World-Maker/blob/main/ REPO_ROOT=.`, args: md, pdf, title).
+4. If the zip's contents changed: update the `picture_world_maker` sheet in ArcGIS-Earth-Unlocked `tools/graphics/make_zip_sheets.py`, render (`python3 make_zip_sheets.py <outdir> picture_world_maker`) and copy to `docs/images/picture_world_maker_whats_in_the_zip(_full).png`.
+5. Update the ArcGIS-Earth-Unlocked front page (download link + version) and run its `tools/linkcheck.py` and `tools/check_binaries.py`.
+6. Tests go to Jim first as a full kit zip on a `<tool>-v<ver>-test` branch; main only after his live test.
+
+**After the 2026-11-06 rename** the session git proxy needs the repo attached under its new name (`add_repo Jim-dc95811/Picture-World-Maker`, push access) - the old name's permission does not carry over (403 "not in this session's authorized repository set").
+
 Picture World Maker is an independent **general raster-pyramid manufacturing** project.
 
 Its core job remains converting large flat images and real georasters into verified multiscale MBTiles and, when selected, TPKX products.
@@ -53,6 +75,9 @@ This means:
 
 ## Upstream converter repair status
 
+> **SUPERSEDED 2026-11-05:** with Jim's full edit authority the TPKX stage was replaced by `MBTiles_to_TPKX_v0_3_0.py` (the mb2tpkx 1.1 structure, proven in ArcGIS Earth) in v0.1.5 and live-proven in v0.1.6. Field Maps is still untested and still not claimed. Kept below as history.
+
+
 `ESRI_CANONICAL_TPKX_TEST_v0_2_0` is **BUILT / SELF-TESTED — FIELD MAPS PENDING**.
 
 It copies Esri's canonical Web Mercator LOD values and metadata conventions rather than recalculating them.
@@ -72,6 +97,9 @@ Do not adopt the replacement into Picture World Maker before that real target pa
 ---
 
 ## After upstream PASS
+
+> **SUPERSEDED 2026-11-05** - see the note above.
+
 
 Create a new Picture World Maker test lineage that:
 
@@ -135,13 +163,16 @@ Current family roles:
 - Do not describe synthetic placement as real geography.
 - Do not rewrite v0.1.3 history to hide the downstream converter defect.
 - Do not claim ArcGIS Earth acceptance proves Field Maps acceptance.
-- Do not adopt the new converter before Field Maps proves it.
+- Do not claim Field Maps compatibility until Field Maps proves it (the converter was adopted on ArcGIS Earth proof, 2026-11-05).
 - Do not fake progress percentages.
 - Do not make Picture World Maker dependent on any delivery system or on Field Maps.
 
 ---
 
 ## Frozen environment
+
+> **Updated 2026-11-06:** photo mode (v0.2.0+) writes JPEG q85 + PNG-edge tiles for flat pictures and needs no QGIS; the list below is the QGIS route.
+
 
 - Windows 10/11 64-bit
 - Python 3.14.5
@@ -154,6 +185,9 @@ Current family roles:
 ---
 
 ## Current hardening priorities
+
+> **Status 2026-11-06:** cancellation, MBTiles-only, TPKX + MBTiles, typed-path inspection and zoom checks were done in v0.1.6 (rig-proven). Still open: a genuine georeferenced raster specimen through the QGIS route, a very large TIFF/BigTIFF, a disk-space preflight (%TEMP% on C: holds ~10 GB per gigapixel on the QGIS route), honest size reporting.
+
 
 After the upstream converter gate resolves:
 
