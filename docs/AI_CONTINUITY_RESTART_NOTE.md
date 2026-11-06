@@ -4,6 +4,8 @@ If coming to this project cold, establish the following before changing code.
 
 ## Current truth
 
+**2026-11-06 (Claude): v0.2.2 RELEASED = ONE OBVIOUS FILE** (Jim's packaging rule: one .bat at the top, everything else in System Files, no README / self-test .bat). `.pyw` moved into System Files (`system_files = Path(__file__).resolve().parent`); the .bat starts `System Files\START PICTURE WORLD MAKER.pyw`. Release `releases/Picture_World_Maker_v0.2.2.zip` `3197d3dad2d7e00ed8d73d36e59f848344aec90e4eb6839667c0901121c0334d`. Keep this layout in every future version.
+
 **2026-11-06 (Claude): v0.2.1 RELEASED = NEW NAME.** Rasta Pyramid Factory -> **Picture World Maker** (Jim: 'I hate the name rasta'). Repo `Jim-dc95811/Picture-World-Maker` (Jim renames it in Settings). Files: `Picture World Maker/` folder; `PICTURE_WORLD_MAKER.py` (GUI, VERSION 'v0.2.1'), `PWM_PIPELINE.py`, `PWM_PHOTO_TILER.py`, `PWM_QGIS_WORKER.py` (PWM_PROGRESS / PWM_INFO / PWM_RESULT_JSON lines), `PWM_SELF_TEST.py`, `Picture_World_Maker_Config.ini`; `RastaError` -> `PictureWorldError`. v0.2.1 build = v0.2.0 build (0 structural differences). Release `releases/Picture_World_Maker_v0.2.1.zip` `bdab52c8658923819f6666eb4979d33ba5ef7365382440fa8ee7a7141486e7be`. Entries below keep the old names.
 
 **2026-11-06 (Claude): v0.2.0 PHOTO MODE - LIVE-PROVEN** (Jim 00:47: 55 s, 35,216 tiles, 30 bundles): flat pictures tiled with Pillow, no QGIS; JPEG q85 inside, PNG edges, TPKX MIXED; `[PHOTO]` config section.
@@ -17,7 +19,7 @@ If coming to this project cold, establish the following before changing code.
 **Read first:** `docs/TECHNICAL_ARCHITECTURE.md` (pipeline, placement, photo mode, converter), then this note's dated entries. Family-wide rules (Jim's Minimal Build Rule, full-kit test zips, page standard, credits) are in `CLAUDE.md` of Jim-dc95811/ArcGIS-Earth-Unlocked.
 
 **Testing without Windows or QGIS** (the Claude sandbox has neither):
-- `python3 "Picture World Maker/System Files/PWM_SELF_TEST.py"` - must print `PICTURE WORLD MAKER SELF TEST: PASS`. It pins the converter's SHA-256: change the converter -> update the expected hash in the self-test.
+- `python3 "Picture World Maker/System Files/PWM_SELF_TEST.py"` (run it inside System Files; it writes `__pycache__` - delete it before zipping) - must print `PICTURE WORLD MAKER SELF TEST: PASS`. It pins the converter's SHA-256: change the converter -> update the expected hash in the self-test.
 - **Pipeline rig:** `tools/test-rigs/picture_world_maker_rig.py` in ArcGIS-Earth-Unlocked. It builds a stand-in QGIS folder (shell scripts named `qgis_process.bat`, `python-qgis.bat`, `gdalinfo`, `gdal_translate`, `gdaladdo`; `command_for()` only wraps `.bat` in cmd.exe on Windows, so they run on Linux) whose "QGIS output" is any real MBTiles you pass, then runs `build()` for TPKX / Both / MBTiles / zoom-24 refusal / cancel while QGIS is silent, and photo mode with QGIS pointing nowhere. Every run must end with `temp left=0`.
 - **GUI:** no Tk in the sandbox - load `PICTURE_WORLD_MAKER.py` with a stub `tkinter` module to check the title, version and message boxes (pattern in ArcGIS-Earth-Unlocked `tools/test-rigs/README.md`).
 - **TPKX structure:** `tools/tpkx_compare.py` (ArcGIS-Earth-Unlocked) against a TPKX Jim has flown (`demo_lon_41.tpkx`, mb2tpkx-made) - 0 structural differences is the bar. A real-photo check: build Kings Reach panorama 1 (Jim's upload) and compare tile count (35,216 at Z0-18) and against the previous version's TPKX.
@@ -25,7 +27,7 @@ If coming to this project cold, establish the following before changing code.
 - Python's `-I` flag hides the script's own folder from imports, so `python -I PWM_SELF_TEST.py` fails with "No module named PWM_PIPELINE" - not a defect; the launchers do not use `-I`.
 
 **Releasing** (what v0.2.1 did):
-1. Bump `VERSION` in `PICTURE_WORLD_MAKER.py` and the first line of `README - START HERE.txt`.
+1. Bump `VERSION` in `PICTURE_WORLD_MAKER.py` (there is no README text file in the package since v0.2.2 - Jim's one-obvious-file rule).
 2. Copy `Picture World Maker/` to a scratch folder named `Picture_World_Maker_v<ver>`, run the self-test there, delete every `__pycache__`, zip the folder (deflate, folder at the zip root) -> `releases/Picture_World_Maker_v<ver>.zip`. Check `unzip -l` for stray files and `file *.bat` for CRLF - Python `write_text` turns CRLF into LF, so write `.bat` files as bytes.
 3. SHA-256 into README; `releases/v<ver>_RELEASE_NOTES.md`; CHANGELOG; manual (`docs/USER_MANUAL.md`) + PDF via ArcGIS-Earth-Unlocked `tools/md2pdf.py` (`GH_BASE=https://github.com/Jim-dc95811/Picture-World-Maker/blob/main/ REPO_ROOT=.`, args: md, pdf, title).
 4. If the zip's contents changed: update the `picture_world_maker` sheet in ArcGIS-Earth-Unlocked `tools/graphics/make_zip_sheets.py`, render (`python3 make_zip_sheets.py <outdir> picture_world_maker`) and copy to `docs/images/picture_world_maker_whats_in_the_zip(_full).png`.

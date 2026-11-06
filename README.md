@@ -15,7 +15,7 @@
 > 2. **Windows security warning:** Windows may warn about any program downloaded from the internet. Click **More info > Run anyway** (blue "Windows protected your PC" screen) or **Run**. To avoid the warning, right-click the zip > **Properties** > tick **Unblock** > **OK** before extracting.
 > 3. **Installing Python:** if the installer shows **"Add python.exe to PATH"**, tick it.
 
-### **⬇️ [4. DOWNLOAD PICTURE WORLD MAKER v0.2.1](releases/Picture_World_Maker_v0.2.1.zip)**
+### **⬇️ [4. DOWNLOAD PICTURE WORLD MAKER v0.2.2](releases/Picture_World_Maker_v0.2.2.zip)**
 **📖 [User manual](docs/USER_MANUAL.md)**
 **🗂️ [What's in the zip - every file explained](docs/images/picture_world_maker_whats_in_the_zip_full.png)**
 
@@ -35,7 +35,7 @@ Choose a giant picture - a city panorama, a drone map, a scanned map, artwork - 
 
 *Photo mode (v0.2.0, live-proven 2026-11-06): the same 50,000 x 12,006 photo built in **55 seconds** with no QGIS (35,216 tiles; the QGIS route took 8:46) and a TPKX a quarter of the size (442 MB instead of 1.77 GB) - still sharp enough to read the street.*
 
-`Picture_World_Maker_v0.2.1.zip` SHA-256: `bdab52c8658923819f6666eb4979d33ba5ef7365382440fa8ee7a7141486e7be` - [what changed in v0.2.1](releases/v0.2.1_RELEASE_NOTES.md)
+`Picture_World_Maker_v0.2.2.zip` SHA-256: `3197d3dad2d7e00ed8d73d36e59f848344aec90e4eb6839667c0901121c0334d` - [what changed in v0.2.2](releases/v0.2.2_RELEASE_NOTES.md)
 
 > **New name (2026-11-06):** Picture World Maker was called **Rasta Pyramid Factory** up to v0.2.0. Same program, same files it makes; old download links in this repo's history still work.
 
@@ -49,7 +49,11 @@ Choose a giant picture - a city panorama, a drone map, a scanned map, artwork - 
 
 ## Current version truth
 
-### v0.2.1 — NEW NAME (2026-11-06) — current release
+### v0.2.2 — ONE OBVIOUS FILE (2026-11-06) — current release
+
+After Extract All the folder holds just `Start Picture World Maker.bat` and `System Files`. The program is unchanged. See [v0.2.2 release notes](releases/v0.2.2_RELEASE_NOTES.md).
+
+### v0.2.1 — NEW NAME (2026-11-06)
 
 v0.2.0 photo mode with the new name; builds identical to v0.2.0 (0 structural differences). See [v0.2.1 release notes](releases/v0.2.1_RELEASE_NOTES.md).
 

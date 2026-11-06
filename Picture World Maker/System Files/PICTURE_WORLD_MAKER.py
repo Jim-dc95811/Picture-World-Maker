@@ -14,7 +14,7 @@ from PWM_PIPELINE import (
 )
 
 APP = "PICTURE WORLD MAKER"
-VERSION = "v0.2.2 TEST"
+VERSION = "v0.2.2"
 HERE = Path(__file__).resolve().parent
 BG = "#f3f5f7"
 TEXT = "#17233a"

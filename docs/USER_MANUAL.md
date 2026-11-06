@@ -1,6 +1,6 @@
-# Picture World Maker v0.2.1 - User Manual
+# Picture World Maker v0.2.2 - User Manual
 
-*Formerly Rasta Pyramid Factory (renamed in v0.2.1; nothing else changed).*
+*Formerly Rasta Pyramid Factory.*
 
 Printable copy: [Picture_World_Maker_User_Manual.pdf](Picture_World_Maker_User_Manual.pdf)
 
@@ -22,8 +22,8 @@ Printable copy: [Picture_World_Maker_User_Manual.pdf](Picture_World_Maker_User_M
 
 ## Install
 
-1. Download [`Picture_World_Maker_v0.2.1.zip`](../releases/Picture_World_Maker_v0.2.1.zip), right-click it > **Extract All**.
-2. Open the `Picture_World_Maker_v0.2.1` folder and double-click **Run Picture World Maker Self Test.bat** once. It should end with **SELF TEST PASSED**.
+1. Download [`Picture_World_Maker_v0.2.2.zip`](../releases/Picture_World_Maker_v0.2.2.zip), right-click it > **Extract All**.
+2. Open the `Picture_World_Maker_v0.2.2` folder. It holds just two things: **Start Picture World Maker.bat** (the one to double-click) and the **System Files** folder (leave it alone).
 
 ## What's in the zip
 
@@ -80,7 +80,3 @@ The picture always lies flat - it is a map layer, so it cannot stand up like a b
 - It cannot add detail that is not in the photo - a blurry photo stays blurry when you zoom in.
 - A photo parked on the ocean is not real geography; its location is a display spot, chosen so the map tools can work.
 - The original picture is never changed.
-
-## Self-test
-
-Double-click **Run Picture World Maker Self Test.bat** (or `py -3.14 "System Files\PWM_SELF_TEST.py"`). It checks the placement maths, the zoom rules and the TPKX converter (it converts a small test map and checks the result against the ArcGIS Earth-proven structure).

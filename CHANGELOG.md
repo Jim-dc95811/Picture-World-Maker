@@ -2,6 +2,12 @@
 
 *Formerly Rasta Pyramid Factory. Older entries keep the names used at the time.*
 
+## v0.2.2 — 2026-11-06 — ONE OBVIOUS FILE, released
+
+- Jim's packaging rule: one obvious .bat to click, everything else in System Files, no extras. After Extract All the folder holds only `Start Picture World Maker.bat` and `System Files`.
+- `START PICTURE WORLD MAKER.pyw` moved into System Files (it now finds its own folder); `Run Picture World Maker Self Test.bat` and `README - START HERE.txt` removed. `PWM_SELF_TEST.py` stays inside System Files for maintainers.
+- Program unchanged apart from the version text. Self-test PASS; pipeline rig (QGIS route, photo mode, cancel, zoom rule) unchanged.
+
 ## v0.2.1 — 2026-11-06 — NEW NAME, released
 
 - **Rasta Pyramid Factory is now Picture World Maker** (Jim: "I hate the name rasta"). Program folder, launchers, window title, system files (`PICTURE_WORLD_MAKER.py`, `PWM_PIPELINE.py`, `PWM_PHOTO_TILER.py`, `PWM_QGIS_WORKER.py`, `PWM_SELF_TEST.py`, `Picture_World_Maker_Config.ini`), manual and pages renamed. Repository: `Jim-dc95811/Picture-World-Maker`.
