@@ -9,12 +9,12 @@ import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 
 from RASTA_PIPELINE import (
-    BuildCancelled, RastaError, build, estimate_synthetic_tiles, explorer_size,
+    BuildCancelled, RastaError, build, check_zoom_range, estimate_synthetic_tiles, explorer_size,
     inspect_raster, load_config, recommended_max_zoom, synthetic_bounds_for_config,
 )
 
 APP = "RASTA PYRAMID FACTORY"
-VERSION = "v0.1.5 TEST"
+VERSION = "v0.1.6 TEST"
 HERE = Path(__file__).resolve().parent
 BG = "#f3f5f7"
 TEXT = "#17233a"
@@ -67,8 +67,12 @@ class App(tk.Tk):
         self._current_stage = "ready"
         self._current_message = "Ready."
         self._heartbeat_tick_index = 0
+        self._closing = False
         self._build_ui()
         self.protocol("WM_DELETE_WINDOW", self._close)
+        # v0.1.6: keep the tile estimate current when the zooms change
+        for var in (self.zoom_min_var, self.zoom_max_var):
+            var.trace_add("write", lambda *_: self.refresh_info())
 
     def _build_ui(self):
         header = tk.Frame(self, bg=BG); header.pack(fill="x", padx=24, pady=(18,8))
@@ -122,6 +126,10 @@ class App(tk.Tk):
             ("Raster images", "*.tif *.tiff *.png *.jpg *.jpeg *.bmp *.webp"), ("All files", "*.*")])
         if not p: return
         self.input_var.set(p)
+        self._inspect(p)
+
+    def _inspect(self, p):
+        """Inspect the raster with QGIS/GDAL; True when accepted."""
         self.status_var.set("Inspecting raster with QGIS/GDAL...")
         self.update_idletasks()
         try:
@@ -132,14 +140,16 @@ class App(tk.Tk):
                 self.zoom_max_var.set(recommended_max_zoom(float(self.scale_var.get())))
             self.refresh_info()
             self.status_var.set("Raster accepted. Ready to build.")
+            return True
         except Exception as exc:
             self.raster_info = None
             self.info_var.set("Raster inspection failed.")
             self.status_var.set("Ready.")
             messagebox.showerror(APP, str(exc))
+            return False
 
     def refresh_info(self):
-        if not self.raster_info: return
+        if not self.raster_info or not hasattr(self, "info_var"): return
         i = self.raster_info
         selected = self.mode_var.get()
         mode = i.mode_suggested if selected == "auto" else selected
@@ -161,15 +171,22 @@ class App(tk.Tk):
 
     def start_build(self):
         if self.thread and self.thread.is_alive(): return
+        typed = self.input_var.get().strip().strip('"')
+        # v0.1.6: a path typed or pasted into the box (or changed after CHOOSE IMAGE) is inspected too.
+        if typed and (not self.raster_info or Path(typed).expanduser().resolve() != self.raster_info.path):
+            if not self._inspect(typed): return
         if not self.raster_info:
             messagebox.showwarning(APP, "Choose a raster image first."); return
         try:
             zmin, zmax = int(self.zoom_min_var.get()), int(self.zoom_max_var.get())
-            if not 0 <= zmin <= zmax <= 25: raise ValueError
             mpp = float(self.scale_var.get())
             if mpp <= 0: raise ValueError
         except Exception:
-            messagebox.showerror(APP, "Zoom values must be 0–25 and flat-image scale must be positive."); return
+            messagebox.showerror(APP, "Zoom values must be whole numbers 0–25 and flat-image scale must be positive."); return
+        try:
+            check_zoom_range(zmin, zmax, self.output_mode_var.get())
+        except ValueError as exc:
+            messagebox.showerror(APP, str(exc)); return
         actual_mode = self.raster_info.mode_suggested if self.mode_var.get() == "auto" else self.mode_var.get()
         if actual_mode == "flat":
             try:
@@ -186,7 +203,7 @@ class App(tk.Tk):
         self.status_var.set("WORKING 00:00:00 • STARTING")
         self.after(250, self._heartbeat)
         args = dict(
-            config=self.cfg, input_file=Path(self.input_var.get()), raster_mode=self.mode_var.get(),
+            config=self.cfg, input_file=self.raster_info.path, raster_mode=self.mode_var.get(),
             output_mode=self.output_mode_var.get(), output_dir=Path(self.output_dir_var.get()),
             output_stem=self.output_name_var.get(), zoom_min=zmin, zoom_max=zmax,
             meters_per_pixel=mpp, progress=self._progress_from_worker, cancel_event=self.cancel_event,
@@ -245,11 +262,15 @@ class App(tk.Tk):
         try:
             result = build(**kwargs)
         except BuildCancelled as exc:
-            self.after(0, lambda: messagebox.showinfo(APP, str(exc)))
-            self.after(0, self._finish_ui, "Cancelled.", False)
+            # v0.1.6: bind the message now - Python deletes 'exc' when this block ends,
+            # so v0.1.5's lambda raised NameError and the Cancelled box never appeared.
+            if not self._closing:
+                self.after(0, lambda m=str(exc): messagebox.showinfo(APP, m))
+                self.after(0, self._finish_ui, "Cancelled.", False)
         except Exception as exc:
-            self.after(0, lambda e=str(exc): messagebox.showerror(APP, e))
-            self.after(0, self._finish_ui, "Build failed.", False)
+            if not self._closing:
+                self.after(0, lambda e=str(exc): messagebox.showerror(APP, e))
+                self.after(0, self._finish_ui, "Build failed.", False)
         else:
             parts = [f"Tiles: {result.tile_count:,}", f"Zooms: {result.min_zoom}–{result.max_zoom}", f"Elapsed: {time.strftime('%H:%M:%S', time.gmtime(result.elapsed_seconds))}"]
             if result.mbtiles_file: parts.append(f"MBTiles: {result.mbtiles_file}")
@@ -271,9 +292,24 @@ class App(tk.Tk):
             self.cancel_event.set(); self.status_var.set("Cancellation requested — stopping active process tree...")
 
     def _close(self):
+        if self._closing: return
         if self.thread and self.thread.is_alive():
             if not messagebox.askyesno(APP, "A pyramid build is running. Cancel it and close?"): return
+            # v0.1.6: stop QGIS/GDAL and clean the working folder BEFORE closing. v0.1.5 closed at
+            # once, which ended the build thread before it could stop the background programs, so
+            # QGIS kept running hidden and the temporary working folder was never removed.
+            self._closing = True
             self.cancel_event.set()
+            self.build_btn.config(state="disabled"); self.cancel_btn.config(state="disabled")
+            self.status_var.set("Stopping the build and cleaning up before closing...")
+            self._close_deadline = time.monotonic() + 60
+            self.after(200, self._close_when_stopped)
+            return
+        self.destroy()
+
+    def _close_when_stopped(self):
+        if self.thread and self.thread.is_alive() and time.monotonic() < self._close_deadline:
+            self.after(200, self._close_when_stopped); return
         self.destroy()
 
 

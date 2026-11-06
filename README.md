@@ -12,6 +12,10 @@
 
 ## Current version truth
 
+### v0.1.6 TEST — BUILT / SELF-TESTED (2026-11-05)
+
+v0.1.5's TPKX fix plus five fixes from a full code review: the Cancelled message, Cancel stopping QGIS at once, closing the window mid-build (stops QGIS and cleans up first), TPKX max zoom 23 checked before building, typed-in image paths inspected. See [v0.1.6 release notes](releases/v0.1.6_TEST_RELEASE_NOTES.md).
+
 ### v0.1.5 TEST — BUILT / SELF-TESTED (2026-11-05)
 
 The TPKX stage now writes the same structure as **mb2tpkx 1.1** (proven in ArcGIS Earth and ArcGIS Pro). Checked against Jim's flown London TPKX: 0 structural differences, all bundles byte-identical. Everything before the TPKX stage is the v0.1.3 LIVE-PROVEN baseline. Waiting for Jim's live test. See [v0.1.5 release notes](releases/v0.1.5_TEST_RELEASE_NOTES.md).

@@ -14,6 +14,7 @@ import stat
 import subprocess
 import sys
 import tempfile
+import queue
 import threading
 import time
 import zipfile
@@ -22,6 +23,7 @@ from typing import Callable, Optional
 
 WEB_MERCATOR_HALF = 20037508.342789244
 WEB_MERCATOR_RES_Z0 = 156543.03392804097
+TPKX_MAX_ZOOM = 23      # Esri's published Web Mercator tiling scheme (and the TPKX converter) stops at level 23
 ProgressCallback = Callable[[str, str, Optional[float]], None]
 
 class RastaError(RuntimeError):
@@ -316,6 +318,53 @@ def estimate_synthetic_tiles(bounds: tuple[float, float, float, float], zmin: in
     return total
 
 
+def check_zoom_range(zoom_min: int, zoom_max: int, output_mode: str) -> None:
+    """v0.1.6: reject impossible zoom choices before any long work starts."""
+    if not (0 <= zoom_min <= zoom_max <= 25):
+        raise ValueError("Zooms must satisfy 0 <= minimum <= maximum <= 25.")
+    if output_mode.lower() in {"tpkx", "both"} and zoom_max > TPKX_MAX_ZOOM:
+        raise ValueError(
+            f"TPKX supports zoom levels up to {TPKX_MAX_ZOOM} (Esri's tiling scheme). "
+            f"Set Max zoom to {TPKX_MAX_ZOOM} or less, or choose MBTiles only.")
+
+
+def _line_pump(stream) -> "queue.Queue[str | None]":
+    """v0.1.6: read a child's output on a helper thread so Cancel is noticed within 0.2 s
+    even while the child prints nothing (QGIS can be silent for a long time on giant jobs)."""
+    q: "queue.Queue[str | None]" = queue.Queue()
+    def pump():
+        try:
+            for line in iter(stream.readline, ""):
+                q.put(line)
+        except Exception:
+            pass
+        finally:
+            try:
+                stream.close()   # the reader owns the pipe; the caller never blocks on closing it
+            except Exception:
+                pass
+            q.put(None)
+    threading.Thread(target=pump, daemon=True).start()
+    return q
+
+
+def _lines_until_done(proc: subprocess.Popen, cancel_event):
+    """Yield the child's output lines; stop it at once if the operator cancels."""
+    assert proc.stdout is not None
+    q = _line_pump(proc.stdout)
+    while True:
+        if cancel_event is not None and cancel_event.is_set():
+            terminate_tree(proc)
+            raise BuildCancelled("Build cancelled by operator.")
+        try:
+            line = q.get(timeout=0.2)
+        except queue.Empty:
+            continue
+        if line is None:
+            return
+        yield line
+
+
 def _run_long_command(cmd: list[str], cancel_event, timeout: int | None = None) -> str:
     """Run a potentially long GDAL command with cancellation and captured diagnostics."""
     flags, si = _hidden_flags(new_group=True)
@@ -467,9 +516,8 @@ def _run_converter(converter: Path, mbtiles: Path, tpkx: Path, emit, cancel_even
         creationflags=flags, startupinfo=si, cwd=str(converter.parent),
     )
     tail = []
-    assert proc.stdout is not None
     try:
-        for raw in iter(proc.stdout.readline, ""):
+        for raw in _lines_until_done(proc, cancel_event):
             line = raw.rstrip()
             if line:
                 tail.append(line); tail = tail[-30:]
@@ -477,13 +525,10 @@ def _run_converter(converter: Path, mbtiles: Path, tpkx: Path, emit, cancel_even
                     emit("convert", "TPKX conversion — " + line, None)
                 elif line.startswith("Packaging "):
                     emit("package", line, None)
-            if cancel_event is not None and cancel_event.is_set():
-                terminate_tree(proc)
-                raise BuildCancelled("Build cancelled by operator.")
         rc = proc.wait()
     finally:
-        try: proc.stdout.close()
-        except Exception: pass
+        if proc.poll() is None:
+            terminate_tree(proc)
     if rc != 0:
         raise RastaError("TPKX converter failed.\n\n" + "\n".join(tail[-15:]))
 
@@ -511,17 +556,10 @@ def _run_qgis_worker(config: Config, tools: dict[str, Path], worker: Path, job: 
         encoding="utf-8", errors="replace", bufsize=1,
         creationflags=flags, startupinfo=si, env=env,
     )
-    assert proc.stdout is not None
     tail = []
     result = None
     try:
-        while True:
-            if cancel_event is not None and cancel_event.is_set():
-                terminate_tree(proc)
-                raise BuildCancelled("Build cancelled by operator.")
-            line = proc.stdout.readline()
-            if line == "" and proc.poll() is not None:
-                break
+        for line in _lines_until_done(proc, cancel_event):
             line = line.rstrip("\r\n")
             if not line:
                 continue
@@ -539,8 +577,8 @@ def _run_qgis_worker(config: Config, tools: dict[str, Path], worker: Path, job: 
                 except Exception: pass
         rc = proc.wait()
     finally:
-        try: proc.stdout.close()
-        except Exception: pass
+        if proc.poll() is None:
+            terminate_tree(proc)
     if rc != 0:
         raise RastaError("Headless QGIS worker failed.\n\n" + "\n".join(tail[-20:]))
     if result is None:
@@ -567,8 +605,7 @@ def build(
         raise FileNotFoundError(input_file)
     if qgis_desktop_running():
         raise RastaError("QGIS Desktop is running. Close QGIS Desktop before building.")
-    if not (0 <= zoom_min <= zoom_max <= 25):
-        raise ValueError("Zooms must satisfy 0 <= minimum <= maximum <= 25.")
+    check_zoom_range(zoom_min, zoom_max, output_mode)
     output_mode = output_mode.lower()
     if output_mode not in {"mbtiles", "tpkx", "both"}:
         raise ValueError("Output mode must be MBTiles, TPKX, or Both.")

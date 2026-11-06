@@ -1,6 +1,6 @@
 from pathlib import Path
 import hashlib
-from RASTA_PIPELINE import synthetic_bounds, estimate_synthetic_tiles, recommended_max_zoom, _parse_json_payload, overview_factors, web_mercator_from_lonlat, load_config, synthetic_bounds_for_config
+from RASTA_PIPELINE import check_zoom_range, synthetic_bounds, estimate_synthetic_tiles, recommended_max_zoom, _parse_json_payload, overview_factors, web_mercator_from_lonlat, load_config, synthetic_bounds_for_config
 
 HERE = Path(__file__).resolve().parent
 errors=[]
@@ -34,6 +34,15 @@ if abs(cfg.synthetic_anchor_lon - (-80.0)) > 1e-9 or abs(cfg.synthetic_anchor_la
 fb = synthetic_bounds_for_config(cfg, 29684, 7620, 1.0)
 if abs(((fb[0]+fb[1])/2)-cx) > 0.01 or abs(((fb[2]+fb[3])/2)-cy) > 0.01:
     errors.append(f"Florida parking center mismatch: {fb}")
+
+# v0.1.6: TPKX stops at zoom 23 (Esri scheme) - refuse 24-25 before any long work starts.
+for zmin, zmax, mode, ok in ((0, 18, 'tpkx', True), (0, 23, 'both', True), (0, 24, 'tpkx', False),
+                             (0, 25, 'both', False), (0, 25, 'mbtiles', True), (5, 4, 'mbtiles', False)):
+    try:
+        check_zoom_range(zmin, zmax, mode); got = True
+    except ValueError:
+        got = False
+    if got != ok: errors.append(f"zoom check {zmin}-{zmax} {mode}: expected {'accept' if ok else 'refuse'}")
 
 conv=HERE/'MBTiles_to_TPKX_v0_3_0.py'
 sha=hashlib.sha256(conv.read_bytes()).hexdigest()

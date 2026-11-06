@@ -1,4 +1,4 @@
-RASTA PYRAMID FACTORY v0.1.3 TEST
+RASTA PYRAMID FACTORY v0.1.6 TEST
 SLICE - DICE - PRESENT
 
 PURPOSE
@@ -45,4 +45,7 @@ TPKX
 The included MBTiles_to_TPKX_v0_3_0.py (v0.1.5) writes the same TPKX structure as mb2tpkx 1.1, which is proven in ArcGIS Earth and ArcGIS Pro. Its fingerprint is checked by the self-test. Do not casually rewrite it.
 
 THIS IS A TEST BUILD
-v0.1.3 is LIVE-PROVEN, but release hardening remains open for cancellation, MBTiles-only/Both output, real-georaster AUTO mode, and broader giant-raster coverage.
+v0.1.3 is LIVE-PROVEN. v0.1.5 made the TPKX step write the same structure as mb2tpkx 1.1 (ArcGIS Earth / Pro proven). v0.1.6 fixes: the Cancelled message, Cancel stopping QGIS at once, closing the window mid-build (now stops QGIS and cleans up first), TPKX max zoom 23 checked before building, and a typed-in image path being inspected. Still open for live proof: real-georaster AUTO mode and broader giant-raster coverage.
+
+ZOOM LIMIT FOR TPKX
+TPKX (Esri tile packages) go up to zoom 23. For MBTiles only, up to 25 is allowed.
