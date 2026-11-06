@@ -20,11 +20,7 @@ Field Maps rejected a project-built TPKX but accepted Esri's official `Usa.tpkx`
 - Existing Rasta TPKX evidence remains valid for **ArcGIS Earth**.
 - Do **not** claim existing Rasta TPKX is Field Maps-compatible.
 - Do **not** rewrite v0.1.3 history.
-- After Offline GeoStack's Esri-canonical converter passes Field Maps, integrate that converter into the next Rasta TPKX-capable branch.
-
-Master record:
-
-Offline-GeoStack (private repository): docs/TPKX_FIELD_MAPS_CONFORMANCE_2026-08-20.md
+- Done in v0.1.5 / v0.1.6: the TPKX stage now writes the mb2tpkx 1.1 structure (ArcGIS Earth and ArcGIS Pro proven). Next: test a v0.1.6 TPKX in Field Maps before making any Field Maps claim.
 
 ---
 
@@ -67,7 +63,7 @@ Status remains:
 - selection logic: BUILT / SELF-TESTED;
 - REST converter branch: BUILT / SELF-TESTED;
 - full real-target v0.1.4 acceptance: PENDING;
-- REST output: PARKED with Map Fountain.
+- REST output: PARKED.
 
 Do not spend current effort reviving REST while the core TPKX conformance repair is pending upstream.
 
@@ -117,10 +113,7 @@ Before recommending a serious Rasta demo source, verify:
 
 Rasta remains a manufacturing project.
 
-- **Offline GeoStack** — master manufacturing/integration and current TPKX conformance repair.
-- **Rasta** — giant-raster/deep-zoom manufacturing.
-- **Map Fountain** — proven router/storage reference; parked.
-- **Android Field Maps + ArcGIS Earth** — real Android deployment/acceptance.
+- **Rasta** — giant-raster/deep-zoom manufacturing, part of the [ArcGIS Earth Unlocked](https://github.com/Jim-dc95811/ArcGIS-Earth-Unlocked) family. Delivering maps to phones and Field Maps happens outside Rasta.
 
 ---
 

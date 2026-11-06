@@ -133,7 +133,7 @@ Before publication, Rasta opens the MBTiles read-only and verifies:
 
 ## TPKX converter
 
-Since v0.1.5 the TPKX stage is `MBTiles_to_TPKX_v0_3_0.py`, which writes the same structure as mb2tpkx 1.1 (ArcGIS Earth / ArcGIS Pro proven): Esri bundle header and missing-tile value 4, Esri published LODs, MIXED tileImageInfo, extent from the finest tiles, Windows-style stored zip entries. The earlier `MBTiles_to_TPKX_v0_1_0.py` (Offline GeoStack lineage) is in Git history; see releases/v0.1.5_TEST_RELEASE_NOTES.md for the measured differences.
+Since v0.1.5 the TPKX stage is `MBTiles_to_TPKX_v0_3_0.py`, which writes the same structure as mb2tpkx 1.1 (ArcGIS Earth / ArcGIS Pro proven): Esri bundle header and missing-tile value 4, Esri published LODs, MIXED tileImageInfo, extent from the finest tiles, Windows-style stored zip entries. The earlier `MBTiles_to_TPKX_v0_1_0.py` is in Git history; see releases/v0.1.5_TEST_RELEASE_NOTES.md for the measured differences.
 
 SHA-256:
 

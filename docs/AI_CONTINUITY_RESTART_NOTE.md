@@ -43,12 +43,7 @@ This means:
 - do not claim existing Rasta TPKX is Field Maps-conformant;
 - do not erase v0.1.3 ArcGIS Earth evidence;
 - do not rewrite v0.1.3 in place;
-- wait for Offline GeoStack's Esri-canonical converter to pass Field Maps;
-- then integrate the accepted converter into a new Rasta test line.
-
-Master record:
-
-Offline-GeoStack (private repository): docs/TPKX_FIELD_MAPS_CONFORMANCE_2026-08-20.md
+- (2026-11-05: the converter step is done - v0.1.5 / v0.1.6 write the mb2tpkx 1.1 structure; Field Maps is still untested.)
 
 ---
 
@@ -91,7 +86,7 @@ Do not mutate or relabel the accepted v0.1.3 evidence package.
 
 The TPKX / MBTiles / REST selector branch remains BUILT / SELF-TESTED history.
 
-REST is parked with Map Fountain and is not the current priority.
+REST is parked and is not the current priority.
 
 ---
 
@@ -124,10 +119,7 @@ Rasta does not own Android deployment.
 
 Current family roles:
 
-- Offline GeoStack — master manufacturing/integration + TPKX conformance repair;
-- Rasta — giant-raster pyramid manufacturing;
-- Map Fountain — proven router/storage reference, parked;
-- Android Field Maps + ArcGIS Earth — real mobile deployment evidence.
+- Rasta — giant-raster pyramid manufacturing, part of the ArcGIS Earth Unlocked family (Jim-dc95811/ArcGIS-Earth-Unlocked).
 
 ---
 
@@ -141,7 +133,7 @@ Current family roles:
 - Do not claim ArcGIS Earth acceptance proves Field Maps acceptance.
 - Do not adopt the new converter before Field Maps proves it.
 - Do not fake progress percentages.
-- Do not make Rasta dependent on Map Fountain or Field Maps.
+- Do not make Rasta dependent on any delivery system or on Field Maps.
 
 ---
 

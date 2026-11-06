@@ -38,11 +38,7 @@ Status correction:
 - historical Rasta TPKX -> Field Maps: **NOT APPROVED / converter repair required**;
 - Esri-canonical converter replacement: **upstream BUILT / SELF-TESTED, Field Maps pending**.
 
-The accepted v0.1.3 evidence is preserved unchanged. Once Offline GeoStack's canonical converter passes Field Maps, the corrected TPKX stage will be integrated into a new Rasta test line and regression-tested.
-
-Master engineering record:
-
-Offline-GeoStack (private repository): docs/TPKX_FIELD_MAPS_CONFORMANCE_2026-08-20.md
+The accepted v0.1.3 evidence is preserved unchanged. A corrected TPKX stage was to follow in a new Rasta test line - done in v0.1.5 / v0.1.6 (mb2tpkx 1.1 structure).
 
 ---
 
@@ -50,8 +46,7 @@ Offline-GeoStack (private repository): docs/TPKX_FIELD_MAPS_CONFORMANCE_2026-08-
 
 - Kept **v0.1.3 TEST** as the current LIVE-PROVEN Rasta baseline.
 - Kept **v0.1.4 TEST** as BUILT / SELF-TESTED until real target acceptance.
-- Repositioned Map Fountain as LIVE-PROVEN / PARKED from primary personal-phone deployment.
-- Recorded the sibling deployment repository: `Android-Field-Maps-and-ArcGIS-Earth-`.
+- Marked the shared-storage / network delivery experiment as parked.
 - Clarified that Rasta manufactures pyramids and does not own router/mobile delivery architecture.
 
 ## v0.1.4 TEST — 2026-08-17 — BUILT / SELF-TESTED
@@ -61,7 +56,7 @@ Offline-GeoStack (private repository): docs/TPKX_FIELD_MAPS_CONFORMANCE_2026-08-
 - QGIS renders MBTiles once; TPKX and REST branch from that verified MBTiles.
 - Added Static REST WMTS conversion experiment.
 - v0.1.3 remains the live-proven baseline.
-- REST is now parked with Map Fountain.
+- REST is now parked.
 
 ---
 

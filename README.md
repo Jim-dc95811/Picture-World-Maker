@@ -71,14 +71,9 @@ Using the same physical-card/Designer workflow, Field Maps:
 - rejected a project converter-built TPKX;
 - accepted Esri's official `Usa.tpkx`.
 
-Therefore Rasta's existing TPKX output remains **ArcGIS Earth-proven**, but **Field Maps compatibility is not approved** until the Esri-canonical converter repair is proven and integrated.
+Therefore Rasta's TPKX output is **ArcGIS Earth-proven**, but **Field Maps compatibility is not approved**. Since v0.1.6 Rasta writes the same TPKX structure as mb2tpkx 1.1 (ArcGIS Earth and ArcGIS Pro proven); Field Maps has not been tested with it yet.
 
 Rasta's MBTiles manufacturing and giant-raster core are not invalidated by this finding.
-
-See the master engineering record:
-
-- Offline GeoStack — TPKX / Field Maps Conformance (private repository)
-
 ---
 
 ## Current status
@@ -92,11 +87,10 @@ See the master engineering record:
 | v0.1.6 TPKX stage (mb2tpkx 1.1 structure) -> ArcGIS Earth | ✅ **LIVE-PROVEN 2026-11-05** |
 | Historical Rasta TPKX -> Field Maps | ❌ **NOT APPROVED — converter lineage failed Field Maps** |
 | v0.1.6 TPKX -> Field Maps | 🟡 **NOT YET TESTED** |
-| Esri-canonical replacement converter | 🟡 **BUILT / SELF-TESTED IN OFFLINE GEOSTACK; FIELD MAPS PENDING** |
 | Gigapixel-class deep navigation | ✅ **LIVE-PROVEN** |
 | v0.1.3 synthetic placement + heartbeat | ✅ **LIVE-PROVEN** |
 | v0.1.4 TPKX / MBTiles / REST selector | 🟡 **BUILT / SELF-TESTED HISTORICAL TEST BRANCH** |
-| REST output | ⏸️ **PARKED WITH MAP FOUNTAIN** |
+| REST output | ⏸️ **PARKED** |
 
 ---
 
@@ -222,18 +216,13 @@ fixed synthetic Atlantic anchor near 30°N, 80°W
 
 Rasta manufactures raster pyramids. It does not own field-delivery hardware or Field Maps compatibility policy.
 
-Deployment belongs downstream in the Android Field Maps + ArcGIS Earth repository.
-
-The current converter repair belongs in Offline GeoStack, then propagates into Rasta after real-target proof.
+Delivering maps to phones and Field Maps happens outside Rasta.
 
 ---
 
-## Four-project family
+## Project family
 
-1. Offline GeoStack (private repository) — master manufacturing/integration + current TPKX conformance repair.
-2. **Rasta Pyramid Factory** — giant-raster/deep-zoom manufacturing.
-3. Map Fountain (private repository) — LIVE-PROVEN shared-storage/network reference; parked.
-4. Android Field Maps + ArcGIS Earth (private repository) — deployment and real Field Maps acceptance evidence.
+Rasta Pyramid Factory is part of **[ArcGIS Earth Unlocked](https://github.com/Jim-dc95811/ArcGIS-Earth-Unlocked)** - offline maps, joystick flight ([EarthStick](https://github.com/Jim-dc95811/EarthStick)), World Gates and objects for ArcGIS Earth. Rasta is its picture-to-map factory.
 
 ---
 
