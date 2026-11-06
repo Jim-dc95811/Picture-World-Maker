@@ -25,6 +25,10 @@ Choose a giant picture - a city panorama, a drone map, a scanned map, artwork - 
 
 *A London panorama photo (50,000 x 12,006 pixels, 35,216 tiles, built in under 9 minutes) flown in ArcGIS Earth with EarthStick. A photo has no real location, so Rasta parks it on the ocean off Jacksonville and gives it ocean coordinates - the status bar reads 29.99 N, 80.05 W, elevation 0 ft. That simulated georeferencing gives every spot in the picture its own latitude and longitude, so it behaves like a real map: zoom to full detail, put gates, beacons and objects on it, fly through it.*
 
+![Sea, street, stone: the same London photo seen from 61,246 ft as a strip on the ocean, from 4,203 ft at street level with taxis and road markings, and from 786 ft beside the bell tower of St Paul's with people on its gallery](docs/images/rasta_sea_street_stone.jpg)
+
+*Sea, street, stone - one photograph, three heights. From 61,246 ft the whole panorama floats on the ocean like a postcard; at 4,203 ft you read the road markings and the ad on a taxi; at 786 ft you hover beside the bell tower of St Paul's and count the people on its gallery.*
+
 **Fly into your pictures:** with [EarthStick](https://github.com/Jim-dc95811/EarthStick) you fly over the picture like a city; with [World Gate Maker](https://github.com/Jim-dc95811/EarthStick#make-your-own-gates) (ground elev 0) you can put gates that drop you onto any landmark in it.
 
 `Rasta_Pyramid_Factory_v0.1.6.zip` SHA-256: `bf76273ac7fbb462684c5f4a6eac1b1126f6a7ef21d5058ab4284ad642f676a4` - [what changed in v0.1.6](releases/v0.1.6_TEST_RELEASE_NOTES.md)
@@ -73,7 +77,7 @@ Rasta's MBTiles manufacturing and giant-raster core are not invalidated by this 
 
 See the master engineering record:
 
-- [Offline GeoStack — TPKX / Field Maps Conformance](https://github.com/Jim-dc95811/Offline-GeoStack/blob/main/docs/TPKX_FIELD_MAPS_CONFORMANCE_2026-08-20.md)
+- Offline GeoStack — TPKX / Field Maps Conformance (private repository)
 
 ---
 
@@ -226,10 +230,10 @@ The current converter repair belongs in Offline GeoStack, then propagates into R
 
 ## Four-project family
 
-1. [Offline GeoStack](https://github.com/Jim-dc95811/Offline-GeoStack) — master manufacturing/integration + current TPKX conformance repair.
+1. Offline GeoStack (private repository) — master manufacturing/integration + current TPKX conformance repair.
 2. **Rasta Pyramid Factory** — giant-raster/deep-zoom manufacturing.
-3. [Map Fountain](https://github.com/Jim-dc95811/Map-Fountain) — LIVE-PROVEN shared-storage/network reference; parked.
-4. [Android Field Maps + ArcGIS Earth](https://github.com/Jim-dc95811/Android-Field-Maps-and-ArcGIS-Earth-) — deployment and real Field Maps acceptance evidence.
+3. Map Fountain (private repository) — LIVE-PROVEN shared-storage/network reference; parked.
+4. Android Field Maps + ArcGIS Earth (private repository) — deployment and real Field Maps acceptance evidence.
 
 ---
 

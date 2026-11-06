@@ -42,7 +42,7 @@ The accepted v0.1.3 evidence is preserved unchanged. Once Offline GeoStack's can
 
 Master engineering record:
 
-https://github.com/Jim-dc95811/Offline-GeoStack/blob/main/docs/TPKX_FIELD_MAPS_CONFORMANCE_2026-08-20.md
+Offline-GeoStack (private repository): docs/TPKX_FIELD_MAPS_CONFORMANCE_2026-08-20.md
 
 ---
 
