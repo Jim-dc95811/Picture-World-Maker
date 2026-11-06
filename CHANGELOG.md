@@ -2,6 +2,14 @@
 
 *Formerly Rasta Pyramid Factory. Older entries keep the names used at the time.*
 
+## v0.2.3 — 2026-11-06 — QGIS REMOVED, released
+
+- Jim: "arcgis earth can open geotiff files directly ... lets take qgis completely out". Photo mode (Pillow) is the only engine.
+- Removed: the QGIS route (discovery, version check, desktop check, staging GeoTIFF, headless worker `PWM_QGIS_WORKER.py`), the `[QGIS]` settings and the QGIS-only `[PYRAMID]` keys, `[PHOTO] engine`. Pictures are inspected with Pillow only.
+- A GeoTIFF (map coordinates) is built flat like any picture; the window adds "has map coordinates: ArcGIS Earth can open this file directly".
+- Pillow is now required: if the launcher cannot install it, it says so and stops.
+- Regression: Kings Reach panorama 1 - all 30 bundles byte-identical to v0.2.2; rig: TPKX / Both / MBTiles / zoom-24 refusal / cancel / GeoTIFF pass, no temp folders left; self-test PASS.
+
 ## v0.2.2 — 2026-11-06 — ONE OBVIOUS FILE, released
 
 - Jim's packaging rule: one obvious .bat to click, everything else in System Files, no extras. After Extract All the folder holds only `Start Picture World Maker.bat` and `System Files`.

@@ -14,7 +14,7 @@ from PWM_PIPELINE import (
 )
 
 APP = "PICTURE WORLD MAKER"
-VERSION = "v0.2.2"
+VERSION = "v0.2.3"
 HERE = Path(__file__).resolve().parent
 BG = "#f3f5f7"
 TEXT = "#17233a"
@@ -120,7 +120,7 @@ class App(tk.Tk):
                                    font=("Segoe UI", 13, "bold"), padx=22, pady=12, relief="flat")
         self.build_btn.pack(side="left")
         self.cancel_btn = ttk.Button(buttons, text="CANCEL", command=self.cancel, state="disabled"); self.cancel_btn.pack(side="left", padx=14)
-        tk.Label(buttons, text="Photos: photo mode (no QGIS) • Maps: headless QGIS • → MBTiles → optional native TPKX", bg=BG, fg=MUTED).pack(side="right")
+        tk.Label(buttons, text="Any picture → MBTiles → native TPKX for ArcGIS Earth", bg=BG, fg=MUTED).pack(side="right")
 
     def choose_input(self):
         p = filedialog.askopenfilename(title="Choose giant raster image", filetypes=[
@@ -130,7 +130,7 @@ class App(tk.Tk):
         self._inspect(p)
 
     def _inspect(self, p):
-        """Inspect the raster (QGIS/GDAL, or Pillow when QGIS is not installed); True when accepted."""
+        """Inspect the picture (Pillow); True when accepted."""
         self.status_var.set("Inspecting raster...")
         self.update_idletasks()
         try:
@@ -151,10 +151,8 @@ class App(tk.Tk):
 
     def _recipe_text(self, mode):
         """v0.2.0: show which engine will build this picture."""
-        if mode == "flat" and self.cfg.photo_engine == "photo" and photo_mode_available():
-            tiles = "PNG tiles" if self.cfg.photo_tiles == "png" else f"JPEG tiles (quality {self.cfg.photo_jpeg_quality}) + PNG edges"
-            return f"PHOTO MODE • no QGIS needed • {tiles}"
-        return "QGIS 3.44.9 • PNG • 96 DPI • antialias ON • metatile 4"
+        tiles = "PNG tiles" if self.cfg.photo_tiles == "png" else f"JPEG tiles (quality {self.cfg.photo_jpeg_quality}) + PNG edges"
+        return f"PHOTO MODE • {tiles}"
 
     def refresh_info(self):
         if not self.raster_info or not hasattr(self, "info_var"): return
@@ -162,7 +160,9 @@ class App(tk.Tk):
         selected = self.mode_var.get()
         mode = i.mode_suggested if selected == "auto" else selected
         if hasattr(self, "recipe_var"): self.recipe_var.set(self._recipe_text(mode))
-        text = f"{i.width:,} × {i.height:,} pixels • {i.driver} • Auto detects: {'georeferenced raster' if i.mode_suggested=='geo' else 'flat image'}"
+        text = f"{i.width:,} × {i.height:,} pixels • {i.driver}"
+        if i.has_crs:
+            text += " • has map coordinates: ArcGIS Earth can open this file directly - here it is built as a picture"
         if mode == "flat":
             try:
                 mpp = float(self.scale_var.get())
@@ -225,10 +225,6 @@ class App(tk.Tk):
     @staticmethod
     def _stage_label(stage):
         labels = {
-            "preflight": "QGIS PREFLIGHT",
-            "stage": "OPTIMIZING SOURCE RASTER",
-            "overview": "BUILDING WORKING OVERVIEWS",
-            "qgis": "QGIS PYRAMID ENGINE",
             "render": "PHOTO MODE PYRAMID",
             "verify_mb": "VERIFYING MBTILES",
             "publish_mb": "PUBLISHING MBTILES",
@@ -305,7 +301,7 @@ class App(tk.Tk):
         if self._closing: return
         if self.thread and self.thread.is_alive():
             if not messagebox.askyesno(APP, "A pyramid build is running. Cancel it and close?"): return
-            # v0.1.6: stop QGIS/GDAL and clean the working folder BEFORE closing. v0.1.5 closed at
+            # v0.1.6: stop the build and clean the working folder BEFORE closing. v0.1.5 closed at
             # once, which ended the build thread before it could stop the background programs, so
             # QGIS kept running hidden and the temporary working folder was never removed.
             self._closing = True

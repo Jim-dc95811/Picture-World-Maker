@@ -35,20 +35,12 @@ class BuildCancelled(PictureWorldError):
 @dataclass(frozen=True)
 class Config:
     base_dir: Path
-    qgis_install_dir: Path
-    expected_qgis_version: str
-    dpi: int
-    antialias: bool
-    tile_format: int
-    quality: int
-    metatile_size: int
     default_min_zoom: int
     default_max_zoom: int
     synthetic_meters_per_pixel: float
     synthetic_anchor_lon: float
     synthetic_anchor_lat: float
     warning_tile_count: int
-    photo_engine: str = "photo"
     photo_tiles: str = "mixed"
     photo_jpeg_quality: int = 85
 
@@ -82,25 +74,16 @@ def load_config(base_dir: Path) -> Config:
     if not path.is_file():
         raise PictureWorldError(f"Configuration file is missing: {path}")
     cp.read(path, encoding="utf-8")
-    q = cp["QGIS"]
     p = cp["PYRAMID"]
     ph = cp["PHOTO"] if cp.has_section("PHOTO") else {}
     return Config(
         base_dir=base_dir,
-        qgis_install_dir=Path(os.path.expandvars(q.get("qgis_install_dir", r"C:\Program Files\QGIS 3.44.9"))),
-        expected_qgis_version=q.get("expected_qgis_version", "3.44.9").strip(),
-        dpi=p.getint("dpi", 96),
-        antialias=p.getboolean("antialias", True),
-        tile_format=p.getint("tile_format", 0),
-        quality=p.getint("quality", 75),
-        metatile_size=p.getint("metatile_size", 4),
         default_min_zoom=p.getint("default_min_zoom", 0),
         default_max_zoom=p.getint("default_max_zoom", 18),
         synthetic_meters_per_pixel=p.getfloat("synthetic_meters_per_pixel", 1.0),
         synthetic_anchor_lon=p.getfloat("synthetic_anchor_lon", -80.0),
         synthetic_anchor_lat=p.getfloat("synthetic_anchor_lat", 30.0),
         warning_tile_count=p.getint("warning_tile_count", 100000),
-        photo_engine=str(ph.get("engine", "photo")).strip().lower(),
         photo_tiles=str(ph.get("tiles", "mixed")).strip().lower(),
         photo_jpeg_quality=int(ph.get("jpeg_quality", 85)),
     )
@@ -147,104 +130,11 @@ def terminate_tree(proc: subprocess.Popen) -> None:
             pass
 
 
-def qgis_desktop_running() -> bool:
-    if os.name != "nt":
-        return False
-    try:
-        out = subprocess.run(
-            ["tasklist", "/FO", "CSV", "/NH"], capture_output=True, text=True,
-            creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0), timeout=8,
-        ).stdout.lower()
-    except Exception:
-        return False
-    return any(name in out for name in ('"qgis-bin.exe"', '"qgis.exe"'))
-
-
-def _find_first(root: Path, names: tuple[str, ...]) -> Path:
-    candidates = []
-    for name in names:
-        candidates.extend([root / "bin" / name, root / name])
-    for p in candidates:
-        if p.is_file():
-            return p
-    if root.is_dir():
-        lowers = {n.lower() for n in names}
-        for p in root.rglob("*"):
-            if p.is_file() and p.name.lower() in lowers:
-                return p
-    raise PictureWorldError(f"Required QGIS tool not found under {root}: {', '.join(names)}")
-
-
-def find_tools(config: Config) -> dict[str, Path]:
-    root = config.qgis_install_dir
-    if not root.exists():
-        raise PictureWorldError(f"QGIS install folder not found: {root}")
-    return {
-        "qgis_process": _find_first(root, ("qgis_process-qgis-ltr.bat", "qgis_process-qgis.bat", "qgis_process.bat", "qgis_process-qgis-ltr.exe", "qgis_process-qgis.exe", "qgis_process.exe")),
-        "python_qgis": _find_first(root, ("python-qgis.bat", "python-qgis-ltr.bat")),
-        "gdalinfo": _find_first(root, ("gdalinfo.exe", "gdalinfo")),
-        "gdal_translate": _find_first(root, ("gdal_translate.exe", "gdal_translate")),
-        "gdaladdo": _find_first(root, ("gdaladdo.exe", "gdaladdo")),
-    }
-
-
-def command_for(executable: Path, args: list[str]) -> list[str]:
-    if os.name == "nt" and executable.suffix.lower() in {".bat", ".cmd"}:
-        return [os.environ.get("COMSPEC", "cmd.exe"), "/d", "/c", "call", str(executable), *args]
-    return [str(executable), *args]
-
-
-def _run_capture_split(cmd: list[str], timeout: int = 30) -> tuple[int, str, str]:
-    """Run a short command while preserving stdout and stderr separately.
-
-    Machine-readable tools such as ``gdalinfo -json`` write JSON to stdout and
-    diagnostics/warnings to stderr.  Never concatenate the two before parsing.
-    """
-    flags, si = _hidden_flags()
-    p = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace",
-                       creationflags=flags, startupinfo=si, timeout=timeout)
-    return p.returncode, (p.stdout or ""), (p.stderr or "")
-
-
-def _run_capture(cmd: list[str], timeout: int = 30) -> tuple[int, str]:
-    rc, stdout, stderr = _run_capture_split(cmd, timeout=timeout)
-    return rc, stdout + stderr
-
-
-def _parse_json_payload(text: str) -> dict:
-    """Parse the first JSON object in text and tolerate harmless trailing output.
-
-    Some GDAL builds or image codecs can emit a warning after the JSON payload.
-    ``json.loads`` rejects that with ``Extra data`` even though the JSON itself is
-    valid.  ``raw_decode`` lets us consume the first complete object safely.
-    """
-    cleaned = text.lstrip("\ufeff \t\r\n")
-    start = cleaned.find("{")
-    if start < 0:
-        raise json.JSONDecodeError("No JSON object found", cleaned, 0)
-    obj, _end = json.JSONDecoder().raw_decode(cleaned[start:])
-    if not isinstance(obj, dict):
-        raise ValueError("Expected a JSON object from GDAL.")
-    return obj
-
-
-def verify_qgis(config: Config, tools: dict[str, Path]) -> str:
-    qp = tools["qgis_process"]
-    rc, text = _run_capture(command_for(qp, ["--version"]))
-    if rc != 0:
-        raise PictureWorldError("QGIS version check failed.\n\n" + text[-2000:])
-    if config.expected_qgis_version and config.expected_qgis_version not in text:
-        raise PictureWorldError(
-            f"Picture World Maker expects QGIS {config.expected_qgis_version}, but QGIS reported:\n\n{text.strip()}"
-        )
-    return next((line.strip() for line in text.splitlines() if line.strip()), text.strip())
-
-
 GEOTIFF_TAGS = (33550, 33922, 34264, 34735)   # ModelPixelScale, ModelTiepoint, ModelTransformation, GeoKeyDirectory
 
 
 def photo_mode_available() -> bool:
-    """v0.2.0: photo mode needs Pillow (the launchers install it)."""
+    """Picture World Maker needs Pillow (the launcher installs it)."""
     try:
         import PIL  # noqa: F401
         return True
@@ -253,8 +143,8 @@ def photo_mode_available() -> bool:
 
 
 def inspect_raster_pillow(path: Path) -> RasterInfo:
-    """v0.2.0: read a picture's size without QGIS/GDAL. A TIFF carrying GeoTIFF tags is reported as
-    georeferenced (it then needs the QGIS route); everything else is a flat picture."""
+    """Read a picture's size with Pillow. v0.2.3: every picture is built flat (parked on the ocean).
+    A TIFF carrying GeoTIFF tags is flagged (has_crs) so the window can say ArcGIS Earth opens it directly."""
     from PIL import Image
     Image.MAX_IMAGE_PIXELS = None
     try:
@@ -265,43 +155,16 @@ def inspect_raster_pillow(path: Path) -> RasterInfo:
             geo = bool(tags) and any(t in tags for t in GEOTIFF_TAGS)
     except Exception as exc:
         raise PictureWorldError(f"Could not read this picture: {exc}") from exc
-    return RasterInfo(path, int(width), int(height), driver, geo, geo, "geo" if geo else "flat")
+    return RasterInfo(path, int(width), int(height), driver, geo, geo, "flat")
 
 
 def inspect_raster(config: Config, path: Path) -> RasterInfo:
     path = Path(path).expanduser().resolve()
     if not path.is_file():
         raise FileNotFoundError(path)
-    try:
-        tools = find_tools(config)
-    except PictureWorldError:
-        # v0.2.0: no QGIS installed - photo mode can still inspect and build flat pictures.
-        if photo_mode_available():
-            return inspect_raster_pillow(path)
-        raise
-    rc, stdout, stderr = _run_capture_split([str(tools["gdalinfo"]), "-json", str(path)], timeout=120)
-    if rc != 0:
-        diagnostic = (stdout + "\n" + stderr).strip()
-        raise PictureWorldError("QGIS/GDAL could not inspect this raster.\n\n" + diagnostic[-3000:])
-    try:
-        # Parse stdout only. GDAL/codec warnings belong on stderr and must not be
-        # appended to the machine-readable JSON stream. raw_decode also tolerates
-        # harmless text which some builds append after the JSON object.
-        data = _parse_json_payload(stdout)
-        size = data["size"]
-        width, height = int(size[0]), int(size[1])
-    except Exception as exc:
-        detail = stderr.strip()
-        suffix = f"\n\nGDAL diagnostics:\n{detail[-1500:]}" if detail else ""
-        raise PictureWorldError(f"Could not read raster dimensions from GDAL: {exc}{suffix}") from exc
-    cs = data.get("coordinateSystem") or {}
-    wkt = str(cs.get("wkt") or "").strip()
-    gt = data.get("geoTransform")
-    has_crs = bool(wkt)
-    has_gt = isinstance(gt, list) and len(gt) == 6
-    driver = str((data.get("driverShortName") or data.get("driverLongName") or "Raster"))
-    suggested = "geo" if has_crs and has_gt else "flat"
-    return RasterInfo(path, width, height, driver, has_crs, has_gt, suggested)
+    if not photo_mode_available():
+        raise PictureWorldError("The Pillow helper is not installed. Start Picture World Maker with its .bat file - it installs Pillow.")
+    return inspect_raster_pillow(path)
 
 
 def web_mercator_from_lonlat(lon: float, lat: float) -> tuple[float, float]:
@@ -371,7 +234,7 @@ def check_zoom_range(zoom_min: int, zoom_max: int, output_mode: str) -> None:
 
 def _line_pump(stream) -> "queue.Queue[str | None]":
     """v0.1.6: read a child's output on a helper thread so Cancel is noticed within 0.2 s
-    even while the child prints nothing (QGIS can be silent for a long time on giant jobs)."""
+    even while the child prints nothing for a long time."""
     q: "queue.Queue[str | None]" = queue.Queue()
     def pump():
         try:
@@ -405,100 +268,6 @@ def _lines_until_done(proc: subprocess.Popen, cancel_event):
             return
         yield line
 
-
-def _run_long_command(cmd: list[str], cancel_event, timeout: int | None = None) -> str:
-    """Run a potentially long GDAL command with cancellation and captured diagnostics."""
-    flags, si = _hidden_flags(new_group=True)
-    with tempfile.TemporaryFile(mode="w+t", encoding="utf-8", errors="replace") as log:
-        proc = subprocess.Popen(
-            cmd, stdout=log, stderr=subprocess.STDOUT,
-            creationflags=flags, startupinfo=si,
-        )
-        started = time.monotonic()
-        while proc.poll() is None:
-            if cancel_event is not None and cancel_event.is_set():
-                terminate_tree(proc)
-                raise BuildCancelled("Build cancelled by operator.")
-            if timeout is not None and time.monotonic() - started > timeout:
-                terminate_tree(proc)
-                raise PictureWorldError(f"Command timed out after {timeout} seconds: {cmd[0]}")
-            time.sleep(0.20)
-        rc = proc.wait()
-        log.seek(0)
-        text = log.read()
-    if rc != 0:
-        raise PictureWorldError("External raster-preparation command failed.\n\n" + text[-4000:])
-    return text
-
-
-def overview_factors(width: int, height: int, target_max_dimension: int = 256) -> list[int]:
-    """Return power-of-two overview factors down to a compact whole-image overview."""
-    factors: list[int] = []
-    factor = 2
-    longest = max(int(width), int(height))
-    while longest / factor > target_max_dimension:
-        factors.append(factor)
-        factor *= 2
-    factors.append(factor)
-    return factors
-
-
-def make_synthetic_staged_geotiff(
-    config: Config,
-    tools: dict[str, Path],
-    source: Path,
-    staged_tif: Path,
-    meters_per_pixel: float,
-    emit,
-    cancel_event,
-) -> tuple[float, float, float, float]:
-    """Decode a flat source once into a tiled, georeferenced working GeoTIFF.
-
-    Giant PNG/JPEG images are stream-compressed and can be catastrophically slow
-    when QGIS asks for thousands of small random windows.  Picture World Maker therefore pays
-    one sequential decode cost, writes a tiled BigTIFF working raster, and builds
-    internal overview levels before QGIS starts the pyramid render.
-
-    The source image is never modified and the staged TIFF is temporary.
-    """
-    info = inspect_raster(config, source)
-    xmin, xmax, ymin, ymax = synthetic_bounds_for_config(config, info.width, info.height, meters_per_pixel)
-
-    emit("stage", "Preparing optimized tiled working raster — decoding source once...", 0.04)
-    cmd = [
-        str(tools["gdal_translate"]),
-        "-of", "GTiff",
-        "-a_srs", "EPSG:3857",
-        "-a_ullr", f"{xmin:.12f}", f"{ymax:.12f}", f"{xmax:.12f}", f"{ymin:.12f}",
-        "-co", "TILED=YES",
-        "-co", "BLOCKXSIZE=512",
-        "-co", "BLOCKYSIZE=512",
-        "-co", "BIGTIFF=IF_SAFER",
-        # Temporary staging favors fast random access over storage efficiency.
-        "-co", "COMPRESS=NONE",
-        str(source), str(staged_tif),
-    ]
-    _run_long_command(cmd, cancel_event=cancel_event)
-    if not staged_tif.is_file() or staged_tif.stat().st_size <= 0:
-        raise PictureWorldError("GDAL did not create the optimized working GeoTIFF.")
-
-    factors = overview_factors(info.width, info.height)
-    emit(
-        "overview",
-        "Building working overviews for fast QGIS random access — " + ", ".join(map(str, factors)),
-        0.10,
-    )
-    addo = [
-        str(tools["gdaladdo"]),
-        "-r", "average",
-        "--config", "COMPRESS_OVERVIEW", "DEFLATE",
-        "--config", "ZLEVEL_OVERVIEW", "1",
-        "--config", "BIGTIFF_OVERVIEW", "YES",
-        str(staged_tif),
-        *[str(f) for f in factors],
-    ]
-    _run_long_command(addo, cancel_event=cancel_event)
-    return xmin, xmax, ymin, ymax
 
 def inspect_mbtiles(path: Path) -> dict:
     uri = path.resolve().as_uri() + "?mode=ro"
@@ -585,48 +354,6 @@ def _publish(src: Path, dst: Path) -> None:
     partial.replace(dst)
 
 
-def _run_qgis_worker(config: Config, tools: dict[str, Path], worker: Path, job: dict, jobfile: Path, emit, cancel_event):
-    jobfile.write_text(json.dumps(job, indent=2), encoding="utf-8")
-    bat = tools["python_qgis"]
-    flags, si = _hidden_flags(new_group=True)
-    env = os.environ.copy()
-    env.setdefault("QT_QPA_PLATFORM", "offscreen")
-    proc = subprocess.Popen(
-        command_for(bat, [str(worker), str(jobfile)]),
-        stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True,
-        encoding="utf-8", errors="replace", bufsize=1,
-        creationflags=flags, startupinfo=si, env=env,
-    )
-    tail = []
-    result = None
-    try:
-        for line in _lines_until_done(proc, cancel_event):
-            line = line.rstrip("\r\n")
-            if not line:
-                continue
-            tail.append(line); tail = tail[-40:]
-            if line.startswith("PWM_PROGRESS "):
-                try:
-                    pct = float(line.split()[1])
-                    emit("qgis", f"QGIS is building the raster pyramid — {pct:.1f}%", 0.16 + max(0.0, min(0.72, pct/100*0.72)))
-                except Exception:
-                    pass
-            elif line.startswith("PWM_INFO "):
-                emit("qgis", line[9:], None)
-            elif line.startswith("PWM_RESULT_JSON "):
-                try: result = json.loads(line[len("PWM_RESULT_JSON "):])
-                except Exception: pass
-        rc = proc.wait()
-    finally:
-        if proc.poll() is None:
-            terminate_tree(proc)
-    if rc != 0:
-        raise PictureWorldError("Headless QGIS worker failed.\n\n" + "\n".join(tail[-20:]))
-    if result is None:
-        raise PictureWorldError("QGIS worker completed without returning a result record.")
-    return result
-
-
 def build(
     config: Config,
     input_file: Path,
@@ -661,66 +388,29 @@ def build(
         if progress: progress(stage, msg, frac)
 
     info = inspect_raster(config, input_file)
-    mode = raster_mode.lower()
-    if mode == "auto": mode = info.mode_suggested
-    if mode not in {"flat", "geo"}:
-        raise ValueError("Raster mode must be Auto, Flat, or Geo.")
-    if mode == "geo" and not (info.has_crs and info.has_geotransform):
-        raise PictureWorldError("GEO RASTER mode requires a raster with a valid CRS and geotransform.")
-    # v0.2.0: flat pictures go through photo mode (Pillow, no QGIS) unless the config says engine = qgis.
-    photo = mode == "flat" and config.photo_engine == "photo" and photo_mode_available()
-    tools = None
-    if not photo:
-        if qgis_desktop_running():
-            raise PictureWorldError("QGIS Desktop is running. Close QGIS Desktop before building.")
-        tools = find_tools(config)
-        emit("preflight", "Verifying QGIS installation...", 0.01)
-        verify_qgis(config, tools)
+    if raster_mode.lower() not in {"auto", "flat"}:
+        raise ValueError("Picture World Maker builds pictures only (Auto / Flat).")
+    mode = "flat"
 
     work = Path(tempfile.mkdtemp(prefix="Picture_World_"))
     started = time.monotonic()
     temp_mb = work / "raster_pyramid.mbtiles"
     temp_tpkx = work / "raster_pyramid.tpkx"
-    worker = config.base_dir / "PWM_QGIS_WORKER.py"
     converter = config.base_dir / "MBTiles_to_TPKX_v0_3_0.py"
     try:
-        if photo:
-            from PWM_PHOTO_TILER import build_photo_mbtiles, Cancelled as PhotoCancelled, PhotoTilerError
-            bounds = synthetic_bounds_for_config(config, info.width, info.height, meters_per_pixel)
-            try:
-                build_photo_mbtiles(input_file, temp_mb, bounds, zoom_min, zoom_max, name=output_stem,
-                                    jpeg=config.photo_tiles != "png", quality=config.photo_jpeg_quality,
-                                    emit=emit, cancel_event=cancel_event)
-            except PhotoCancelled as exc:
-                raise BuildCancelled(str(exc)) from exc
-            except PhotoTilerError as exc:
-                raise PictureWorldError(str(exc)) from exc
-            except MemoryError as exc:
-                raise PictureWorldError("Not enough memory to open this picture in photo mode. Close other programs, "
-                                 "or set engine = qgis under [PHOTO] in System Files\\Picture_World_Maker_Config.ini.") from exc
-        else:
-            source_for_qgis = input_file
-            if mode == "flat":
-                staged_tif = work / "picture_world_working_raster.tif"
-                make_synthetic_staged_geotiff(
-                    config, tools, input_file, staged_tif, meters_per_pixel, emit, cancel_event
-                )
-                source_for_qgis = staged_tif
-            job = {
-                "input": str(source_for_qgis),
-                "layer_name": input_file.stem,
-                "output_mbtiles": str(temp_mb),
-                "zoom_min": zoom_min,
-                "zoom_max": zoom_max,
-                "dpi": config.dpi,
-                "antialias": config.antialias,
-                "tile_format": config.tile_format,
-                "quality": config.quality,
-                "metatile_size": config.metatile_size,
-                "project_crs": "EPSG:3857",
-            }
-            emit("qgis", "Starting headless QGIS pyramid engine against optimized working raster...", 0.16)
-            _run_qgis_worker(config, tools, worker, job, work / "job.json", emit, cancel_event)
+        from PWM_PHOTO_TILER import build_photo_mbtiles, Cancelled as PhotoCancelled, PhotoTilerError
+        bounds = synthetic_bounds_for_config(config, info.width, info.height, meters_per_pixel)
+        try:
+            build_photo_mbtiles(input_file, temp_mb, bounds, zoom_min, zoom_max, name=output_stem,
+                                jpeg=config.photo_tiles != "png", quality=config.photo_jpeg_quality,
+                                emit=emit, cancel_event=cancel_event)
+        except PhotoCancelled as exc:
+            raise BuildCancelled(str(exc)) from exc
+        except PhotoTilerError as exc:
+            raise PictureWorldError(str(exc)) from exc
+        except MemoryError as exc:
+            raise PictureWorldError("Not enough memory to open this picture. Close other programs and try again, "
+                                    "or use a smaller picture.") from exc
         if not temp_mb.is_file():
             raise PictureWorldError("The pyramid stage did not create the MBTiles output.")
         emit("verify_mb", "Verifying MBTiles pyramid...", 0.90)

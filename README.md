@@ -8,22 +8,20 @@
 
 **2. ⬇️ [Python 3.14](https://www.python.org/downloads/windows/)** - free; install with the default options.
 
-**3. ⬇️ [QGIS 3.44.9](https://qgis.org/download/)** - free; **only needed for real map rasters** (GeoTIFFs with coordinates). Photos and pictures need no QGIS since v0.2.0 (photo mode).
-
 > **First time? Three quick tips**
 > 1. **Extract the zip first:** right-click the downloaded zip > **Extract All**, then open the new folder. Double-clicking files while they are still inside the zip does not work.
 > 2. **Windows security warning:** Windows may warn about any program downloaded from the internet. Click **More info > Run anyway** (blue "Windows protected your PC" screen) or **Run**. To avoid the warning, right-click the zip > **Properties** > tick **Unblock** > **OK** before extracting.
 > 3. **Installing Python:** if the installer shows **"Add python.exe to PATH"**, tick it.
 
-### **⬇️ [4. DOWNLOAD PICTURE WORLD MAKER v0.2.2](releases/Picture_World_Maker_v0.2.2.zip)**
+### **⬇️ [3. DOWNLOAD PICTURE WORLD MAKER v0.2.3](releases/Picture_World_Maker_v0.2.3.zip)**
 **📖 [User manual](docs/USER_MANUAL.md)**
 **🗂️ [What's in the zip - every file explained](docs/images/picture_world_maker_whats_in_the_zip_full.png)**
 
-Choose a giant picture - a city panorama, a drone map, a scanned map, artwork - press BUILD, and get a zoomable map (TPKX or MBTiles) you can open in ArcGIS Earth: see the whole scene like a hawk, then dive into any detail that catches your eye.
+Choose a giant picture - a city panorama, a scanned map, a schematic, artwork - press BUILD, and get a zoomable map (TPKX or MBTiles) you can open in ArcGIS Earth: see the whole scene like a hawk, then dive into any detail that catches your eye.
 
 ![Flying over a London panorama photo made with Picture World Maker in ArcGIS Earth: the photo lies flat on the Atlantic at 29.99 N, 80.05 W, elevation 0 ft, seen from 3,092 ft](docs/images/picture_world_kings_reach_arcgis_earth.jpg)
 
-*A London panorama photo (50,000 x 12,006 pixels, 35,216 tiles, built in under 9 minutes) flown in ArcGIS Earth with EarthStick. A photo has no real location, so Picture World Maker parks it on the ocean off Jacksonville and gives it ocean coordinates - the status bar reads 29.99 N, 80.05 W, elevation 0 ft. That simulated georeferencing gives every spot in the picture its own latitude and longitude, so it behaves like a real map: zoom to full detail, put gates, beacons and objects on it, fly through it.*
+*A London panorama photo (50,000 x 12,006 pixels, 35,216 tiles) flown in ArcGIS Earth with EarthStick. A photo has no real location, so Picture World Maker parks it on the ocean off Jacksonville and gives it ocean coordinates - the status bar reads 29.99 N, 80.05 W, elevation 0 ft. That simulated georeferencing gives every spot in the picture its own latitude and longitude, so it behaves like a real map: zoom to full detail, put gates, beacons and objects on it, fly through it.*
 
 ![Sea, street, stone: the same London photo seen from 61,246 ft as a strip on the ocean, from 4,203 ft at street level with taxis and road markings, and from 786 ft beside the bell tower of St Paul's with people on its gallery](docs/images/picture_world_sea_street_stone.jpg)
 
@@ -35,7 +33,9 @@ Choose a giant picture - a city panorama, a drone map, a scanned map, artwork - 
 
 *Photo mode (v0.2.0, live-proven 2026-11-06): the same 50,000 x 12,006 photo built in **55 seconds** with no QGIS (35,216 tiles; the QGIS route took 8:46) and a TPKX a quarter of the size (442 MB instead of 1.77 GB) - still sharp enough to read the street.*
 
-`Picture_World_Maker_v0.2.2.zip` SHA-256: `3197d3dad2d7e00ed8d73d36e59f848344aec90e4eb6839667c0901121c0334d` - [what changed in v0.2.2](releases/v0.2.2_RELEASE_NOTES.md)
+`Picture_World_Maker_v0.2.3.zip` SHA-256: `8404866fb3c417663d42712b2e99081cbc12819404494f38f232c901d6b15509` - [what changed in v0.2.3](releases/v0.2.3_RELEASE_NOTES.md)
+
+> **No QGIS needed (v0.2.3).** Picture World Maker now does one thing: pictures. Real map files with coordinates (GeoTIFFs) open directly in ArcGIS Earth - drag them on.
 
 > **New name (2026-11-06):** Picture World Maker was called **Rasta Pyramid Factory** up to v0.2.0. Same program, same files it makes; old download links in this repo's history still work.
 
@@ -49,7 +49,11 @@ Choose a giant picture - a city panorama, a drone map, a scanned map, artwork - 
 
 ## Current version truth
 
-### v0.2.2 — ONE OBVIOUS FILE (2026-11-06) — current release
+### v0.2.3 — QGIS REMOVED (2026-11-06) — current release
+
+Photo mode is the only engine; the QGIS route, its worker and settings are gone (Jim: ArcGIS Earth opens GeoTIFFs directly). A GeoTIFF is built as a picture like any other. Photo builds are byte-identical to v0.2.2 (all 35,216 Kings Reach tiles). The QGIS-era sections below are history. See [v0.2.3 release notes](releases/v0.2.3_RELEASE_NOTES.md).
+
+### v0.2.2 — ONE OBVIOUS FILE (2026-11-06)
 
 After Extract All the folder holds just `Start Picture World Maker.bat` and `System Files`. The program is unchanged. See [v0.2.2 release notes](releases/v0.2.2_RELEASE_NOTES.md).
 
@@ -89,6 +93,8 @@ Since v0.1.6 Picture World Maker writes the same TPKX structure as mb2tpkx 1.1 (
 
 ## Current status
 
+> Since v0.2.3 the QGIS rows below are history: the QGIS engine was removed and photo mode builds everything.
+
 | Capability | Status |
 | --- | --- |
 | Automated giant-raster processing | ✅ **LIVE-PROVEN** |
@@ -120,6 +126,8 @@ The original source raster is not modified.
 ---
 
 ## Manufacturing architecture
+
+> **v0.2.3:** the pipeline is now picture -> Pillow inspection -> photo-mode pyramid (MBTiles) -> TPKX converter -> verify -> publish. The QGIS steps shown below are the v0.1.x-v0.2.2 design, kept as history.
 
 ```text
 giant source raster
@@ -218,7 +226,7 @@ fixed synthetic Atlantic anchor near 30°N, 80°W
 
 - Windows 10/11 64-bit
 - Python 3.14.5 64-bit
-- QGIS 3.44.9
+- Pillow (installed by the launcher)
 
 ---
 

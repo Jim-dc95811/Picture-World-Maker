@@ -1,3 +1,5 @@
+> **v0.2.3 (2026-11-06): QGIS removed.** Photo mode (below) is the only engine; every picture, including a GeoTIFF, is built flat with Pillow. Sections about the QGIS route, headless worker, staging and GDAL inspection describe v0.1.x-v0.2.2 and are kept as history.
+
 # Technical Architecture
 
 ## Design principle

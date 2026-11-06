@@ -1,6 +1,6 @@
 from pathlib import Path
 import hashlib
-from PWM_PIPELINE import check_zoom_range, synthetic_bounds, estimate_synthetic_tiles, recommended_max_zoom, _parse_json_payload, overview_factors, web_mercator_from_lonlat, load_config, synthetic_bounds_for_config
+from PWM_PIPELINE import check_zoom_range, synthetic_bounds, estimate_synthetic_tiles, recommended_max_zoom, web_mercator_from_lonlat, load_config, synthetic_bounds_for_config
 
 HERE = Path(__file__).resolve().parent
 errors=[]
@@ -9,21 +9,6 @@ if b != (-10317.0,10317.0,-5158.5,5158.5): errors.append(f"bounds mismatch: {b}"
 count=estimate_synthetic_tiles(b,0,18)
 if count != 12489: errors.append(f"manual-proof tile count mismatch: {count}")
 if recommended_max_zoom(1.0) != 18: errors.append("recommended max zoom mismatch")
-
-# Regression: GDAL JSON may be followed by a codec/GDAL diagnostic. v0.1.0
-# concatenated streams and json.loads() raised "Extra data". The parser must
-# recover the first complete JSON object without losing raster dimensions.
-probe = '{"size":[29684,7620],"driverShortName":"PNG"}\nWarning 1: harmless trailing diagnostic\n'
-try:
-    parsed = _parse_json_payload(probe)
-    if parsed.get("size") != [29684, 7620]: errors.append(f"GDAL JSON parser regression: {parsed}")
-except Exception as exc:
-    errors.append(f"GDAL JSON parser raised on trailing diagnostic: {exc}")
-
-# Performance regression: giant flat rasters must be staged into a tiled GeoTIFF
-# with power-of-two overviews instead of leaving QGIS to random-read a PNG/JPEG.
-factors = overview_factors(29684, 7620)
-if factors != [2, 4, 8, 16, 32, 64, 128]: errors.append(f"overview plan mismatch: {factors}")
 
 # v0.1.3 regression: flat images park at a deterministic synthetic anchor
 # east of Florida instead of at lon/lat 0,0 off Africa.
@@ -85,7 +70,7 @@ with tempfile.TemporaryDirectory() as td:
             idx = struct.unpack_from('<16384Q', bun, 64)
             if sum(1 for v in idx if v != 4) != 2 or idx[2] != 4: errors.append('missing-tile index value must be 4 (Esri)')
             if bun[(idx[0] & ((1 << 40) - 1)):][:8] != t[:8]: errors.append('tile bytes not copied unchanged')
-# v0.2.0: photo mode - a small picture tiled without QGIS must give exactly Picture World Maker's tile set, the
+# v0.2.0: photo mode - a small picture must give exactly Picture World Maker's tile set, the
 # picture's edge must land where the synthetic placement says, and the TPKX converter must accept it.
 try:
     from PIL import Image
@@ -101,7 +86,8 @@ try:
         im = Image.new('RGB', (64, 64)); from PIL import TiffImagePlugin
         ifd = TiffImagePlugin.ImageFileDirectory_v2(); ifd[33922] = (0.0, 0.0, 0.0, 500000.0, 3300000.0, 0.0); ifd.tagtype[33922] = 12
         im.save(geo_tif, tiffinfo=ifd)
-        if inspect_raster_pillow(geo_tif).mode_suggested != 'geo': errors.append('GeoTIFF tags not detected as georeferenced')
+        gi = inspect_raster_pillow(geo_tif)
+        if (gi.mode_suggested, gi.has_crs) != ('flat', True): errors.append(f'v0.2.3: a GeoTIFF is built flat and flagged as having coordinates: {gi}')
         bb = synthetic_bounds(3000, 1200, 1.0, *__import__('PWM_PIPELINE').web_mercator_from_lonlat(-80.0, 30.0))
         mbt = Path(td) / 'photo_probe.mbtiles'
         n = build_photo_mbtiles(pic, mbt, bb, 0, 18)
@@ -122,6 +108,5 @@ print('PICTURE WORLD MAKER SELF TEST: PASS')
 print('Manual proof synthetic bounds:', b)
 print('Manual proof Z0-Z18 tile addresses:', f'{count:,}')
 print('1 m/pixel recommended max zoom:', recommended_max_zoom(1.0))
-print('29,684 px working overview factors:', factors)
 print('Synthetic parking anchor:', f'{cfg.synthetic_anchor_lat:.1f}N {abs(cfg.synthetic_anchor_lon):.1f}W')
 print('TPKX converter MBTiles_to_TPKX_v0_3_0.py (mb2tpkx 1.1 structure) SHA-256:', sha)
