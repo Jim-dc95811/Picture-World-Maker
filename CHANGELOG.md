@@ -1,6 +1,9 @@
 # Rasta Pyramid Factory Changelog
 
-## v0.1.6 TEST — 2026-11-05 — BUILT / SELF-TESTED
+## v0.1.6 — 2026-11-05 — LIVE-PROVEN, released
+
+Jim's live build: Kings Reach panorama 1 (50,000 x 12,006 px, 35,216 tiles, 8:46) -> TPKX -> ArcGIS Earth: PASS. Download: `releases/Rasta_Pyramid_Factory_v0.1.6.zip`. New user manual (`docs/USER_MANUAL.md` + PDF) and 'What's in the zip' sheet.
+
 
 Full code review of Rasta (pipeline, window, QGIS worker, launchers). Fixes, each confirmed by a test before and after:
 

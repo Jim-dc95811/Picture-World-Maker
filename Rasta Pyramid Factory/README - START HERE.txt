@@ -8,6 +8,7 @@ CURRENT STATUS
 - Manual arbitrary-raster pipeline: LIVE-PROVEN.
 - Rasta v0.1.2 automated Montreal skyline pipeline: LIVE-PROVEN.
 - Rasta v0.1.3 automatic flat-image manufacture + Florida/Atlantic synthetic parking + verified TPKX publication + ArcGIS Earth display: LIVE-PROVEN.
+- Rasta v0.1.6 (TPKX step = mb2tpkx 1.1 structure, plus five fixes): LIVE-PROVEN 2026-11-05 - Kings Reach panorama 1 (50,000 x 12,006 px, 35,216 tiles, 8:46) built and flown in ArcGIS Earth.
 
 REQUIREMENTS
 - Windows 10/11 64-bit
@@ -16,6 +17,7 @@ REQUIREMENTS
 
 NORMAL OPERATOR WORKFLOW
 1. Run "Run Rasta Self Test.bat" once after extraction.
+   (User manual: https://github.com/Jim-dc95811/Rasta-Pyramid-Factory/blob/main/docs/USER_MANUAL.md)
 2. Launch "Start Rasta Pyramid Factory.bat".
 3. CHOOSE IMAGE.
 4. Select zoom range if the defaults are not suitable.

@@ -1,20 +1,45 @@
 # Rasta Pyramid Factory
 
-## Giant raster -> smooth multiscale pyramid
+**Turn giant pictures into maps you can fly into.** Slice. Dice. Present.
 
-**Turn very large flat images and georeferenced rasters into verified MBTiles / TPKX pyramids without manually operating QGIS.**
+## Get everything you need
 
-> **Slice. Dice. Present.**
+**1. ⬇️ [ArcGIS Earth](https://www.esri.com/en-us/arcgis/products/arcgis-earth/downloads)** - free 3D globe from Esri (Windows desktop version), to look at and fly over the result.
 
-> **See the whole scene like a hawk. Dive into any detail that catches your eye.**
+**2. ⬇️ [Python 3.14](https://www.python.org/downloads/windows/)** - free; install with the default options.
+
+**3. ⬇️ [QGIS 3.44.9](https://qgis.org/download/)** - free; Rasta runs it behind the scenes (install it at the normal place, `C:\Program Files\QGIS 3.44.9`).
+
+> **First time? Three quick tips**
+> 1. **Extract the zip first:** right-click the downloaded zip > **Extract All**, then open the new folder. Double-clicking files while they are still inside the zip does not work.
+> 2. **Windows security warning:** Windows may warn about any program downloaded from the internet. Click **More info > Run anyway** (blue "Windows protected your PC" screen) or **Run**. To avoid the warning, right-click the zip > **Properties** > tick **Unblock** > **OK** before extracting.
+> 3. **Installing Python:** if the installer shows **"Add python.exe to PATH"**, tick it.
+
+### **⬇️ [4. DOWNLOAD RASTA PYRAMID FACTORY v0.1.6](releases/Rasta_Pyramid_Factory_v0.1.6.zip)**
+**📖 [User manual](docs/USER_MANUAL.md)**
+**🗂️ [What's in the zip - every file explained](docs/images/rasta_whats_in_the_zip_full.png)**
+
+Choose a giant picture - a city panorama, a drone map, a scanned map, artwork - press BUILD, and get a zoomable map (TPKX or MBTiles) you can open in ArcGIS Earth: see the whole scene like a hawk, then dive into any detail that catches your eye.
+
+![Flying over a London panorama photo made with Rasta in ArcGIS Earth: the photo lies flat on the Atlantic at 29.99 N, 80.05 W, elevation 0 ft, seen from 3,092 ft](docs/images/rasta_v0_1_6_kings_reach_arcgis_earth.jpg)
+
+*A London panorama photo (50,000 x 12,006 pixels, 35,216 tiles, built in under 9 minutes) flown in ArcGIS Earth with EarthStick. A photo has no real location, so Rasta parks it on the ocean off Jacksonville and gives it ocean coordinates - the status bar reads 29.99 N, 80.05 W, elevation 0 ft. That simulated georeferencing gives every spot in the picture its own latitude and longitude, so it behaves like a real map: zoom to full detail, put gates, beacons and objects on it, fly through it.*
+
+**Fly into your pictures:** with [EarthStick](https://github.com/Jim-dc95811/EarthStick) you fly over the picture like a city; with [World Gate Maker](https://github.com/Jim-dc95811/EarthStick#make-your-own-gates) (ground elev 0) you can put gates that drop you onto any landmark in it.
+
+`Rasta_Pyramid_Factory_v0.1.6.zip` SHA-256: `bf76273ac7fbb462684c5f4a6eac1b1126f6a7ef21d5058ab4284ad642f676a4` - [what changed in v0.1.6](releases/v0.1.6_TEST_RELEASE_NOTES.md)
+
+> **ArcGIS Earth Unlocked:** Rasta is the picture-to-map factory of the broader project family. See the [master system map](https://github.com/Jim-dc95811/ArcGIS-Earth-Unlocked).
 
 ---
 
+# Engineering record
+
 ## Current version truth
 
-### v0.1.6 TEST — BUILT / SELF-TESTED (2026-11-05)
+### v0.1.6 — LIVE-PROVEN (2026-11-05) — current release
 
-v0.1.5's TPKX fix plus five fixes from a full code review: the Cancelled message, Cancel stopping QGIS at once, closing the window mid-build (stops QGIS and cleans up first), TPKX max zoom 23 checked before building, typed-in image paths inspected. See [v0.1.6 release notes](releases/v0.1.6_TEST_RELEASE_NOTES.md).
+Jim built `Kings_reach_panorama_1.jpg` (50,000 x 12,006 px, Z0-Z18, 35,216 tiles, 30 bundles, 8:46) and flew it in ArcGIS Earth: PASS. v0.1.5's TPKX fix (mb2tpkx 1.1 structure) plus five fixes from a full code review: the Cancelled message, Cancel stopping QGIS at once, closing the window mid-build (stops QGIS and cleans up first), TPKX max zoom 23 checked before building, typed-in image paths inspected. See [v0.1.6 release notes](releases/v0.1.6_TEST_RELEASE_NOTES.md).
 
 ### v0.1.5 TEST — BUILT / SELF-TESTED (2026-11-05)
 
@@ -60,7 +85,9 @@ See the master engineering record:
 | Headless QGIS 3.44.9 pyramid engine | ✅ **LIVE-PROVEN** |
 | Raster -> verified MBTiles | ✅ **LIVE-PROVEN** |
 | Historical MBTiles -> TPKX -> ArcGIS Earth | ✅ **LIVE-PROVEN** |
+| v0.1.6 TPKX stage (mb2tpkx 1.1 structure) -> ArcGIS Earth | ✅ **LIVE-PROVEN 2026-11-05** |
 | Historical Rasta TPKX -> Field Maps | ❌ **NOT APPROVED — converter lineage failed Field Maps** |
+| v0.1.6 TPKX -> Field Maps | 🟡 **NOT YET TESTED** |
 | Esri-canonical replacement converter | 🟡 **BUILT / SELF-TESTED IN OFFLINE GEOSTACK; FIELD MAPS PENDING** |
 | Gigapixel-class deep navigation | ✅ **LIVE-PROVEN** |
 | v0.1.3 synthetic placement + heartbeat | ✅ **LIVE-PROVEN** |
@@ -105,7 +132,7 @@ synthetic display placement
 
 For ArcGIS Earth, the v0.1.3 historical TPKX output remains proven evidence.
 
-For future production and any Field Maps claim, Rasta must adopt the replacement converter only after the Esri-canonical small specimen passes Field Maps.
+Since v0.1.6 Rasta's TPKX stage writes the mb2tpkx 1.1 structure (proven in ArcGIS Earth and ArcGIS Pro; byte-identical bundles against Jim's flown London TPKX). Field Maps has not been tested with it - make no Field Maps claim until a real Field Maps test passes.
 
 Do not rewrite the accepted v0.1.3 evidence package and pretend it was always the new converter.
 
@@ -208,6 +235,7 @@ The current converter repair belongs in Offline GeoStack, then propagates into R
 
 ## Documentation
 
+- [User manual](docs/USER_MANUAL.md) ([PDF](docs/Rasta_Pyramid_Factory_User_Manual.pdf))
 - [Plain-language overview](docs/PLAIN_LANGUAGE_OVERVIEW.md)
 - [Operator workflow](docs/OPERATOR_WORKFLOW.md)
 - [Technical architecture](docs/TECHNICAL_ARCHITECTURE.md)
@@ -218,6 +246,12 @@ The current converter repair belongs in Offline GeoStack, then propagates into R
 - [Changelog](CHANGELOG.md)
 
 ---
+
+## Human-AI engineering collaboration
+
+Rasta Pyramid Factory was conceived, directed and live-tested by **Jim Gaddy**, working with **OpenAI's ChatGPT** and **Anthropic's Claude** as AI coding and documentation partners. Jim supplied the idea of turning giant pictures into navigable pyramids, the QGIS recipe and every live Windows / ArcGIS Earth test. ChatGPT helped build Rasta up to v0.1.4. Claude built v0.1.5-v0.1.6 (the mb2tpkx-structure TPKX stage, the code-review fixes, the structural self-test), the user manual and this page. See [CONTRIBUTORS.md](CONTRIBUTORS.md).
+
+This acknowledgment is not a claim of OpenAI or Anthropic sponsorship or endorsement.
 
 ## Governing rule
 
