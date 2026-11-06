@@ -27,7 +27,7 @@ Choose a giant picture - a city panorama, a scanned map, a schematic, artwork - 
 
 *Sea, street, stone - one photograph, three heights. From 61,246 ft the whole panorama floats on the ocean like a postcard; at 4,203 ft you read the road markings and the ad on a taxi; at 786 ft you hover beside the bell tower of St Paul's and count the people on its gallery.*
 
-**Fly into your pictures:** with [EarthStick](https://github.com/Jim-dc95811/EarthStick) you fly over the picture like a city; with [World Gate Maker](https://github.com/Jim-dc95811/EarthStick#make-your-own-gates) (ground elev 0) you can put gates that drop you onto any landmark in it.
+**Fly into your pictures:** with [EarthStick](https://github.com/Jim-dc95811/EarthStick) you fly over the picture like a city; with [World Gate Maker](https://github.com/Jim-dc95811/EarthStick#make-your-own-gates) (ground elev 0) you can put gates that drop you onto any landmark in it. Or fly to the spot and press Button 2 with [EarthStick 1.3.6](https://github.com/Jim-dc95811/EarthStick#drop-gates-as-you-fly-new-in-136) - the Gate Dropper puts the gate right there.
 
 ![Photo mode, live-proven: the London panorama built in 55 seconds with no QGIS, then flown at street level in ArcGIS Earth](docs/images/picture_world_photo_mode_street.jpg)
 
