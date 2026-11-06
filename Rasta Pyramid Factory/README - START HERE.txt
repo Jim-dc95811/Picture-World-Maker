@@ -42,7 +42,7 @@ Antialiasing ON
 Metatile 4
 
 TPKX
-The included MBTiles_to_TPKX_v0_1_0.py is the frozen proven converter lineage from Offline GeoStack. Do not casually rewrite it.
+The included MBTiles_to_TPKX_v0_3_0.py (v0.1.5) writes the same TPKX structure as mb2tpkx 1.1, which is proven in ArcGIS Earth and ArcGIS Pro. Its fingerprint is checked by the self-test. Do not casually rewrite it.
 
 THIS IS A TEST BUILD
 v0.1.3 is LIVE-PROVEN, but release hardening remains open for cancellation, MBTiles-only/Both output, real-georaster AUTO mode, and broader giant-raster coverage.

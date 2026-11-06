@@ -1,5 +1,12 @@
 # Rasta Pyramid Factory Changelog
 
+## v0.1.5 TEST — 2026-11-05 — BUILT / SELF-TESTED
+
+- New TPKX stage: `MBTiles_to_TPKX_v0_3_0.py` writes the same TPKX structure as mb2tpkx 1.1 (proven in ArcGIS Earth and ArcGIS Pro). Checked layer by layer against Jim's flown London TPKX: 0 structural differences, bundles byte-identical.
+- Fixed versus v0.1.0: bundle header fields, missing-tile index value (4), tileImageInfo, Esri LOD values, extent from the finest tiles, iteminfo fields, zip entry style, thumbnail.
+- Self-test now converts a probe MBTiles and checks the structure; `MBTiles_to_TPKX_v0_1_0.py` retired (in Git history).
+- Everything before the TPKX stage is the v0.1.3 LIVE-PROVEN baseline, unchanged. Details: [releases/v0.1.5_TEST_RELEASE_NOTES.md](releases/v0.1.5_TEST_RELEASE_NOTES.md).
+
 ## 2026-08-20 — TPKX Field Maps compatibility boundary added
 
 A downstream ArcGIS Field Maps control test found a verified compatibility defect in the historical MBTiles -> TPKX converter lineage inherited by Rasta.

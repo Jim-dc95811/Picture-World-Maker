@@ -4,6 +4,8 @@ If coming to this project cold, establish the following before changing code.
 
 ## Current truth
 
+**2026-11-05 (Claude): v0.1.5 TEST** replaces the TPKX stage with `MBTiles_to_TPKX_v0_3_0.py`, which writes the mb2tpkx 1.1 structure (ArcGIS Earth / Pro proven). Measured differences of the old v0.1.0 converter and the evidence are in `releases/v0.1.5_TEST_RELEASE_NOTES.md`. Branch `rasta-v0.1.5-test` until Jim's live test. Compare any two TPKX with `tools/tpkx_compare.py` in Jim-dc95811/ArcGIS-Earth-Unlocked.
+
 Rasta is an independent **general raster-pyramid manufacturing** project.
 
 Its core job remains converting large flat images and real georasters into verified multiscale MBTiles and, when selected, TPKX products.

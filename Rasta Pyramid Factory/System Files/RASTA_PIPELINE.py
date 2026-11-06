@@ -600,7 +600,7 @@ def build(
     temp_mb = work / "raster_pyramid.mbtiles"
     temp_tpkx = work / "raster_pyramid.tpkx"
     worker = config.base_dir / "RPF_QGIS_WORKER.py"
-    converter = config.base_dir / "MBTiles_to_TPKX_v0_1_0.py"
+    converter = config.base_dir / "MBTiles_to_TPKX_v0_3_0.py"
     try:
         source_for_qgis = input_file
         if mode == "flat":

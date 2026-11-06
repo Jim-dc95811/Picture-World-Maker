@@ -14,7 +14,7 @@ from RASTA_PIPELINE import (
 )
 
 APP = "RASTA PYRAMID FACTORY"
-VERSION = "v0.1.3 TEST"
+VERSION = "v0.1.5 TEST"
 HERE = Path(__file__).resolve().parent
 BG = "#f3f5f7"
 TEXT = "#17233a"
