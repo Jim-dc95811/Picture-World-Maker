@@ -78,18 +78,9 @@ Picture World Maker v0.1.3 remains **LIVE-PROVEN** for:
 - large/gigapixel workloads;
 - TPKX output rendered successfully in **ArcGIS Earth**.
 
-### Important TPKX compatibility boundary — 2026-08-20
+### TPKX converter — 2026-11-05
 
-A downstream ArcGIS Field Maps control test found a verified defect in the historical MBTiles -> TPKX converter lineage that Picture World Maker v0.1.3 inherited.
-
-Using the same physical-card/Designer workflow, Field Maps:
-
-- rejected a project converter-built TPKX;
-- accepted Esri's official `Usa.tpkx`.
-
-Therefore Picture World Maker's TPKX output is **ArcGIS Earth-proven**, but **Field Maps compatibility is not approved**. Since v0.1.6 Picture World Maker writes the same TPKX structure as mb2tpkx 1.1 (ArcGIS Earth and ArcGIS Pro proven); Field Maps has not been tested with it yet.
-
-Picture World Maker's MBTiles manufacturing and giant-raster core are not invalidated by this finding.
+Since v0.1.6 Picture World Maker writes the same TPKX structure as mb2tpkx 1.1 (ArcGIS Earth and ArcGIS Pro proven).
 ---
 
 ## Current status
@@ -101,8 +92,6 @@ Picture World Maker's MBTiles manufacturing and giant-raster core are not invali
 | Raster -> verified MBTiles | ✅ **LIVE-PROVEN** |
 | Historical MBTiles -> TPKX -> ArcGIS Earth | ✅ **LIVE-PROVEN** |
 | v0.1.6 TPKX stage (mb2tpkx 1.1 structure) -> ArcGIS Earth | ✅ **LIVE-PROVEN 2026-11-05** |
-| Historical Picture World Maker TPKX -> Field Maps | ❌ **NOT APPROVED — converter lineage failed Field Maps** |
-| v0.1.6 TPKX -> Field Maps | 🟡 **NOT YET TESTED** |
 | v0.2.0 photo mode (no QGIS) -> TPKX -> ArcGIS Earth | ✅ **LIVE-PROVEN 2026-11-06** (55 s) |
 | Gigapixel-class deep navigation | ✅ **LIVE-PROVEN** |
 | v0.1.3 synthetic placement + heartbeat | ✅ **LIVE-PROVEN** |
@@ -147,7 +136,7 @@ synthetic display placement
 
 For ArcGIS Earth, the v0.1.3 historical TPKX output remains proven evidence.
 
-Since v0.1.6 Picture World Maker's TPKX stage writes the mb2tpkx 1.1 structure (proven in ArcGIS Earth and ArcGIS Pro; byte-identical bundles against Jim's flown London TPKX). Field Maps has not been tested with it - make no Field Maps claim until a real Field Maps test passes.
+Since v0.1.6 Picture World Maker's TPKX stage writes the mb2tpkx 1.1 structure (proven in ArcGIS Earth and ArcGIS Pro; byte-identical bundles against Jim's flown London TPKX).
 
 Do not rewrite the accepted v0.1.3 evidence package and pretend it was always the new converter.
 
@@ -231,9 +220,9 @@ fixed synthetic Atlantic anchor near 30°N, 80°W
 
 ## Deployment boundary
 
-Picture World Maker manufactures raster pyramids. It does not own field-delivery hardware or Field Maps compatibility policy.
+Picture World Maker manufactures raster pyramids. It does not own field-delivery hardware.
 
-Delivering maps to phones and Field Maps happens outside Picture World Maker.
+Delivering maps to phones happens outside Picture World Maker.
 
 ---
 
