@@ -1,5 +1,7 @@
 # Picture World Maker
 
+> 🤖 **Using AI assistance?** Have the agent read the [CLAUDE.md](https://github.com/Jim-dc95811/ArcGIS-Earth-Unlocked/blob/main/CLAUDE.md) file first.
+
 **Turn giant pictures into maps you can fly into.** Slice. Dice. Present.
 
 ## Get everything you need
