@@ -2,6 +2,10 @@
 
 *Formerly Rasta Pyramid Factory. Older entries keep the names used at the time.*
 
+## v0.2.5 — 2026-11-08 — READY TO FLY launcher, released
+
+`Start Picture World Maker.bat`: the launcher now gets the PC ready first: it finds Python or installs it for you (just for you, no admin - answer **Y**), and installs Pillow if it is missing, then starts the tool. New file `System Files\Ready_To_Fly.ps1` (log: `System Files\Ready_To_Fly_log.txt`). Program byte-identical to the previous release. Live-tested by Jim 2026-11-08. Any Python 3.9 or newer now works (the old launcher insisted on 3.14); the window still opens with no black console.
+
 ## v0.2.4 — 2026-11-06 — WORLD SPOTS, released, LIVE-PROVEN
 
 - Live (Jim, 17:33): London panorama on spot 2 - 53 s, 35,205 tiles, 25 bundles (same counts as the test here) - flown beside the Tower of Babel on spot 1: "Of all the crazy things to find floating in the Atlantic Ocean!!!"

@@ -13,7 +13,7 @@ Printable copy: [Picture_World_Maker_User_Manual.pdf](Picture_World_Maker_User_M
 ## What you need
 
 - **Windows 10 or 11** (64-bit).
-- **[Python 3.14](https://www.python.org/downloads/windows/)** - free; tick "Add python.exe to PATH" if the installer shows it.
+- **Python 3** (3.9 or newer) and **Pillow** - free, and `Start Picture World Maker.bat` installs both for you if they are missing (answer **Y**; no admin needed). Or get Python from [python.org](https://www.python.org/downloads/windows/).
 - **Pillow** - a free Python picture helper; **Start Picture World Maker.bat installs it by itself** the first time.
 - **[ArcGIS Earth](https://www.esri.com/en-us/arcgis/products/arcgis-earth/downloads)** - free, to look at and fly over the result.
 - **Memory:** about 5 bytes per picture pixel - about 3 GB for a 600-million-pixel photo, about 6 GB for 1.2 billion.
@@ -21,8 +21,8 @@ Printable copy: [Picture_World_Maker_User_Manual.pdf](Picture_World_Maker_User_M
 
 ## Install
 
-1. Download [`Picture_World_Maker_v0.2.4.zip`](../releases/Picture_World_Maker_v0.2.4.zip), right-click it > **Extract All**.
-2. Open the `Picture_World_Maker_v0.2.4` folder. It holds just two things: **Start Picture World Maker.bat** (the one to double-click) and the **System Files** folder (leave it alone).
+1. Download [`Picture_World_Maker_v0.2.5.zip`](../releases/Picture_World_Maker_v0.2.5.zip), right-click it > **Extract All**.
+2. Open the `Picture_World_Maker_v0.2.5` folder. It holds just two things: **Start Picture World Maker.bat** (the one to double-click) and the **System Files** folder (leave it alone).
 
 ## What's in the zip
 
