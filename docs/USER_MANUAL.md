@@ -1,4 +1,4 @@
-# Picture World Maker v0.2.5 - User Manual
+# Picture World Maker 2.0 - User Manual
 
 <!-- install-blurb:start -->
 > ### Installing Picture World Maker - read this first
@@ -35,8 +35,8 @@ Printable copy: [Picture_World_Maker_User_Manual.pdf](Picture_World_Maker_User_M
 
 ## Install
 
-1. Download [`Picture_World_Maker_v0.2.5.zip`](../releases/Picture_World_Maker_v0.2.5.zip), right-click it > **Extract All**.
-2. Open the `Picture_World_Maker_v0.2.5` folder. It holds just three things: **Start Picture World Maker.bat** (the one to double-click), this manual as a PDF, and the **System Files** folder (leave it alone).
+1. Download [`Picture_World_Maker_v2.0.zip`](../releases/Picture_World_Maker_v2.0.zip), right-click it > **Extract All**.
+2. Open the `Picture_World_Maker_v2.0` folder. It holds just three things: **Start Picture World Maker.bat** (the one to double-click), this manual as a PDF, and the **System Files** folder (leave it alone).
 
 ## What's in the zip
 

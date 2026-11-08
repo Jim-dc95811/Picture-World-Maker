@@ -15,7 +15,7 @@
 > 2. **Windows security warning:** Windows may warn about any program downloaded from the internet. Click **More info > Run anyway** (blue "Windows protected your PC" screen) or **Run**. To avoid the warning, right-click the zip > **Properties** > tick **Unblock** > **OK** before extracting.
 > 3. **Installing Python:** if the installer shows **"Add python.exe to PATH"**, tick it.
 
-### **⬇️ [3. DOWNLOAD PICTURE WORLD MAKER v0.2.5](releases/Picture_World_Maker_v0.2.5.zip)**
+### **⬇️ [3. DOWNLOAD PICTURE WORLD MAKER v2.0](releases/Picture_World_Maker_v2.0.zip)**
 **📖 [User manual](docs/USER_MANUAL.md)**
 **🗂️ [What's in the zip - every file explained](docs/images/picture_world_maker_whats_in_the_zip_full.png)**
 **📦 [Download the Whole ArcGIS Earth Unlocked Series of Tools - all 10 in one zip](https://github.com/Jim-dc95811/ArcGIS-Earth-Unlocked/raw/main/downloads/ArcGIS_Earth_Unlocked_All_Tools.zip)**
@@ -58,7 +58,11 @@ Choose a giant picture - a city panorama, a scanned map, a schematic, artwork - 
 
 ## Current version truth
 
-### v0.2.4 — WORLD SPOTS (2026-11-06) — current release, LIVE-PROVEN
+### 2.0 — THE 2.0 REFERENCE (2026-11-08) — current release
+
+The whole ArcGIS Earth Unlocked family moved to 2.0 as one reference point ([2.0 Reference](https://github.com/Jim-dc95811/ArcGIS-Earth-Unlocked/blob/main/REFERENCE_2.0.md)). Picture World Maker 2.0 is the v0.2.4 program (World spots, below) with only its version text changed - the window now says **PICTURE WORLD MAKER 2.0** and pictures come out exactly as before. Earlier zips are kept in [`archive/`](archive/).
+
+### v0.2.4 — WORLD SPOTS (2026-11-06) — LIVE-PROVEN
 
 Jim built the London panorama on spot 2 (53 s, 35,205 tiles, 25 bundles - the same counts as the test here) and flew it beside Bruegel's *Tower of Babel* on spot 1.
 

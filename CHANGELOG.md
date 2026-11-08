@@ -2,6 +2,11 @@
 
 *Formerly Rasta Pyramid Factory. Older entries keep the names used at the time.*
 
+
+## 2.0 - the 2.0 Reference (2026-11-08)
+
+- The whole ArcGIS Earth Unlocked family moved to 2.0 as one reference point (Jim). Program = v0.2.4 with only the version text changed (diff-checked; self-test PASS). Zip `releases/Picture_World_Maker_v2.0.zip`; older zips moved to `archive/` (release notes stay in `releases/`).
+
 ## v0.2.5 — 2026-11-08 — READY TO FLY launcher, released
 
 `Start Picture World Maker.bat`: the launcher now gets the PC ready first: it finds Python or installs it for you (just for you, no admin - answer **Y**), and installs Pillow if it is missing, then starts the tool. New file `System Files\Ready_To_Fly.ps1` (log: `System Files\Ready_To_Fly_log.txt`). Program byte-identical to the previous release. Live-tested by Jim 2026-11-08. Any Python 3.9 or newer now works (the old launcher insisted on 3.14); the window still opens with no black console.
@@ -34,7 +39,7 @@
 
 - **Rasta Pyramid Factory is now Picture World Maker** (Jim: "I hate the name rasta"). Program folder, launchers, window title, system files (`PICTURE_WORLD_MAKER.py`, `PWM_PIPELINE.py`, `PWM_PHOTO_TILER.py`, `PWM_QGIS_WORKER.py`, `PWM_SELF_TEST.py`, `Picture_World_Maker_Config.ini`), manual and pages renamed. Repository: `Jim-dc95811/Picture-World-Maker`.
 - No behaviour change: a v0.2.1 build of Kings Reach panorama 1 has 0 structural differences from v0.2.0 (tools/tpkx_compare.py); self-test PASS.
-- Download: `releases/Picture_World_Maker_v0.2.1.zip`. Details: [releases/v0.2.1_RELEASE_NOTES.md](releases/v0.2.1_RELEASE_NOTES.md).
+- Download: `archive/Picture_World_Maker_v0.2.1.zip`. Details: [releases/v0.2.1_RELEASE_NOTES.md](releases/v0.2.1_RELEASE_NOTES.md).
 
 ## v0.2.0 TEST — 2026-11-06 — PHOTO MODE, LIVE-PROVEN
 
@@ -48,7 +53,7 @@
 
 ## v0.1.6 — 2026-11-05 — LIVE-PROVEN, released
 
-Jim's live build: Kings Reach panorama 1 (50,000 x 12,006 px, 35,216 tiles, 8:46) -> TPKX -> ArcGIS Earth: PASS. Download: `releases/Rasta_Pyramid_Factory_v0.1.6.zip`. New user manual (`docs/USER_MANUAL.md` + PDF) and 'What's in the zip' sheet.
+Jim's live build: Kings Reach panorama 1 (50,000 x 12,006 px, 35,216 tiles, 8:46) -> TPKX -> ArcGIS Earth: PASS. Download: `archive/Rasta_Pyramid_Factory_v0.1.6.zip`. New user manual (`docs/USER_MANUAL.md` + PDF) and 'What's in the zip' sheet.
 
 
 Full code review of Rasta (pipeline, window, QGIS worker, launchers). Fixes, each confirmed by a test before and after:
