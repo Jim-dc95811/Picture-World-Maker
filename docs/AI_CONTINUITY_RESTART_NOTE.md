@@ -4,6 +4,8 @@ If coming to this project cold, establish the following before changing code.
 
 ## Current truth
 
+**2026-11-08 (Claude): 2.1 RELEASED** (re-hardening, live-tested by Jim): `prepare_picture` in PWM_PHOTO_TILER (EXIF upright, 16-bit percentile stretch, alpha on white), `upright_size`, Replace question + `replace_existing`, `check_disk_space`, `desktop_dir()`; change doc `docs/PICTURE_WORLD_MAKER_V2.1_CHANGES.md`; `releases/Picture_World_Maker_v2.1.zip`, 2.0 zip in `archive/`. Known, not changed: the Name box keeps the first picture's name when a second picture is chosen.
+
 **2026-11-08 (Claude): 2.0 RELEASED = the 2.0 Reference** (Jim moved the whole family to 2.0 as one reference point). Program = v0.2.4 with `VERSION = "2.0"` (window 'PICTURE WORLD MAKER 2.0'); `releases/Picture_World_Maker_v2.0.zip`; older zips in `archive/`; tag `v2.0-reference`. Next feature release = 2.1.
 
 **2026-11-06 (Claude): v0.2.4 RELEASED = WORLD SPOTS** (Jim: 'multiple places on the ocean ... each could have its own grid box'). `world_spots(config)`: 20 spots, spot 1 = the configured anchor (30 N 80 W), +1 deg east per spot along 30 N (2-10) and 31 N (11-20); `config_for_spot` = `dataclasses.replace` of the anchor; `world_spot_box_m` = the 1-degree box in Web Mercator metres (pictures are placed in Mercator metres: 1 px = 1 m Mercator, about 0.87 ground m at 30 N). Window: World spot combobox in 2. Pyramid recipe, parking line names the spot, too-big warning, `_spotNN` file suffix. Proof: KR1 spot 1 = v0.2.3 in all 30 bundles; spot 2 centre = -79.0 exactly; stand-in-Tk check of the window logic. Zip `b5b5ad4ac856ba992e413367039ab741d6e7b64e8c2b852ac1589f0358b7a3c6`.

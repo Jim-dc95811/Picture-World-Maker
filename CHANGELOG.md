@@ -3,6 +3,16 @@
 *Formerly Rasta Pyramid Factory. Older entries keep the names used at the time.*
 
 
+## 2.1 - re-hardening (2026-11-08)
+
+- Phone photos are built the right way up (the camera's turn mark, EXIF Orientation, is followed; the window shows the upright size).
+- 16-bit pictures (scans, HiRISE and other science pictures) are stretched to normal brightness instead of washing out to white.
+- See-through parts of a PNG come out white instead of black.
+- A file with the same name: the window asks "Replace it?" (Yes builds over it, No keeps it); the plain message replaces the bare file path.
+- Disk space is checked before any work starts (about 20 KB per tile + 200 MB), with a plain message.
+- Default folder = your real Desktop, also when Windows/OneDrive moved it.
+- Ordinary 8-bit pictures: tiles byte-identical to 2.0. Rig `tools/test-rigs/picture_world_maker_test_v21.py` (ArcGIS Earth Unlocked) ALL PASS; self-test PASS with 2.1 checks; live-tested by Jim. 2.0 zip moved to `archive/`.
+
 ## 2.0 - the 2.0 Reference (2026-11-08)
 
 - The whole ArcGIS Earth Unlocked family moved to 2.0 as one reference point (Jim). Program = v0.2.4 with only the version text changed (diff-checked; self-test PASS). Zip `releases/Picture_World_Maker_v2.0.zip`; older zips moved to `archive/` (release notes stay in `releases/`).

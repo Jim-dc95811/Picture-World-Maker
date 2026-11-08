@@ -15,12 +15,12 @@
 > 2. **Windows security warning:** Windows may warn about any program downloaded from the internet. Click **More info > Run anyway** (blue "Windows protected your PC" screen) or **Run**. To avoid the warning, right-click the zip > **Properties** > tick **Unblock** > **OK** before extracting.
 > 3. **Installing Python:** if the installer shows **"Add python.exe to PATH"**, tick it.
 
-### **⬇️ [3. DOWNLOAD PICTURE WORLD MAKER v2.0](releases/Picture_World_Maker_v2.0.zip)**
+### **⬇️ [3. DOWNLOAD PICTURE WORLD MAKER v2.1](releases/Picture_World_Maker_v2.1.zip)**
 **📖 [User manual](docs/USER_MANUAL.md)**
 **🗂️ [What's in the zip - every file explained](docs/images/picture_world_maker_whats_in_the_zip_full.png)**
 **📦 [Download the Whole ArcGIS Earth Unlocked Series of Tools - all 10 in one zip](https://github.com/Jim-dc95811/ArcGIS-Earth-Unlocked/raw/main/downloads/ArcGIS_Earth_Unlocked_All_Tools.zip)**
 
-Choose a giant picture - a city panorama, a scanned map, a schematic, artwork - press BUILD, and get a zoomable map (TPKX or MBTiles) you can open in ArcGIS Earth: see the whole scene like a hawk, then dive into any detail that catches your eye. **New in v0.2.5 (Ready to Fly):** the .bat installs Python and Pillow for you if they are missing - answer **Y**, no admin needed.
+Choose a giant picture - a city panorama, a scanned map, a schematic, artwork - press BUILD, and get a zoomable map (TPKX or MBTiles) you can open in ArcGIS Earth: see the whole scene like a hawk, then dive into any detail that catches your eye. **New in 2.1:** phone photos come out the right way up, 16-bit pictures no longer wash out to white, see-through parts turn white instead of black, it asks before replacing a file, checks the disk has room before it starts, and saves to your real Desktop (also the OneDrive one). [What changed in 2.1](docs/PICTURE_WORLD_MAKER_V2.1_CHANGES.md)
 
 ![Flying over a London panorama photo made with Picture World Maker in ArcGIS Earth: the photo lies flat on the Atlantic at 29.99 N, 80.05 W, elevation 0 ft, seen from 3,092 ft](docs/images/picture_world_kings_reach_arcgis_earth.jpg)
 
@@ -58,9 +58,13 @@ Choose a giant picture - a city panorama, a scanned map, a schematic, artwork - 
 
 ## Current version truth
 
-### 2.0 — THE 2.0 REFERENCE (2026-11-08) — current release
+### 2.1 — RE-HARDENING (2026-11-08) — current release
 
-The whole ArcGIS Earth Unlocked family moved to 2.0 as one reference point ([2.0 Reference](https://github.com/Jim-dc95811/ArcGIS-Earth-Unlocked/blob/main/REFERENCE_2.0.md)). Picture World Maker 2.0 is the v0.2.4 program (World spots, below) with only its version text changed - the window now says **PICTURE WORLD MAKER 2.0** and pictures come out exactly as before. Earlier zips are kept in [`archive/`](archive/).
+Live-tested by Jim 2026-11-08: a sideways phone photo built upright, a 16-bit picture built grey (not white), a see-through PNG built on white, the Replace question. Ordinary 8-bit pictures make byte-identical tiles to 2.0. See [what changed in 2.1](docs/PICTURE_WORLD_MAKER_V2.1_CHANGES.md).
+
+### 2.0 — THE 2.0 REFERENCE (2026-11-08)
+
+The whole ArcGIS Earth Unlocked family moved to 2.0 as one reference point ([2.0 Reference](https://github.com/Jim-dc95811/ArcGIS-Earth-Unlocked/blob/main/REFERENCE_2.0.md)). Picture World Maker 2.0 is the v0.2.4 program (World spots, below) with only its version text changed - the window says **PICTURE WORLD MAKER 2.0** and pictures come out exactly as before. The 2.0 zip and earlier zips are kept in [`archive/`](archive/).
 
 ### v0.2.4 — WORLD SPOTS (2026-11-06) — LIVE-PROVEN
 

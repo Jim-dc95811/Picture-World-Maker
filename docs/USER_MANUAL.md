@@ -1,4 +1,4 @@
-# Picture World Maker 2.0 - User Manual
+# Picture World Maker 2.1 - User Manual
 
 <!-- install-blurb:start -->
 > ### Installing Picture World Maker - read this first
@@ -31,12 +31,12 @@ Printable copy: [Picture_World_Maker_User_Manual.pdf](Picture_World_Maker_User_M
 - **Pillow** - a free Python picture helper; **Start Picture World Maker.bat installs it by itself** the first time.
 - **[ArcGIS Earth](https://www.esri.com/en-us/arcgis/products/arcgis-earth/downloads)** - free, to look at and fly over the result.
 - **Memory:** about 5 bytes per picture pixel - about 3 GB for a 600-million-pixel photo, about 6 GB for 1.2 billion.
-- **Free disk space on C:** - room for the finished file twice while it builds (the working files go in the Windows temporary folder and are deleted afterwards).
+- **Free disk space on C:** - room for the finished file twice while it builds (the working files go in the Windows temporary folder and are deleted afterwards). Picture World Maker checks this before it starts and tells you if there is not enough room.
 
 ## Install
 
-1. Download [`Picture_World_Maker_v2.0.zip`](../releases/Picture_World_Maker_v2.0.zip), right-click it > **Extract All**.
-2. Open the `Picture_World_Maker_v2.0` folder. It holds just three things: **Start Picture World Maker.bat** (the one to double-click), this manual as a PDF, and the **System Files** folder (leave it alone).
+1. Download [`Picture_World_Maker_v2.1.zip`](../releases/Picture_World_Maker_v2.1.zip), right-click it > **Extract All**.
+2. Open the `Picture_World_Maker_v2.1` folder. It holds just three things: **Start Picture World Maker.bat** (the one to double-click), this manual as a PDF, and the **System Files** folder (leave it alone).
 
 ## What's in the zip
 
@@ -46,9 +46,10 @@ Printable copy: [Picture_World_Maker_User_Manual.pdf](Picture_World_Maker_User_M
 
 1. Double-click **Start Picture World Maker.bat**.
 2. **1. Choose giant raster** - press **CHOOSE IMAGE** and pick your picture (JPG, PNG, TIF, BMP or WEBP). Picture World Maker checks it and shows its size and how many tiles it will make.
+   *Phone photos are turned the right way up, 16-bit pictures (scans, space pictures) are brightened to normal, and see-through parts of a PNG come out white (2.1).*
 3. **2. Pyramid recipe** - leave **Min zoom 0** and **Max zoom 18** for a normal picture. Picture World Maker suggests Max zoom 18: that is where you reach the photo's own detail.
    **World spot** - which spot on the ocean the picture is parked at (1 to 20, see [World spots](#world-spots-a-gallery-on-the-ocean)). Leave it on **1** for a single picture; give each picture of a gallery its own spot.
-4. **3. Finished product** - **TPKX** for ArcGIS Earth, **MBTiles** for other map programs, or **Both**. Type a **Name** and choose a **Folder**. The file name gets its World spot added at the end, for example `Tower_of_Babel_spot02.tpkx`.
+4. **3. Finished product** - **TPKX** for ArcGIS Earth, **MBTiles** for other map programs, or **Both**. Type a **Name** and choose a **Folder** (it starts on your Desktop). The Name box fills in from the first picture you choose - when you build a second picture, type its name yourself. The file name gets its World spot added at the end, for example `Tower_of_Babel_spot02.tpkx`.
 5. Press **BUILD RASTER PYRAMID** and leave it running. The status line keeps moving - a heartbeat, the time, and the stage (building the pyramid, converting to TPKX, verifying).
 6. When it says **RASTER PYRAMID COMPLETE**, your file is in the folder you chose.
 
@@ -121,9 +122,9 @@ The picture always lies flat - it is a map layer, so it cannot stand up like a b
 - **Want all-PNG tiles (no JPEG)?** - set `tiles = png` under `[PHOTO]`. Bigger files, no JPEG compression.
 - **"has map coordinates"** - the file is a real map (a GeoTIFF). ArcGIS Earth can open it directly: just drag it on. Picture World Maker still builds it, as a picture parked on the ocean.
 - **"TPKX supports zoom levels up to 23"** - TPKX (Esri's tile packages) stop at zoom 23. Lower Max zoom, or choose MBTiles only (up to 25).
-- **"Output already exists"** - pick another Name or move the old file.
+- **"... already exists. Replace it?"** - a file with that name is already in the folder. **Yes** builds over it; **No** keeps the old file and builds nothing (then pick another Name).
+- **"Not enough disk space"** - the drive is too full for this picture. Free some space, choose a lower Max zoom, or save to another drive.
 - **It runs for a long time** - giant pictures take minutes; the moving heartbeat shows it is working. The size warning before the build tells you how many tiles to expect.
-- **The disk fills up** - free space on C: (room for the finished file twice while building).
 
 ## What Picture World Maker does not do
 
