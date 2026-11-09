@@ -44,6 +44,10 @@ Choose a giant picture - a city panorama, a scanned map, a schematic, artwork - 
 
 *Live-proven 2026-11-06: Bruegel's* Tower of Babel *(public domain, 30,000 x 21,952 px) on World spot 1 and the London panorama on World spot 2 (built in 53 s, 35,205 tiles), side by side on the Atlantic. Jim: "Of all the crazy things to find floating in the Atlantic Ocean!!!"*
 
+[![Babel to the Shard: Bruegel's treadwheel crane in the Tower of Babel (1563) beside the red tower cranes at the Shard in the London panorama - play the Short](docs/images/babel_to_shard_short_thumb.jpg)](https://www.youtube.com/shorts/lxvZLMLe-IY)
+
+*Claude flies from Babel (World spot 1) to London (World spot 2): from Bruegel's wooden treadwheel crane, 1563, to the red tower cranes beside the Shard - 460 years of cranes. ▶️ [Watch the Short: ArcGIS Earth Babel to the Shard](https://www.youtube.com/shorts/lxvZLMLe-IY) (YouTube).*
+
 > **No QGIS needed (v0.2.3).** Picture World Maker now does one thing: pictures. Real map files with coordinates (GeoTIFFs) open directly in ArcGIS Earth - drag them on.
 
 > **New name (2026-11-06):** Picture World Maker was called **Rasta Pyramid Factory** up to v0.2.0. Same program, same files it makes; old download links in this repo's history still work.
