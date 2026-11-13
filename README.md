@@ -17,7 +17,7 @@
 > 2. **Windows security warning:** Windows may warn about any program downloaded from the internet. Click **More info > Run anyway** (blue "Windows protected your PC" screen) or **Run**. To avoid the warning, right-click the zip > **Properties** > tick **Unblock** > **OK** before extracting.
 > 3. **Installing Python:** if the installer shows **"Add python.exe to PATH"**, tick it.
 
-### **⭐ [3. Get Picture World Maker from Google Drive](https://drive.google.com/drive/folders/1jsxVTDsYdgJHibhCCeI9I69FsG0qMGgc?usp=sharing)**
+### **⭐ [3. Get Picture World Maker from Google Drive](https://drive.google.com/drive/folders/1vGuqo2UeT30mktCEjz4ft_6tyG9YFyhs)**
 
 *Easiest, no download warning: open the Drive folder, open **Picture_World_Maker_v2.1**, and run its one `.bat`. Prefer GitHub? Developers can grab the [direct zip](releases/Picture_World_Maker_v2.1.zip) - a direct download can trip a Windows antivirus false alarm, which Drive avoids.*
 **📖 [User manual](docs/USER_MANUAL.md)**
