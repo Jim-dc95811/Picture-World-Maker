@@ -18,6 +18,8 @@
 ### **⬇️ [3. DOWNLOAD PICTURE WORLD MAKER v2.1](releases/Picture_World_Maker_v2.1.zip)**
 **📖 [User manual](docs/USER_MANUAL.md)**
 **🗂️ [What's in the zip - every file explained](docs/images/picture_world_maker_whats_in_the_zip_full.png)**
+**⭐ EASIEST WAY — [Get all 11 tools from Google Drive](https://drive.google.com/drive/folders/1jsxVTDsYdgJHibhCCeI9I69FsG0qMGgc?usp=sharing)** — no download warnings, the whole series is under 10 MB. Open the folder, open the tool you want, and run its one `.bat`.
+
 **📦 [Download the Whole ArcGIS Earth Unlocked Series of Tools - all 10 in one zip](https://github.com/Jim-dc95811/ArcGIS-Earth-Unlocked/raw/main/downloads/ArcGIS_Earth_Unlocked_All_Tools.zip)**
 
 Choose a giant picture - a city panorama, a scanned map, a schematic, artwork - press BUILD, and get a zoomable map (TPKX or MBTiles) you can open in ArcGIS Earth: see the whole scene like a hawk, then dive into any detail that catches your eye. **New in 2.1:** phone photos come out the right way up, 16-bit pictures no longer wash out to white, see-through parts turn white instead of black, it asks before replacing a file, checks the disk has room before it starts, and saves to your real Desktop (also the OneDrive one). [What changed in 2.1](docs/PICTURE_WORLD_MAKER_V2.1_CHANGES.md)
